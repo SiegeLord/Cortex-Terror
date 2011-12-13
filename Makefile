@@ -20,7 +20,7 @@ ifeq ($(XFBUILD),)
     endef
 else
     define d_build
-        $(XFBUILD) +D=".deps_$1" +O=".objs_$1" +threads=6 +o$1 +c$(DC) +x$(DC) +xtango +xstd +xcore $2 $(D_FLAGS) $(LD_FLAGS)
+        $(XFBUILD) +D=".deps_$1" +O=".objs_$1" +threads=6 +o$1 +c$(DC) +x$(DC) +xtango +xstd +xcore +xallegro $2 $(D_FLAGS) $(LD_FLAGS)
         rm -f *.rsp
     endef
 endif
