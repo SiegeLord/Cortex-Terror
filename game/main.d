@@ -1,4 +1,4 @@
-module main;
+module game.main;
 
 import tango.io.Stdout;
 
