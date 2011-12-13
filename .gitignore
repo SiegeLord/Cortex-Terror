@@ -1,0 +1,6 @@
+lib*
+tango
+allegro5
+game
+.deps*
+.objs*
