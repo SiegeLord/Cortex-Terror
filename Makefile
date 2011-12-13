@@ -1,8 +1,8 @@
 DC               := dmd
 INSTALL_PREFIX   := /usr/local
 XFBUILD          := $(shell which xfbuild)
-GAME_NAME        := game
-GAME_FILES       := main.d
+GAME_NAME        := main
+GAME_FILES       := $(wildcard game/*.d)
 ALLEGRO_LD_FLAGS := -L-ldallegro5 -L-lallegro -L-lallegro_image
 TANGO_LD_FLAGS   := -L-ltango -L-ldl
 ENGINE_FILES     := $(wildcard engine/*.d)

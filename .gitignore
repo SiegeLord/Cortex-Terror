@@ -1,6 +1,6 @@
 lib*
 tango
 allegro5
-game
+main
 .deps*
 .objs*
