@@ -1,23 +1,26 @@
-module engine.bitmapmanager;
+module engine.BitmapManager;
 
-import engine.resourcemanager;
+import engine.ResourceManager;
+import engine.Bitmap;
+
 import allegro5.allegro;
+
 import tango.stdc.stringz;
 
-class CBitmapManager : CResourceManager!(ALLEGRO_BITMAP*)
+class CBitmapManager : CResourceManager!(CBitmap)
 {
 	this(CBitmapManager parent = null)
 	{
 		super(parent);
 	}
 	
-	ALLEGRO_BITMAP* Load(char[] filename)
+	CBitmap Load(const(char)[] filename)
 	{
 		auto ret = LoadExisting(filename);
 		if(ret is null)
 		{
 			char[256] cache;
-			return Insert(filename, al_load_bitmap(toStringz(filename, cache)));
+			return Insert(filename, new CBitmap(al_load_bitmap(toStringz(filename, cache))));
 		}
 		else
 		{
@@ -28,8 +31,8 @@ class CBitmapManager : CResourceManager!(ALLEGRO_BITMAP*)
 protected:
 
 	override
-	void Destroy(ALLEGRO_BITMAP* bmp)
+	void Destroy(CBitmap bmp)
 	{
-		al_destroy_bitmap(bmp);
+		bmp.Dispose();
 	}
 }

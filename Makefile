@@ -9,7 +9,7 @@ ENGINE_FILES     := $(wildcard engine/*.d)
 ALL_FILES        := $(GAME_FILES) $(ENGINE_FILES)
 
 LD_FLAGS         := $(ALLEGRO_LD_FLAGS) $(TANGO_LD_FLAGS)
-D_FLAGS          := -g -unittest -L-L.
+D_FLAGS          := -g -unittest -L-L. -version=DebugDisposable
 
 # Compiles a D program
 # $1 - program name

@@ -1,8 +1,11 @@
-module game.main;
+module game.Main;
 
-import tango.io.Stdout;
+import game.Game;
 
 void main()
 {
-	Stdout("Hello").nl;
-} 
+	auto game = new CGame();
+	game.Dispose;
+	
+	game.Run;
+}

@@ -1,14 +1,19 @@
-module engine.resourcemanager;
+module engine.ResourceManager;
 
-class CResourceManager(T, Key=char[])
+import engine.Disposable;
+
+class CResourceManager(T, Key=char[]) : CDisposable
 {
 	this(CResourceManager!(T, Key) parent = null)
 	{
 		Parent = parent;
 	}
 	
-	void Release()
+	override
+	void Dispose()
 	{
+		super.Dispose;
+		
 		foreach(entry; Cache)
 			Destroy(entry);
 		
