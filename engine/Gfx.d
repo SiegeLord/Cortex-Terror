@@ -6,6 +6,7 @@ import engine.Util;
 
 import allegro5.allegro;
 import allegro5.allegro_image;
+import allegro5.allegro_primitives;
 
 class CGfx : CDisposable
 {
@@ -16,6 +17,7 @@ class CGfx : CDisposable
 		
 		Display = al_create_display(options.Get!(int)("gfx", "screen_w", 800), options.Get!(int)("gfx", "screen_h", 600));
 		al_init_image_addon();
+		al_init_primitives_addon();
 	}
 	
 	override
