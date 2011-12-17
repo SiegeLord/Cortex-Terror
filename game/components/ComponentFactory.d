@@ -6,7 +6,7 @@ import game.components.Position;
 import game.components.Physics;
 import game.components.Rectangle;
 
-typedef CComponent function() Creator;
+alias CComponent function() Creator;
 
 Creator[char[]] Creators;
 

@@ -9,6 +9,7 @@ import engine.Util;
 import game.IGame;
 import game.Mode;
 import game.MainMenuMode;
+import game.GameMode;
 
 import tango.io.Stdout;
 
@@ -30,7 +31,7 @@ class CGame : CDisposable, IGame
 		al_register_event_source(Queue, al_get_mouse_event_source());
 		al_register_event_source(Queue, al_get_display_event_source(Gfx.Display));
 		
-		NextMode = EMode.MainMenu;
+		NextMode = EMode.Game;
 	}
 	
 	override
@@ -56,9 +57,15 @@ class CGame : CDisposable, IGame
 					Mode = new CMainMenuMode(this);
 					break;
 				}
+				case EMode.Game:
+				{
+					Mode = new CGameMode(this);
+					break;
+				}
 				case EMode.Exit:
 					goto exit;
-			}
+			}			
+			WantModeSwitch = false;
 			
 			GameLoop(Mode);
 		}
@@ -80,6 +87,7 @@ exit:{}
 	}
 
 	mixin(Prop!("float", "Time", "override", "protected"));
+	mixin(Prop!("CGfx", "Gfx", "override", "protected"));
 protected:
 	void GameLoop(CMode mode)
 	{
@@ -138,5 +146,5 @@ protected:
 	float TimeVal = 0.0f;
 	
 	CConfig Options;
-	CGfx Gfx;
+	CGfx GfxVal;
 }
