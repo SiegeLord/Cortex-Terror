@@ -1,4 +1,4 @@
-DC               := dmd
+DC               := ldc2
 INSTALL_PREFIX   := /usr/local
 XFBUILD          := $(shell which xfbuild)
 GAME_NAME        := main
@@ -9,7 +9,12 @@ ENGINE_FILES     := $(wildcard engine/*.d)
 ALL_FILES        := $(GAME_FILES) $(ENGINE_FILES)
 
 LD_FLAGS         := $(ALLEGRO_LD_FLAGS) $(TANGO_LD_FLAGS)
-D_FLAGS          := -g -unittest -L-L. -version=DebugDisposable
+
+ifeq ($(DC),ldc2)
+    D_FLAGS          := -g -unittest -L-L. -d-version=DebugDisposable
+else
+    D_FLAGS          := -g -unittest -L-L. -version=DebugDisposable
+endif
 
 # Compiles a D program
 # $1 - program name
@@ -20,7 +25,7 @@ ifeq ($(XFBUILD),)
     endef
 else
     define d_build
-        @$(XFBUILD) +D=".deps_$1" +O=".objs_$1" +threads=6 +o$1 +c$(DC) +x$(DC) +xtango +xstd +xcore +xallegro5 $2 $(D_FLAGS) $(LD_FLAGS)
+        @$(XFBUILD) +D=".deps_$1" +O=".objs_$1" +threads=6 +o$1 +c$(DC) +x$(DC) +xldc +xtango +xstd +xcore +xallegro5 $2 $(D_FLAGS) $(LD_FLAGS)
         @rm -f *.rsp
     endef
 endif
