@@ -1,5 +1,8 @@
 module game.MainMenuMode;
 
+import engine.Config;
+import engine.ConfigManager;
+
 import game.Mode;
 import game.IGame;
 import game.GameObject;
@@ -16,19 +19,13 @@ class CMainMenuMode : CMode
 	this(IGame game)
 	{
 		super(game);
+		ConfigManager = new typeof(ConfigManager);
 		
-		TestObject = new typeof(TestObject);
-		with(TestObject)
-		{
-			AddComponent(new CPosition);
-			AddComponent(new CPhysics);
-			AddComponent(new CRectangle);
-		}
+		TestObject = new typeof(TestObject)(ConfigManager.Load("data/objects/test.cfg"));
 		auto physics = cast(CPhysics)TestObject.GetComponent(CPhysics.classinfo);
 		assert(physics);
 		physics.Vx = 10;
 		physics.Vy = 10;
-		TestObject.WireUp;
 	}
 	
 	override
@@ -60,6 +57,15 @@ class CMainMenuMode : CMode
 			}
 		}
 	}
+	
+	override
+	void Dispose()
+	{
+		super.Dispose;
+		TestObject.Dispose;
+		ConfigManager.Dispose;
+	}
 protected:
+	CConfigManager ConfigManager;
 	CGameObject TestObject;
 }

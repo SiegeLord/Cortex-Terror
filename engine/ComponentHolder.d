@@ -4,8 +4,9 @@ import engine.IComponentHolder;
 import engine.Component;
 import engine.Util;
 import engine.Config;
+import engine.Disposable;
 
-class CComponentHolder : IComponentHolder
+class CComponentHolder : CDisposable, IComponentHolder
 {
 	void AddComponent(CComponent component)
 	{

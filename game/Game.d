@@ -48,6 +48,7 @@ class CGame : CDisposable, IGame
 	{
 		while(true)
 		{
+			scope(exit) if(Mode) Mode.Dispose;
 			final switch(NextMode)
 			{
 				case EMode.MainMenu:
@@ -60,7 +61,6 @@ class CGame : CDisposable, IGame
 			}
 			
 			GameLoop(Mode);
-			Mode.Dispose;
 		}
 exit:{}
 	}
