@@ -34,9 +34,8 @@ class CStarSystem : CDisposable
 	
 	void DrawGalaxyView(float physics_alpha)
 	{
-		auto x = (Position.X - GameMode.GalaxyLocation.X) * GameMode.GalaxyZoom + GameMode.Game.Gfx.ScreenWidth / 2;
-		auto y = (Position.Y - GameMode.GalaxyLocation.Y) * GameMode.GalaxyZoom + GameMode.Game.Gfx.ScreenHeight / 2;
-		al_draw_filled_circle(x, y, 10, Color);
+		auto pos = GameMode.ToGalaxyView(Position);
+		al_draw_filled_circle(pos.X, pos.Y, 10, Color);
 	}
 
 	SVector2D Position;

@@ -95,9 +95,22 @@ class CGameMode : CMode, IGameMode
 		return GalaxyZoomVal = new_zoom;
 	}
 	
+	override
+	SVector2D ToGalaxyView(SVector2D galaxy_pos)
+	{
+		return (galaxy_pos - GalaxyLocation) * GalaxyZoom + Game.Gfx.ScreenSize / 2;
+	}
+	
+	override
+	SVector2D FromGalaxyView(SVector2D galaxy_view)
+	{
+		return (galaxy_view - Game.Gfx.ScreenSize / 2) / GalaxyZoom + GalaxyLocation;
+	}
+	
 	mixin(Prop!("CGalaxy", "Galaxy", "override", "protected"));
 	mixin(Prop!("SVector2D", "GalaxyLocation", "override", "protected"));
 	mixin(Prop!("EScreen", "NextScreen", "", "override"));
+	mixin(Prop!("CStarSystem", "CurrentStarSystem", "override", "protected"));
 protected:
 	SVector2D GalaxyLocationVal;
 	CConfigManager ConfigManager;
@@ -105,6 +118,6 @@ protected:
 	CScreen Screen;
 	bool WantScreenSwitch = false;
 	EScreen NextScreenVal;
-	CStarSystem CurrentStarSystem;
+	CStarSystem CurrentStarSystemVal;
 	float GalaxyZoomVal = 1;
 }

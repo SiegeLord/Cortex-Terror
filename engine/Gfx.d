@@ -3,6 +3,7 @@ module engine.Gfx;
 import engine.Disposable;
 import engine.Config;
 import engine.Util;
+import engine.MathTypes;
 
 import allegro5.allegro;
 import allegro5.allegro_image;
@@ -37,6 +38,11 @@ class CGfx : CDisposable
 	int ScreenHeight()
 	{
 		return al_get_display_height(Display);
+	}
+	
+	SVector2D ScreenSize()
+	{
+		return SVector2D(ScreenWidth, ScreenHeight);
 	}
 	
 	mixin(Prop!("ALLEGRO_DISPLAY*", "Display", "", "protected"));
