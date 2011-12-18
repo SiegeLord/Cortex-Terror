@@ -10,6 +10,8 @@ import tango.math.random.Random;
 import tango.math.Math;
 import tango.io.Stdout;
 
+import allegro5.allegro;
+
 class CGalaxy : CDisposable
 {
 	this(IGameMode game_mode, uint seed, size_t num_stars = 256, float radius = 500)
@@ -41,8 +43,10 @@ class CGalaxy : CDisposable
 	
 	void Draw(float physics_alpha)
 	{
+		al_set_blender(ALLEGRO_BLEND_OPERATIONS.ALLEGRO_ADD, ALLEGRO_BLEND_MODE.ALLEGRO_ONE, ALLEGRO_BLEND_MODE.ALLEGRO_ONE);
 		foreach(system; Systems)
 			system.DrawGalaxyView(physics_alpha);
+		al_set_blender(ALLEGRO_BLEND_OPERATIONS.ALLEGRO_ADD, ALLEGRO_BLEND_MODE.ALLEGRO_ONE, ALLEGRO_BLEND_MODE.ALLEGRO_INVERSE_ALPHA);
 	}
 	
 	CStarSystem GetStarSystemAt(SVector2D position, bool delegate(CStarSystem) selector = null)

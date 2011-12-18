@@ -20,7 +20,10 @@ class CBitmapManager : CResourceManager!(CBitmap)
 		if(ret is null)
 		{
 			char[256] cache;
-			return Insert(filename, new CBitmap(al_load_bitmap(toStringz(filename, cache))));
+			auto bmp = al_load_bitmap(toStringz(filename, cache));
+			if(bmp is null)
+				throw new Exception("Couldn't load '" ~ filename.idup ~ "'");
+			return Insert(filename, new CBitmap(bmp));
 		}
 		else
 		{

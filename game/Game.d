@@ -14,6 +14,10 @@ import game.GameMode;
 import tango.io.Stdout;
 
 import allegro5.allegro;
+import allegro5.allegro_image;
+import allegro5.allegro_primitives;
+import allegro5.allegro_font;
+import allegro5.allegro_ttf;
 
 class CGame : CDisposable, IGame
 {
@@ -22,6 +26,9 @@ class CGame : CDisposable, IGame
 		al_init();
 		al_install_keyboard();
 		al_install_mouse();
+		al_init_font_addon();
+		al_init_ttf_addon();
+		al_init_image_addon();
 		
 		Options = new CConfig("game.cfg");
 		Gfx = new CGfx(Options);

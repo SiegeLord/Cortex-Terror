@@ -126,7 +126,7 @@ class CGalaxyScreen : CScreen
 				else if(event.keyboard.keycode == ALLEGRO_KEY_ENTER)
 				{
 					if(GameMode.Arrived)
-						GameMode.PushScreen(EScreen.System);
+						GameMode.PushScreen(EScreen.Tactical);
 				}
 				else if(event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
 				{

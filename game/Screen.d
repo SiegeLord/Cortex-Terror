@@ -1,9 +1,12 @@
 module game.Screen;
 
+import engine.Disposable;
+
 import game.IGameMode;
+
 import allegro5.allegro;
 
-class CScreen
+class CScreen : CDisposable
 {
 	this(IGameMode game_mode)
 	{

@@ -6,10 +6,7 @@ import engine.Util;
 import engine.MathTypes;
 
 import allegro5.allegro;
-import allegro5.allegro_image;
 import allegro5.allegro_primitives;
-import allegro5.allegro_font;
-import allegro5.allegro_ttf;
 
 class CGfx : CDisposable
 {
@@ -22,10 +19,7 @@ class CGfx : CDisposable
 		al_set_new_display_option(ALLEGRO_DISPLAY_OPTIONS.ALLEGRO_SAMPLES, 4, ALLEGRO_SUGGEST);
 		
 		Display = al_create_display(options.Get!(int)("gfx", "screen_w", 800), options.Get!(int)("gfx", "screen_h", 600));
-		al_init_image_addon();
 		al_init_primitives_addon();
-		al_init_font_addon();
-		al_init_ttf_addon();
 	}
 	
 	override

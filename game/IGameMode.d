@@ -6,11 +6,14 @@ import game.StarSystem;
 
 import engine.Font;
 import engine.MathTypes;
+import engine.BitmapManager;
+import engine.ConfigManager;
 
 enum EScreen
 {
 	Galaxy,
-	System
+	System,
+	Tactical
 }
 
 interface IGameMode
@@ -32,4 +35,6 @@ interface IGameMode
 	CStarSystem CurrentStarSystem();
 	CStarSystem CurrentStarSystem(CStarSystem new_star_system);
 	CFont UIFont();
+	CBitmapManager BitmapManager();
+	CConfigManager ConfigManager();
 }

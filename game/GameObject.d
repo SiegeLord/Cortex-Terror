@@ -7,11 +7,14 @@ import engine.Config;
 import game.components.Updatable;
 import game.components.Drawable;
 import game.components.ComponentFactory;
+import game.IGameMode;
 
 class CGameObject : CComponentHolder
 {
-	this(CConfig config)
+	this(IGameMode game_mode, const(char)[] name)
 	{
+		GameMode = game_mode;
+		auto config = GameMode.ConfigManager.Load("data/objects/" ~ name ~ ".cfg");
 		auto components = config.Get!(const(char)[][])("", "components", null);
 		foreach(component; components)
 		{
@@ -42,4 +45,5 @@ class CGameObject : CComponentHolder
 protected:
 	CComponentGroup!(CUpdatable) Updatables;
 	CComponentGroup!(CDrawable) Drawables;
+	IGameMode GameMode;
 }

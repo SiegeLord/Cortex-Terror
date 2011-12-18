@@ -11,12 +11,12 @@ class CBitmap : CHolder!(ALLEGRO_BITMAP*, al_destroy_bitmap)
 		super(bmp);
 	}
 	
-	int W()
+	int Width()
 	{
 		return al_get_bitmap_width(Get);
 	}
 	
-	int H()
+	int Height()
 	{
 		return al_get_bitmap_height(Get);
 	}

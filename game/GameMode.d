@@ -6,6 +6,7 @@ import engine.MathTypes;
 import engine.Util;
 import engine.Font;
 import engine.FontManager;
+import engine.BitmapManager;
 
 import game.Mode;
 import game.IGame;
@@ -16,6 +17,7 @@ import game.GalaxyScreen;
 import game.StarSystem;
 import game.SystemScreen;
 import game.Screen;
+import game.TacticalScreen;
 
 import allegro5.allegro;
 
@@ -28,12 +30,14 @@ class CGameMode : CMode, IGameMode
 	{
 		super(game);
 		ConfigManager = new CConfigManager;
+		FontManager = new CFontManager;
+		UIFont = FontManager.Load("data/fonts/Energon.ttf", 24);
+		BitmapManager = new CBitmapManager;
+		
 		Galaxy = new CGalaxy(this, cast(int)(al_get_time() * 1000));
 		CurrentStarSystem = Galaxy.GetStarSystemAt(GalaxyLocation);
 		GalaxyLocation = CurrentStarSystem.Position;
 		ScreenStack.push(new CGalaxyScreen(this));
-		FontManager = new CFontManager;
-		UIFont = FontManager.Load("data/fonts/Energon.ttf", 24);
 	}
 	
 	override
@@ -41,6 +45,7 @@ class CGameMode : CMode, IGameMode
 	{
 		if(WantPop)
 		{
+			ScreenStack.top.Dispose;
 			ScreenStack.pop;
 			WantPop = false;
 			if(ScreenStack.size == 0)
@@ -101,6 +106,7 @@ class CGameMode : CMode, IGameMode
 		Galaxy.Dispose;
 		ConfigManager.Dispose;
 		FontManager.Dispose;
+		BitmapManager.Dispose;
 	}
 	
 	override
@@ -170,6 +176,11 @@ class CGameMode : CMode, IGameMode
 				new_screen = new CSystemScreen(this);
 				break;
 			}
+			case EScreen.Tactical:
+			{
+				new_screen = new CTacticalScreen(this);
+				break;
+			}
 		}
 		ScreenStack.push(new_screen);
 	}
@@ -186,16 +197,20 @@ class CGameMode : CMode, IGameMode
 	mixin(Prop!("float", "WarpSpeed", "override", "override"));
 	mixin(Prop!("float", "WarpRange", "override", "override"));
 	mixin(Prop!("CFont", "UIFont", "override", "protected"));
+	mixin(Prop!("CBitmapManager", "BitmapManager", "override", "protected"));
+	mixin(Prop!("CConfigManager", "ConfigManager", "override", "protected"));
 protected:
 	CFont UIFontVal;
 	CFontManager FontManager;
+	
+	CBitmapManager BitmapManagerVal;
+	CConfigManager ConfigManagerVal;
 
 	float WarpSpeedVal = 50;
 	float WarpRangeVal = 50;
 	
 	bool ArrivedVal = true;
 	SVector2D GalaxyLocationVal;
-	CConfigManager ConfigManager;
 	CGalaxy GalaxyVal;
 	Stack!(CScreen) ScreenStack;
 	bool WantPop = false;

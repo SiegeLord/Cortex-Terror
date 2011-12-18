@@ -27,7 +27,10 @@ class CFontManager : CResourceManager!(CFont, SFontDesc)
 		if(ret is null)
 		{
 			char[256] cache;
-			return Insert(desc, new CFont(al_load_font(toStringz(filename, cache), size, 0)));
+			auto font = al_load_font(toStringz(filename, cache), size, 0);
+			if(font is null)
+				throw new Exception("Couldn't load '" ~ filename.idup ~ "'");
+			return Insert(desc, new CFont(font));
 		}
 		else
 		{

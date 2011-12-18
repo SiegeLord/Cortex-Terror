@@ -6,6 +6,7 @@ import game.RandomName;
 import engine.Disposable;
 import engine.MathTypes;
 import engine.Util;
+import engine.Bitmap;
 
 import allegro5.allegro;
 import allegro5.allegro_primitives;
@@ -92,9 +93,12 @@ class CStarSystem : CDisposable
 {
 	this(IGameMode game_mode, Random random, SVector2D position)
 	{
+		SmallStarSprite = game_mode.BitmapManager.Load("data/bitmaps/star_small.png");
+		SmallStarHaloSprite = game_mode.BitmapManager.Load("data/bitmaps/star_halo_small.png");
+
 		Position = position;
 		GameMode = game_mode;
-		Color = GetStarColor(random.uniformR2(0.0f, 1.0f), 0.9);
+		Color = GetStarColor(random.uniformR2(0.0f, 1.0f), 0.5);
 		Planets.length = random.uniformR2(1, cast(int)MaxPlanets);
 		Name = GenerateRandomName(random);
 		
@@ -114,7 +118,10 @@ class CStarSystem : CDisposable
 	{
 		auto pos = GameMode.ToGalaxyView(Position);
 		auto col = Explored ? Color : al_map_rgb_f(0.5, 0.5, 0.5);
-		al_draw_filled_circle(pos.X, pos.Y, 10, col);
+		//al_draw_filled_circle(pos.X, pos.Y, 10, col);
+		if(Explored)
+			al_draw_tinted_bitmap(SmallStarHaloSprite.Get, col, pos.X - SmallStarHaloSprite.Width / 2, pos.Y - SmallStarHaloSprite.Height / 2, 0);
+		al_draw_bitmap(SmallStarSprite.Get, pos.X - SmallStarSprite.Width / 2, pos.Y - SmallStarSprite.Height / 2, 0);
 	}
 	
 	void DrawSystemView(float physics_alpha)
@@ -148,6 +155,8 @@ class CStarSystem : CDisposable
 	SVector2D Position;
 	bool Explored = false;
 protected:
+	CBitmap SmallStarSprite;
+	CBitmap SmallStarHaloSprite;
 	const(char)[] NameVal;
 	CPlanet[] Planets;
 	IGameMode GameMode;

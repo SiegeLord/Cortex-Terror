@@ -5,6 +5,7 @@ import engine.Component;
 import game.components.Position;
 import game.components.Physics;
 import game.components.Rectangle;
+import game.components.Star;
 
 alias CComponent function() Creator;
 
@@ -28,4 +29,5 @@ static this()
 	Creators["position"] = &CreatorFunc!(CPosition);
 	Creators["physics"] = &CreatorFunc!(CPhysics);
 	Creators["rectangle"] = &CreatorFunc!(CRectangle);
+	Creators["star"] = &CreatorFunc!(CStar);
 }
