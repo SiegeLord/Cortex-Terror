@@ -8,7 +8,8 @@ import engine.MathTypes;
 
 enum EScreen
 {
-	Galaxy
+	Galaxy,
+	System
 }
 
 interface IGameMode
@@ -25,7 +26,8 @@ interface IGameMode
 	bool Arrived();
 	IGame Game();
 	CGalaxy Galaxy();
-	EScreen NextScreen(EScreen screen);
+	void PushScreen(EScreen screen);
+	void PopScreen();
 	CStarSystem CurrentStarSystem();
 	CStarSystem CurrentStarSystem(CStarSystem new_star_system);
 }

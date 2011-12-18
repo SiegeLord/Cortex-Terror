@@ -21,7 +21,8 @@ class CGalaxyScreen : CScreen
 	override
 	void Update(float dt)
 	{
-		
+		CurrentZoom += dt * (TargetZoom - CurrentZoom) / 0.25;
+		GameMode.GalaxyZoom = CurrentZoom;
 	}
 	
 	override
@@ -56,35 +57,58 @@ class CGalaxyScreen : CScreen
 	override
 	void Input(ALLEGRO_EVENT* event)
 	{
-		if(event.type == ALLEGRO_EVENT_MOUSE_AXES)
+		switch(event.type)
 		{
-			if(event.mouse.dz < 0)
-				GameMode.GalaxyZoom = GameMode.GalaxyZoom * 0.9;
-			else if(event.mouse.dz > 0)
-				GameMode.GalaxyZoom = GameMode.GalaxyZoom * 1.1;
-		}
-		else if(event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
-		{
-			if(event.mouse.button == 1)
+			case ALLEGRO_EVENT_MOUSE_AXES:
 			{
-				auto pos = GameMode.FromGalaxyView(SVector2D(event.mouse.x, event.mouse.y));
-				DestinationSystem = GameMode.Galaxy.GetStarSystemAt(pos, 
-				   (CStarSystem sys) { return (sys.Position - GameMode.GalaxyLocation).LengthSq < GameMode.WarpRange * GameMode.WarpRange; });
+				if(event.mouse.dz < 0)
+					TargetZoom *= 0.9;
+				else if(event.mouse.dz > 0)
+					TargetZoom *= 1.1;
+					
+				if(TargetZoom < 0.25)
+					TargetZoom = 0.25;
+				break;
 			}
-			else
+			case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
 			{
-				DestinationSystem = null;
+				if(event.mouse.button == 1)
+				{
+					auto pos = GameMode.FromGalaxyView(SVector2D(event.mouse.x, event.mouse.y));
+					DestinationSystem = GameMode.Galaxy.GetStarSystemAt(pos, 
+					   (CStarSystem sys) { return (sys.Position - GameMode.GalaxyLocation).LengthSq < GameMode.WarpRange * GameMode.WarpRange; });
+				}
+				else
+				{
+					DestinationSystem = null;
+				}
+				break;
 			}
-		}
-		else if(event.type == ALLEGRO_EVENT_KEY_DOWN)
-		{
-			if(event.keyboard.keycode == ALLEGRO_KEY_SPACE)
+			case ALLEGRO_EVENT_KEY_DOWN:
 			{
-				if(DestinationSystem !is null)
-					GameMode.CurrentStarSystem = DestinationSystem;
+				if(event.keyboard.keycode == ALLEGRO_KEY_SPACE)
+				{
+					if(DestinationSystem !is null)
+						GameMode.CurrentStarSystem = DestinationSystem;
+				}
+				else if(event.keyboard.keycode == ALLEGRO_KEY_ENTER)
+				{
+					if(GameMode.Arrived)
+						GameMode.PushScreen(EScreen.System);
+				}
+				else if(event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
+				{
+					GameMode.PopScreen;
+				}
+				break;
+			}
+			default:
+			{
 			}
 		}
 	}
 protected:
+	float CurrentZoom = 1;
+	float TargetZoom = 1;
 	CStarSystem DestinationSystem;
 }

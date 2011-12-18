@@ -45,6 +45,13 @@ class CGfx : CDisposable
 		return SVector2D(ScreenWidth, ScreenHeight);
 	}
 	
+	void ResetTransform()
+	{
+		ALLEGRO_TRANSFORM identity;
+		al_identity_transform(&identity);
+		al_use_transform(&identity);
+	}
+	
 	mixin(Prop!("ALLEGRO_DISPLAY*", "Display", "", "protected"));
 protected:
 	ALLEGRO_DISPLAY* DisplayVal;

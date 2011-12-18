@@ -37,6 +37,11 @@ class CStarSystem : CDisposable
 		auto pos = GameMode.ToGalaxyView(Position);
 		al_draw_filled_circle(pos.X, pos.Y, 10, Color);
 	}
+	
+	void DrawSystemView(float physics_alpha)
+	{
+		al_draw_filled_circle(0, 0, 40, Color);
+	}
 
 	SVector2D Position;
 protected:

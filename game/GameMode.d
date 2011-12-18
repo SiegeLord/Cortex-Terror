@@ -12,11 +12,13 @@ import game.GameObject;
 import game.Galaxy;
 import game.GalaxyScreen;
 import game.StarSystem;
+import game.SystemScreen;
 import game.Screen;
 
 import allegro5.allegro;
 
 import tango.io.Stdout;
+import tango.util.container.more.Stack;
 
 class CGameMode : CMode, IGameMode
 {
@@ -27,15 +29,21 @@ class CGameMode : CMode, IGameMode
 		Galaxy = new CGalaxy(this, 2);
 		CurrentStarSystem = Galaxy.GetStarSystemAt(GalaxyLocation);
 		GalaxyLocation = CurrentStarSystem.Position;
-		Screen = new CGalaxyScreen(this);
+		ScreenStack.push(new CGalaxyScreen(this));
 	}
 	
 	override
 	void Logic(float dt)
 	{
-		if(WantScreenSwitch)
+		if(WantPop)
 		{
-			WantScreenSwitch = false;
+			ScreenStack.pop;
+			WantPop = false;
+			if(ScreenStack.size == 0)
+			{
+				Game.NextMode = EMode.Exit;
+				return;
+			}
 		}
 		
 		if(!Arrived)
@@ -54,20 +62,20 @@ class CGameMode : CMode, IGameMode
 			}
 		}
 		
-		Screen.Update(dt);
+		ScreenStack.top.Update(dt);
 	}
 	
 	override
 	void Draw(float physics_alpha)
 	{
 		al_clear_to_color(al_map_rgb_f(0, 0, 0));
-		Screen.Draw(physics_alpha);
+		ScreenStack.top.Draw(physics_alpha);
 	}
 	
 	override
 	void Input(ALLEGRO_EVENT* event)
 	{
-		Screen.Input(event);
+		ScreenStack.top.Input(event);
 		switch(event.type)
 		{
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
@@ -140,9 +148,34 @@ class CGameMode : CMode, IGameMode
 		return CurrentStarSystemVal;
 	}
 	
+	override
+	void PushScreen(EScreen screen)
+	{
+		CScreen new_screen;
+		final switch(screen)
+		{
+			case EScreen.Galaxy:
+			{
+				new_screen = new CGalaxyScreen(this);
+				break;
+			}
+			case EScreen.System:
+			{
+				new_screen = new CSystemScreen(this);
+				break;
+			}
+		}
+		ScreenStack.push(new_screen);
+	}
+	
+	override
+	void PopScreen()
+	{
+		WantPop = true;
+	}
+	
 	mixin(Prop!("CGalaxy", "Galaxy", "override", "protected"));
 	mixin(Prop!("SVector2D", "GalaxyLocation", "override", "protected"));
-	mixin(Prop!("EScreen", "NextScreen", "", "override"));
 	mixin(Prop!("bool", "Arrived", "override", "protected"));
 	mixin(Prop!("float", "WarpSpeed", "override", "override"));
 	mixin(Prop!("float", "WarpRange", "override", "override"));
@@ -154,9 +187,8 @@ protected:
 	SVector2D GalaxyLocationVal;
 	CConfigManager ConfigManager;
 	CGalaxy GalaxyVal;
-	CScreen Screen;
-	bool WantScreenSwitch = false;
-	EScreen NextScreenVal;
+	Stack!(CScreen) ScreenStack;
+	bool WantPop = false;
 	CStarSystem CurrentStarSystemVal;
 	float GalaxyZoomVal = 1;
 }
