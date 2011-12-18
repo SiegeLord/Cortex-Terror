@@ -45,12 +45,12 @@ struct SVector2D
 		return X * other.Y - Y * other.X;
 	}
 	
-	float GetLength()
+	float Length()
 	{
 		return hypot(X, Y);
 	}
 	
-	float GetLengthSq()
+	float LengthSq()
 	{
 		return X * X + Y * Y;
 	}
@@ -87,7 +87,7 @@ struct SVector2D
 
 	void Normalize()
 	{
-		this /= GetLength();
+		this /= Length;
 	}
 	
 	float opIndex(size_t i)

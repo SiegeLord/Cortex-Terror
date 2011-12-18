@@ -15,6 +15,9 @@ class CGfx : CDisposable
 		if(options.Get!(bool)("gfx", "fullscreen", false))
 			al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
 		
+		al_set_new_display_option(ALLEGRO_DISPLAY_OPTIONS.ALLEGRO_SAMPLE_BUFFERS, 1, ALLEGRO_SUGGEST);
+		al_set_new_display_option(ALLEGRO_DISPLAY_OPTIONS.ALLEGRO_SAMPLES, 4, ALLEGRO_SUGGEST);
+		
 		Display = al_create_display(options.Get!(int)("gfx", "screen_w", 800), options.Get!(int)("gfx", "screen_h", 600));
 		al_init_image_addon();
 		al_init_primitives_addon();

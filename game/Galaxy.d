@@ -27,7 +27,7 @@ class CGalaxy : CDisposable
 			{
 				pos = SVector2D(Rand.normalSigma(radius / 5), Rand.normalSigma(radius / 5));
 			} while(abs(pos.X) > radius || abs(pos.Y) > radius);
-			system = new CStarSystem(game_mode, pos);
+			system = new CStarSystem(game_mode, Rand, pos);
 		}
 	}
 	
@@ -43,6 +43,25 @@ class CGalaxy : CDisposable
 	{
 		foreach(system; Systems)
 			system.DrawGalaxyView(physics_alpha);
+	}
+	
+	CStarSystem GetStarSystemAt(SVector2D position)
+	{
+		CStarSystem ret;
+		auto min_dist = float.infinity;
+		
+		foreach(system; Systems)
+		{
+			auto vec = system.Position - position;
+			auto len_sq = vec.LengthSq;
+			if(len_sq < min_dist)
+			{
+				ret = system;
+				min_dist = len_sq;
+			}
+		}
+		
+		return ret;
 	}
 protected:
 	Random Rand;
