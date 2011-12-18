@@ -113,7 +113,8 @@ class CStarSystem : CDisposable
 	void DrawGalaxyView(float physics_alpha)
 	{
 		auto pos = GameMode.ToGalaxyView(Position);
-		al_draw_filled_circle(pos.X, pos.Y, 10, Color);
+		auto col = Explored ? Color : al_map_rgb_f(0.5, 0.5, 0.5);
+		al_draw_filled_circle(pos.X, pos.Y, 10, col);
 	}
 	
 	void DrawSystemView(float physics_alpha)
@@ -145,6 +146,7 @@ class CStarSystem : CDisposable
 	mixin(Prop!("ALLEGRO_COLOR", "Color", "", "protected"));
 
 	SVector2D Position;
+	bool Explored = false;
 protected:
 	const(char)[] NameVal;
 	CPlanet[] Planets;

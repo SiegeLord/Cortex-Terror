@@ -107,6 +107,7 @@ class CGalaxyScreen : CScreen
 						auto pos = GameMode.FromGalaxyView(m_pos);
 						DestinationSystem = GameMode.Galaxy.GetStarSystemAt(pos, 
 						   (CStarSystem sys) { return (sys.Position - GameMode.GalaxyLocation).LengthSq < GameMode.WarpRange * GameMode.WarpRange; });
+						DestinationSystem.Explored = true;
 					}
 				}
 				else

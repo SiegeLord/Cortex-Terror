@@ -143,6 +143,7 @@ class CGameMode : CMode, IGameMode
 		{
 			Arrived = false;
 			CurrentStarSystemVal = new_star_system;
+			CurrentStarSystemVal.Explored = true;
 		}
 		return CurrentStarSystemVal;
 	}
