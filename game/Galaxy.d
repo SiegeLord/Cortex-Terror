@@ -45,16 +45,19 @@ class CGalaxy : CDisposable
 			system.DrawGalaxyView(physics_alpha);
 	}
 	
-	CStarSystem GetStarSystemAt(SVector2D position)
+	CStarSystem GetStarSystemAt(SVector2D position, bool delegate(CStarSystem) selector = null)
 	{
 		CStarSystem ret;
 		auto min_dist = float.infinity;
+		
+		if(selector is null)
+			selector = (CStarSystem sys) { return true; };
 		
 		foreach(system; Systems)
 		{
 			auto vec = system.Position - position;
 			auto len_sq = vec.LengthSq;
-			if(len_sq < min_dist)
+			if(selector(system) && len_sq < min_dist)
 			{
 				ret = system;
 				min_dist = len_sq;

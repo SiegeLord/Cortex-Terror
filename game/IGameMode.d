@@ -18,6 +18,11 @@ interface IGameMode
 	SVector2D FromGalaxyView(SVector2D galaxy_view);
 	float GalaxyZoom();
 	float GalaxyZoom(float new_zoom);
+	float WarpRange(float new_range);
+	float WarpRange();
+	float WarpSpeed(float new_speed);
+	float WarpSpeed();
+	bool Arrived();
 	IGame Game();
 	CGalaxy Galaxy();
 	EScreen NextScreen(EScreen screen);

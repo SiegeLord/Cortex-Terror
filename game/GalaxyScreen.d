@@ -50,6 +50,7 @@ class CGalaxyScreen : CScreen
 		}
 		
 		al_draw_circle(cur_pos.X, cur_pos.Y, CircleRadius, al_map_rgb_f(1, 1, 1), 2);
+		al_draw_circle(cur_pos.X, cur_pos.Y, GameMode.WarpRange * GameMode.GalaxyZoom, al_map_rgb_f(1, 1, 1), 2);
 	}
 	
 	override
@@ -67,7 +68,8 @@ class CGalaxyScreen : CScreen
 			if(event.mouse.button == 1)
 			{
 				auto pos = GameMode.FromGalaxyView(SVector2D(event.mouse.x, event.mouse.y));
-				DestinationSystem = GameMode.Galaxy.GetStarSystemAt(pos);
+				DestinationSystem = GameMode.Galaxy.GetStarSystemAt(pos, 
+				   (CStarSystem sys) { return (sys.Position - GameMode.GalaxyLocation).LengthSq < GameMode.WarpRange * GameMode.WarpRange; });
 			}
 			else
 			{

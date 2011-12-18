@@ -18,8 +18,6 @@ import allegro5.allegro;
 
 import tango.io.Stdout;
 
-const GalaxySpeed = 100;
-
 class CGameMode : CMode, IGameMode
 {
 	this(IGame game)
@@ -40,18 +38,19 @@ class CGameMode : CMode, IGameMode
 			WantScreenSwitch = false;
 		}
 		
-		auto dir_to_dest = CurrentStarSystem.Position - GalaxyLocation;
-		auto len_sq = dir_to_dest.LengthSq;
-		if(len_sq > 0)
+		if(!Arrived)
 		{
-			if(len_sq < GalaxySpeed * GalaxySpeed * dt * dt)
+			auto dir_to_dest = CurrentStarSystem.Position - GalaxyLocation;
+			auto len_sq = dir_to_dest.LengthSq;
+			if(len_sq < WarpSpeed * WarpSpeed * dt * dt)
 			{
 				GalaxyLocation = CurrentStarSystem.Position;
+				Arrived = true;
 			}
 			else
 			{
 				dir_to_dest.Normalize;
-				GalaxyLocation = GalaxyLocation + dt * dir_to_dest * GalaxySpeed;
+				GalaxyLocation = GalaxyLocation + dt * dir_to_dest * WarpSpeed;
 			}
 		}
 		
@@ -124,11 +123,34 @@ class CGameMode : CMode, IGameMode
 		return (galaxy_view - Game.Gfx.ScreenSize / 2) / GalaxyZoom + GalaxyLocation;
 	}
 	
+	override
+	CStarSystem CurrentStarSystem(CStarSystem new_star_system)
+	{
+		if(Arrived)
+		{
+			Arrived = false;
+			CurrentStarSystemVal = new_star_system;
+		}
+		return CurrentStarSystemVal;
+	}
+	
+	override
+	CStarSystem CurrentStarSystem()
+	{
+		return CurrentStarSystemVal;
+	}
+	
 	mixin(Prop!("CGalaxy", "Galaxy", "override", "protected"));
 	mixin(Prop!("SVector2D", "GalaxyLocation", "override", "protected"));
 	mixin(Prop!("EScreen", "NextScreen", "", "override"));
-	mixin(Prop!("CStarSystem", "CurrentStarSystem", "override", "override"));
+	mixin(Prop!("bool", "Arrived", "override", "protected"));
+	mixin(Prop!("float", "WarpSpeed", "override", "override"));
+	mixin(Prop!("float", "WarpRange", "override", "override"));
 protected:
+	float WarpSpeedVal = 50;
+	float WarpRangeVal = 50;
+	
+	bool ArrivedVal = true;
 	SVector2D GalaxyLocationVal;
 	CConfigManager ConfigManager;
 	CGalaxy GalaxyVal;
