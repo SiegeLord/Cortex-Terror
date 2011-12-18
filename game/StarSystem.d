@@ -1,6 +1,7 @@
 module game.StarSystem;
 
 import game.IGameMode;
+import game.RandomName;
 
 import engine.Disposable;
 import engine.MathTypes;
@@ -86,6 +87,7 @@ class CStarSystem : CDisposable
 		GameMode = game_mode;
 		Color = GetStarColor(random.uniformR2(0.0f, 1.0f), 0.9);
 		Planets.length = random.uniformR2(1, cast(int)MaxPlanets);
+		Name = GenerateRandomName(random);
 		
 		size_t[MaxPlanets] orbits;
 		foreach(ii, ref orbit; orbits)
@@ -116,6 +118,7 @@ class CStarSystem : CDisposable
 
 	SVector2D Position;
 protected:
+	const(char)[] Name;
 	CPlanet[] Planets;
 	IGameMode GameMode;
 	ALLEGRO_COLOR Color;
