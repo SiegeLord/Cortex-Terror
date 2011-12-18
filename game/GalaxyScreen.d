@@ -9,6 +9,8 @@ import engine.MathTypes;
 import allegro5.allegro;
 import allegro5.allegro_primitives;
 
+const CircleRadius = 13;
+
 class CGalaxyScreen : CScreen
 {
 	this(IGameMode game_mode)
@@ -30,8 +32,24 @@ class CGalaxyScreen : CScreen
 		{
 			auto from = GameMode.ToGalaxyView(GameMode.CurrentStarSystem.Position);
 			auto to = GameMode.ToGalaxyView(DestinationSystem.Position);
-			al_draw_line(from.X, from.Y, to.X, to.Y, al_map_rgb_f(1, 1, 1), 2);
+			
+			al_draw_circle(to.X, to.Y, CircleRadius, al_map_rgb_f(1, 1, 1), 2);
+			
+			auto dir_vec = (to - from);
+			auto len = dir_vec.Length;
+			if(len > CircleRadius * 2)
+			{
+				dir_vec /= len;
+				auto start = dir_vec * CircleRadius + from;
+				auto end = -dir_vec * CircleRadius + to;
+				
+				al_draw_line(start.X, start.Y, end.X, end.Y, al_map_rgb_f(1, 1, 1), 2);
+			}
 		}
+		
+		auto cur_pos = GameMode.ToGalaxyView(GameMode.GalaxyLocation);
+		
+		al_draw_circle(cur_pos.X, cur_pos.Y, CircleRadius, al_map_rgb_f(1, 1, 1), 2);
 	}
 	
 	override
