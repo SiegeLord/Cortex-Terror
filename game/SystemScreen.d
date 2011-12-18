@@ -21,6 +21,7 @@ class CSystemScreen : CScreen
 		ALLEGRO_TRANSFORM trans;
 		al_identity_transform(&trans);
 		al_translate_transform(&trans, mid.X, mid.Y);
+		al_use_transform(&trans);
 		
 		GameMode.CurrentStarSystem.DrawSystemView(physics_alpha);
 		
