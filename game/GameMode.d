@@ -18,6 +18,8 @@ import allegro5.allegro;
 
 import tango.io.Stdout;
 
+const GalaxySpeed = 100;
+
 class CGameMode : CMode, IGameMode
 {
 	this(IGame game)
@@ -38,7 +40,22 @@ class CGameMode : CMode, IGameMode
 			WantScreenSwitch = false;
 		}
 		
-		Screen.Draw(dt);
+		auto dir_to_dest = CurrentStarSystem.Position - GalaxyLocation;
+		auto len_sq = dir_to_dest.LengthSq;
+		if(len_sq > 0)
+		{
+			if(len_sq < GalaxySpeed * GalaxySpeed * dt * dt)
+			{
+				GalaxyLocation = CurrentStarSystem.Position;
+			}
+			else
+			{
+				dir_to_dest.Normalize;
+				GalaxyLocation = GalaxyLocation + dt * dir_to_dest * GalaxySpeed;
+			}
+		}
+		
+		Screen.Update(dt);
 	}
 	
 	override
@@ -110,7 +127,7 @@ class CGameMode : CMode, IGameMode
 	mixin(Prop!("CGalaxy", "Galaxy", "override", "protected"));
 	mixin(Prop!("SVector2D", "GalaxyLocation", "override", "protected"));
 	mixin(Prop!("EScreen", "NextScreen", "", "override"));
-	mixin(Prop!("CStarSystem", "CurrentStarSystem", "override", "protected"));
+	mixin(Prop!("CStarSystem", "CurrentStarSystem", "override", "override"));
 protected:
 	SVector2D GalaxyLocationVal;
 	CConfigManager ConfigManager;

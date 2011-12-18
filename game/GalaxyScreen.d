@@ -28,26 +28,26 @@ class CGalaxyScreen : CScreen
 	void Draw(float physics_alpha)
 	{
 		GameMode.Galaxy.Draw(physics_alpha);
+		
+		auto cur_pos = GameMode.ToGalaxyView(GameMode.GalaxyLocation);
+		
 		if(DestinationSystem !is null)
 		{
-			auto from = GameMode.ToGalaxyView(GameMode.CurrentStarSystem.Position);
 			auto to = GameMode.ToGalaxyView(DestinationSystem.Position);
 			
 			al_draw_circle(to.X, to.Y, CircleRadius, al_map_rgb_f(1, 1, 1), 2);
 			
-			auto dir_vec = (to - from);
+			auto dir_vec = (to - cur_pos);
 			auto len = dir_vec.Length;
 			if(len > CircleRadius * 2)
 			{
 				dir_vec /= len;
-				auto start = dir_vec * CircleRadius + from;
+				auto start = dir_vec * CircleRadius + cur_pos;
 				auto end = -dir_vec * CircleRadius + to;
 				
 				al_draw_line(start.X, start.Y, end.X, end.Y, al_map_rgb_f(1, 1, 1), 2);
 			}
 		}
-		
-		auto cur_pos = GameMode.ToGalaxyView(GameMode.GalaxyLocation);
 		
 		al_draw_circle(cur_pos.X, cur_pos.Y, CircleRadius, al_map_rgb_f(1, 1, 1), 2);
 	}
@@ -72,6 +72,14 @@ class CGalaxyScreen : CScreen
 			else
 			{
 				DestinationSystem = null;
+			}
+		}
+		else if(event.type == ALLEGRO_EVENT_KEY_DOWN)
+		{
+			if(event.keyboard.keycode == ALLEGRO_KEY_SPACE)
+			{
+				if(DestinationSystem !is null)
+					GameMode.CurrentStarSystem = DestinationSystem;
 			}
 		}
 	}

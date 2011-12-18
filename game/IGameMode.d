@@ -22,4 +22,5 @@ interface IGameMode
 	CGalaxy Galaxy();
 	EScreen NextScreen(EScreen screen);
 	CStarSystem CurrentStarSystem();
+	CStarSystem CurrentStarSystem(CStarSystem new_star_system);
 }

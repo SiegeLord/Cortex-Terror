@@ -65,6 +65,11 @@ struct SVector2D
 		mixin("return SVector2D(X " ~ op ~ "scalar, Y " ~ op ~ "scalar);");
 	}
 	
+	SVector2D opBinaryRight(immutable(char)[] op)(float scalar)
+	{
+		mixin("return SVector2D(X " ~ op ~ "scalar, Y " ~ op ~ "scalar);");
+	}
+	
 	void opOpAssign(immutable(char)[] op)(SVector2D other)
 	{
 		mixin("X " ~ op ~ "= other.X; Y " ~ op ~ "= other.Y;");
