@@ -4,6 +4,8 @@ import engine.Config;
 import engine.ConfigManager;
 import engine.MathTypes;
 import engine.Util;
+import engine.Font;
+import engine.FontManager;
 
 import game.Mode;
 import game.IGame;
@@ -26,10 +28,12 @@ class CGameMode : CMode, IGameMode
 	{
 		super(game);
 		ConfigManager = new CConfigManager;
-		Galaxy = new CGalaxy(this, 2);
+		Galaxy = new CGalaxy(this, cast(int)(al_get_time() * 1000));
 		CurrentStarSystem = Galaxy.GetStarSystemAt(GalaxyLocation);
 		GalaxyLocation = CurrentStarSystem.Position;
 		ScreenStack.push(new CGalaxyScreen(this));
+		FontManager = new CFontManager;
+		UIFont = FontManager.Load("data/fonts/Energon.ttf", 24);
 	}
 	
 	override
@@ -96,6 +100,7 @@ class CGameMode : CMode, IGameMode
 		super.Dispose;
 		Galaxy.Dispose;
 		ConfigManager.Dispose;
+		FontManager.Dispose;
 	}
 	
 	override
@@ -179,7 +184,11 @@ class CGameMode : CMode, IGameMode
 	mixin(Prop!("bool", "Arrived", "override", "protected"));
 	mixin(Prop!("float", "WarpSpeed", "override", "override"));
 	mixin(Prop!("float", "WarpRange", "override", "override"));
+	mixin(Prop!("CFont", "UIFont", "override", "protected"));
 protected:
+	CFont UIFontVal;
+	CFontManager FontManager;
+
 	float WarpSpeedVal = 50;
 	float WarpRangeVal = 50;
 	

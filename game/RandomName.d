@@ -6,7 +6,7 @@ char[] GenerateRandomName(Random random)
 {
 	const(char)[] consonants = "BBBCCCCCCDDDDDDFFFFFGGGGHHJKLLLLLLMMMMMMMNNNNNNNPPPPQRRRRSSSSSSTTTTTTTTTVVXZWY";
 	const(char)[] vowels = "AAAEEEEIIIOOOU";
-	const(char)[][] clusters = ["CH", "ZH", "TH", "SS", "TT", "RR", "WR", "TR", "NDR"];
+	const(char)[][] clusters = ["CR", "CH", "ZH", "TH", "SS", "TT", "RR", "WR", "TR", "NDR", "NT"];
 	
 	char get_vowel()
 	{

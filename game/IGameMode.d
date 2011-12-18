@@ -4,6 +4,7 @@ import game.IGame;
 import game.Galaxy;
 import game.StarSystem;
 
+import engine.Font;
 import engine.MathTypes;
 
 enum EScreen
@@ -30,4 +31,5 @@ interface IGameMode
 	void PopScreen();
 	CStarSystem CurrentStarSystem();
 	CStarSystem CurrentStarSystem(CStarSystem new_star_system);
+	CFont UIFont();
 }

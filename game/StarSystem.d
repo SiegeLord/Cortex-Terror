@@ -5,6 +5,7 @@ import game.RandomName;
 
 import engine.Disposable;
 import engine.MathTypes;
+import engine.Util;
 
 import allegro5.allegro;
 import allegro5.allegro_primitives;
@@ -28,12 +29,13 @@ ALLEGRO_COLOR GetStarColor(float star_class, float age)
 
 class CPlanet
 {
-	this(IGameMode game_mode, Random random, float minor_axis)
+	this(IGameMode game_mode, Random random, size_t orbit)
 	{
 		GameMode = game_mode;
+		Orbit = orbit;
 		PeriastronTheta = random.uniformR2(-PI, PI);
-		MinorAxis = minor_axis;
-		MajorAxis = minor_axis * random.uniformR2(1.0f, 1.002f);
+		MinorAxis = MaxRadius * Orbit / MaxPlanets + MinRadius;
+		MajorAxis = MinorAxis * random.uniformR2(1.0f, 1.002f);
 		PeriodOffset = random.uniformR2(0.0f, 1.0f);
 	}
 	
@@ -67,7 +69,14 @@ class CPlanet
 		
 		al_use_transform(&current_transform);
 	}
+	
+	void DrawPreview(float physics_alpha)
+	{
+		al_draw_circle(0, 0, MinorAxis, al_map_rgb_f(1, 1, 1), 1);
+		al_draw_filled_circle(0, MinorAxis, 10, al_map_rgb_f(1, 0.5, 0.5));
+	}
 protected:
+	size_t Orbit;
 	IGameMode GameMode;
 	float PeriastronTheta = 0;
 	float MinorAxis = 100;
@@ -97,7 +106,7 @@ class CStarSystem : CDisposable
 				
 		foreach(ii, ref planet; Planets)
 		{
-			planet = new CPlanet(GameMode, random, MaxRadius * orbits[ii] / MaxPlanets + MinRadius);
+			planet = new CPlanet(GameMode, random, orbits[ii]);
 		}
 	}
 	
@@ -115,11 +124,30 @@ class CStarSystem : CDisposable
 			planet.DrawSystemView(physics_alpha);
 		}
 	}
+	
+	void DrawPreview(float physics_alpha, int bar_left, int bar_right)
+	{
+		al_draw_filled_circle(0, 0, 20, Color);
+		
+		auto clip_h = GameMode.Game.Gfx.ScreenHeight / 2;
+		
+		al_set_clipping_rectangle(bar_left, clip_h, bar_right, clip_h);
+		
+		foreach(planet; Planets)
+		{
+			planet.DrawPreview(physics_alpha);
+		}
+		
+		al_set_clipping_rectangle(0, 0, GameMode.Game.Gfx.ScreenWidth, GameMode.Game.Gfx.ScreenHeight);
+	}
+
+	mixin(Prop!("const(char)[]", "Name", "", "protected"));
+	mixin(Prop!("ALLEGRO_COLOR", "Color", "", "protected"));
 
 	SVector2D Position;
 protected:
-	const(char)[] Name;
+	const(char)[] NameVal;
 	CPlanet[] Planets;
 	IGameMode GameMode;
-	ALLEGRO_COLOR Color;
+	ALLEGRO_COLOR ColorVal;
 }
