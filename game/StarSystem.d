@@ -88,6 +88,7 @@ const MinRadius = 50.0f;
 const MaxRadius = 200.0f;
 const MaxPlanets = 5;
 const ConversionFactor = 40; // Ratio of tactical units to star system units
+const UniAge = 0.5;
 
 class CStarSystem : CDisposable
 {
@@ -98,7 +99,14 @@ class CStarSystem : CDisposable
 
 		Position = position;
 		GameMode = game_mode;
-		Color = GetStarColor(random.uniformR2(0.0f, 1.0f), 0.5);
+		auto r = random.uniformR2(0.0f, 1.0f);
+		Brightness = r - UniAge;
+		if(Brightness > 0)
+			Brightness /= (1.0 - UniAge);
+		else
+			Brightness /= UniAge;
+		Brightness = exp(2 * (2 - Brightness) - 1);
+		Color = GetStarColor(r, UniAge);
 		Planets.length = random.uniformR2(1, cast(int)MaxPlanets);
 		Name = GenerateRandomName(random);
 		
@@ -153,7 +161,7 @@ class CStarSystem : CDisposable
 	{
 		if(distance < 100)
 			distance = 100;
-		return 5e4f / (distance * distance);
+		return Brightness * 1e3f / (distance * distance);
 	}
 
 	mixin(Prop!("const(char)[]", "Name", "", "protected"));
@@ -163,6 +171,7 @@ class CStarSystem : CDisposable
 	bool Explored = false;
 	CPlanet[] Planets;
 protected:
+	float Brightness = 1;
 	CBitmap SmallStarSprite;
 	CBitmap SmallStarHaloSprite;
 	const(char)[] NameVal;
