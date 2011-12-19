@@ -13,7 +13,6 @@ import allegro5.allegro_font;
 import tango.stdc.stringz;
 
 const CircleRadius = 13;
-const SideBarWidth = 200;
 
 class CGalaxyScreen : CScreen
 {
@@ -55,11 +54,10 @@ class CGalaxyScreen : CScreen
 		}
 		
 		al_draw_circle(cur_pos.X, cur_pos.Y, CircleRadius, al_map_rgb_f(1, 1, 1), 2);
-		al_draw_circle(cur_pos.X, cur_pos.Y, GameMode.WarpRange * GameMode.GalaxyZoom, al_map_rgb_f(1, 1, 1), 2);
+		al_draw_circle(cur_pos.X, cur_pos.Y, GameMode.Energy * GameMode.GalaxyZoom, al_map_rgb_f(1, 1, 1), 2);
 		
 		auto screen_size = GameMode.Game.Gfx.ScreenSize;
 		
-		al_draw_filled_rectangle(0, 0, SideBarWidth, screen_size.Y, al_map_rgb_f(0, 0, 0));
 		al_draw_filled_rectangle(screen_size.X - SideBarWidth, 0, screen_size.X, screen_size.Y, al_map_rgb_f(0, 0, 0));
 		
 		auto sys = GameMode.CurrentStarSystem;
@@ -75,10 +73,11 @@ class CGalaxyScreen : CScreen
 		
 		GameMode.Game.Gfx.ResetTransform();
 		
-		al_draw_rectangle(1, 1, SideBarWidth - 1, screen_size.Y - 1, al_map_rgb_f(0.5, 1, 0.5), 2);
 		al_draw_rectangle(screen_size.X - SideBarWidth + 1, 1, screen_size.X - 1, screen_size.Y - 1, al_map_rgb_f(0.5, 1, 0.5), 2);
 		
 		al_draw_text(GameMode.UIFont.Get, al_map_rgb_f(0.5, 1, 0.5), screen_size.X - SideBarWidth / 2, screen_size.Y / 2 - GameMode.UIFont.Height - 40, ALLEGRO_ALIGN_CENTRE, toStringz(sys.Name));
+		
+		GameMode.DrawLeftSideBar();
 	}
 	
 	override
@@ -106,7 +105,7 @@ class CGalaxyScreen : CScreen
 					{
 						auto pos = GameMode.FromGalaxyView(m_pos);
 						DestinationSystem = GameMode.Galaxy.GetStarSystemAt(pos, 
-						   (CStarSystem sys) { return (sys.Position - GameMode.GalaxyLocation).LengthSq < GameMode.WarpRange * GameMode.WarpRange; });
+						   (CStarSystem sys) { return (sys.Position - GameMode.GalaxyLocation).LengthSq < GameMode.Energy * GameMode.Energy; });
 						DestinationSystem.Explored = true;
 					}
 				}

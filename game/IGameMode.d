@@ -9,6 +9,8 @@ import engine.MathTypes;
 import engine.BitmapManager;
 import engine.ConfigManager;
 
+const SideBarWidth = 200;
+
 enum EScreen
 {
 	Galaxy,
@@ -20,12 +22,19 @@ interface IGameMode
 	SVector2D GalaxyLocation();
 	SVector2D ToGalaxyView(SVector2D galaxy_pos);
 	SVector2D FromGalaxyView(SVector2D galaxy_view);
+	
 	float GalaxyZoom();
 	float GalaxyZoom(float new_zoom);
-	float WarpRange(float new_range);
-	float WarpRange();
 	float WarpSpeed(float new_speed);
 	float WarpSpeed();
+	
+	float Health();
+	float Health(float new_health);
+	float MaxHealth();
+	float Energy();
+	float Energy(float new_energy);
+	float MaxEnergy();
+	
 	bool Arrived();
 	IGame Game();
 	CGalaxy Galaxy();
@@ -36,4 +45,5 @@ interface IGameMode
 	CFont UIFont();
 	CBitmapManager BitmapManager();
 	CConfigManager ConfigManager();
+	void DrawLeftSideBar();
 }

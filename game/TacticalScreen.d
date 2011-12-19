@@ -93,6 +93,10 @@ class CTacticalScreen : CScreen
 			
 			al_draw_text(GameMode.UIFont.Get, al_map_rgb_f(0.5, 1, 0.5), mid.X, 2 * mid.Y - GameMode.UIFont.Height - 10, ALLEGRO_ALIGN_CENTRE, toStringz(cur_sys.Name));
 		}
+		//else
+		//{
+		GameMode.DrawLeftSideBar();
+		//}
 	}
 	
 	override

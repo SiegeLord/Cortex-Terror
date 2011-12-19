@@ -6,6 +6,7 @@ import engine.MathTypes;
 import engine.Util;
 import engine.Font;
 import engine.FontManager;
+import engine.Bitmap;
 import engine.BitmapManager;
 
 import game.Mode;
@@ -19,6 +20,7 @@ import game.Screen;
 import game.TacticalScreen;
 
 import allegro5.allegro;
+import allegro5.allegro_primitives;
 
 import tango.io.Stdout;
 import tango.util.container.more.Stack;
@@ -37,6 +39,7 @@ class CGameMode : CMode, IGameMode
 		FontManager = new CFontManager;
 		UIFont = FontManager.Load("data/fonts/Energon.ttf", 24);
 		BitmapManager = new CBitmapManager;
+		UIBottomLeft = BitmapManager.Load("data/bitmaps/ui_bottom_left.png");
 		Rand = new Random;
 		Rand.seed({ return cast(int)(al_get_time() * 1000); });
 		
@@ -78,6 +81,7 @@ class CGameMode : CMode, IGameMode
 			{
 				dir_to_dest.Normalize;
 				GalaxyLocation = GalaxyLocation + dt * dir_to_dest * WarpSpeed;
+				Energy = Energy - dt * WarpSpeed / 2;
 			}
 		}
 		
@@ -196,15 +200,40 @@ class CGameMode : CMode, IGameMode
 		WantPop = true;
 	}
 	
+	override
+	void DrawLeftSideBar()
+	{
+		auto screen_size = Game.Gfx.ScreenSize;
+		
+		const space = 15;
+		
+		auto health_arc = 3 * PI / 2 * Health / MaxHealth;
+		auto energy_arc = 3 * PI / 2 * Energy / MaxEnergy;
+		
+		al_draw_arc(SideBarWidth / 2, screen_size.Y - SideBarWidth / 2, 65 - space, PI / 2, energy_arc, al_map_rgb_f(1, 1, 0), space * 2);
+		al_draw_arc(SideBarWidth / 2, screen_size.Y - SideBarWidth / 2, 65 + space, PI / 2, health_arc, al_map_rgb_f(0, 0, 1), space * 2);
+		al_draw_bitmap(UIBottomLeft.Get, 0, screen_size.Y - UIBottomLeft.Height, 0);
+	}
+	
 	mixin(Prop!("CGalaxy", "Galaxy", "override", "protected"));
 	mixin(Prop!("SVector2D", "GalaxyLocation", "override", "protected"));
 	mixin(Prop!("bool", "Arrived", "override", "protected"));
 	mixin(Prop!("float", "WarpSpeed", "override", "override"));
-	mixin(Prop!("float", "WarpRange", "override", "override"));
 	mixin(Prop!("CFont", "UIFont", "override", "protected"));
 	mixin(Prop!("CBitmapManager", "BitmapManager", "override", "protected"));
 	mixin(Prop!("CConfigManager", "ConfigManager", "override", "protected"));
+	mixin(Prop!("float", "Health", "override", "override"));
+	mixin(Prop!("float", "Energy", "override", "override"));
+	mixin(Prop!("float", "MaxHealth", "override", "protected"));
+	mixin(Prop!("float", "MaxEnergy", "override", "protected"));
 protected:
+	CBitmap UIBottomLeft;
+
+	float HealthVal = 100;
+	float MaxHealthVal = 100;
+	float EnergyVal = 100;
+	float MaxEnergyVal = 100;
+
 	CFont UIFontVal;
 	CFontManager FontManager;
 	
@@ -212,7 +241,6 @@ protected:
 	CConfigManager ConfigManagerVal;
 
 	float WarpSpeedVal = 50;
-	float WarpRangeVal = 50;
 	
 	bool ArrivedVal = true;
 	SVector2D SystemLocationVal;
