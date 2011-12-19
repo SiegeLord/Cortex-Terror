@@ -19,7 +19,7 @@ class CStar : CDrawable
 	override
 	void WireUp(IComponentHolder holder)
 	{
-		Position = GetComponent!(CPosition)(holder, "physics", "position");
+		Position = GetComponent!(CPosition)(holder, "star", "position");
 	}
 	
 	override

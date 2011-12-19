@@ -11,6 +11,7 @@ import game.components.Orientation;
 import game.components.Engine;
 import game.components.Sprite;
 import game.components.Controller;
+import game.components.Planet;
 
 alias CComponent function(CConfig config) Creator;
 
@@ -39,4 +40,5 @@ static this()
 	Creators["engine"] = &CreatorFunc!(CEngine);
 	Creators["sprite"] = &CreatorFunc!(CSprite);
 	Creators["controller"] = &CreatorFunc!(CController);
+	Creators["planet"] = &CreatorFunc!(CPlanet);
 }

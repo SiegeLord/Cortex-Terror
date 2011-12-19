@@ -6,6 +6,7 @@ import game.StarSystem;
 
 import allegro5.allegro;
 import allegro5.allegro_font;
+import allegro5.allegro_primitives;
 
 import tango.stdc.stringz;
 
@@ -29,6 +30,8 @@ class CSystemScreen : CScreen
 		
 		cur_sys.DrawSystemView(physics_alpha);
 		
+		al_draw_filled_circle(GameMode.SystemLocation.X / ConversionFactor, GameMode.SystemLocation.Y / ConversionFactor, 10, al_map_rgb_f(1, 1, 1));
+		
 		GameMode.Game.Gfx.ResetTransform;
 		
 		al_draw_text(GameMode.UIFont.Get, al_map_rgb_f(0.5, 1, 0.5), mid.X, 2 * mid.Y - GameMode.UIFont.Height - 10, ALLEGRO_ALIGN_CENTRE, toStringz(cur_sys.Name));
@@ -39,9 +42,13 @@ class CSystemScreen : CScreen
 	{
 		if(event.type == ALLEGRO_EVENT_KEY_DOWN)
 		{
-			if(event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
+			switch(event.keyboard.keycode)
 			{
-				GameMode.PopScreen;
+				case ALLEGRO_KEY_ESCAPE: goto case;
+				case ALLEGRO_KEY_TAB:
+					GameMode.PopScreen;
+					break;
+				default:
 			}
 		}
 	}

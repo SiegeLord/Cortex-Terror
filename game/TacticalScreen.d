@@ -8,6 +8,7 @@ import game.components.Sprite;
 import game.components.Position;
 import game.components.Orientation;
 import game.components.Controller;
+import game.components.Planet;
 
 import engine.MathTypes;
 
@@ -23,6 +24,15 @@ class CTacticalScreen : CScreen
 		if(star is null)
 			throw new Exception("'star.cfg' object needs a 'star' component");
 		star.StarSystem = game_mode.CurrentStarSystem;
+		
+		foreach(planet; game_mode.CurrentStarSystem.Planets)
+		{
+			auto planet_obj = AddObject("planet");
+			auto planet_comp = cast(CPlanet)planet_obj.GetComponent(CPlanet.classinfo);
+			if(planet_comp is null)
+				throw new Exception("'planet.cfg' object needs a 'planet' component");
+			planet_comp.Planet = planet;
+		}
 		
 		MainShip = AddObject("main_ship");
 		MainShip.Select!(CPosition).Set(500, 300);
@@ -52,6 +62,7 @@ class CTacticalScreen : CScreen
 		{
 			auto pos = cast(CPosition)MainShip.GetComponent(CPosition.classinfo);
 			MainShipPosition = pos.Position;
+			GameMode.SystemLocation = MainShipPosition;
 		}
 		auto mid = GameMode.Game.Gfx.ScreenSize / 2;
 		ALLEGRO_TRANSFORM trans;
@@ -78,9 +89,15 @@ class CTacticalScreen : CScreen
 	{
 		if(event.type == ALLEGRO_EVENT_KEY_DOWN)
 		{
-			if(event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
+			switch(event.keyboard.keycode)
 			{
-				GameMode.PopScreen;
+				case ALLEGRO_KEY_TAB:
+					GameMode.PushScreen(EScreen.System);
+					break;
+				case ALLEGRO_KEY_ESCAPE:
+					GameMode.PopScreen;
+					break;
+				default:
 			}
 		}
 		
