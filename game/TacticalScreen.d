@@ -18,6 +18,8 @@ import allegro5.allegro_primitives;
 import allegro5.allegro_font;
 
 import tango.stdc.stringz;
+import tango.math.random.Random;
+import tango.math.Math;
 
 class CTacticalScreen : CScreen
 {
@@ -39,9 +41,13 @@ class CTacticalScreen : CScreen
 			planet_comp.Planet = planet;
 		}
 		
+		auto start_pos = SVector2D(ss.MaxRadius * 0.5 * ss.ConversionFactor, 0);
+		auto theta = rand.uniformR(2 * PI);
+		start_pos.Rotate(theta + PI);
+		
 		MainShip = AddObject("main_ship");
-		MainShip.Select!(CPosition).Set(500, 300);
-		MainShip.Select!(COrientation).Set(0);
+		MainShip.Select!(CPosition).Set(start_pos.X, start_pos.Y);
+		MainShip.Select!(COrientation).Set(theta);
 		MainShipController = cast(CController)MainShip.GetComponent(CController.classinfo);
 	}
 	
