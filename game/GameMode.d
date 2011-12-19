@@ -29,7 +29,7 @@ import tango.math.Math;
 
 const GalaxyRadius = 500;
 const NumStars = 256;
-const WarpConversionFactor = 2;
+const WarpConversionFactor = 4;
 
 class CGameMode : CMode, IGameMode
 {
@@ -258,8 +258,8 @@ protected:
 
 	float HealthVal = 100;
 	float MaxHealthVal = 100;
-	float EnergyVal = 100;
-	float MaxEnergyVal = 100;
+	float EnergyVal = 25;
+	float MaxEnergyVal = 50;
 
 	CFont UIFontVal;
 	CFontManager FontManager;
