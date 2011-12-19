@@ -1,18 +1,14 @@
-module game.components.Updatable;
+module game.components.Orientation;
 
 import engine.Component;
 import engine.Config;
 
-
-class CUpdatable : CComponent
+class COrientation : CComponent
 {
 	this(CConfig config)
 	{
 		super(config);
 	}
 	
-	void Update(float dt)
-	{
-		
-	}
+	float Theta = 0;
 }

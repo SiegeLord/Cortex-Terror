@@ -4,24 +4,28 @@ import game.components.Updatable;
 import game.components.Position;
 
 import engine.IComponentHolder;
+import engine.MathTypes;
+import engine.Config;
 
 class CPhysics : CUpdatable
 {
-	float Vx, Vy;
+	this(CConfig config)
+	{
+		super(config);
+	}
+	
+	SVector2D Velocity;
 	
 	override
 	void WireUp(IComponentHolder holder)
 	{
-		Position = cast(CPosition)holder.GetComponent(CPosition.classinfo);
-		if(Position is null)
-			throw new Exception("physics component requires the position component to be present.");
+		Position = GetComponent!(CPosition)(holder, "physics", "position");
 	}
 	
 	override
 	void Update(float dt)
 	{
-		Position.X += dt * Vx;
-		Position.Y += dt * Vy;
+		Position.Position += dt * Velocity;
 	}
 protected:
 	CPosition Position;

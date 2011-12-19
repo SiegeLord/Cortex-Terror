@@ -1,9 +1,15 @@
 module game.components.Position;
 
 import engine.Component;
+import engine.MathTypes;
+import engine.Config;
 
 class CPosition : CComponent
 {
-	float X = 0;
-	float Y = 0;
+	this(CConfig config)
+	{
+		super(config);
+	}
+	
+	SVector2D Position;
 }

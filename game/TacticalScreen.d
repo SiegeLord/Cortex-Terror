@@ -18,6 +18,8 @@ class CTacticalScreen : CScreen
 			throw new Exception("'star.cfg' object needs a 'star' component");
 		star.StarSystem = game_mode.CurrentStarSystem;
 		Objects ~= star_obj;
+		
+		
 	}
 	
 	override

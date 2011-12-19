@@ -18,7 +18,7 @@ class CGameObject : CComponentHolder
 		auto components = config.Get!(const(char)[][])("", "components", null);
 		foreach(component; components)
 		{
-			AddComponent(CreateComponent(component));
+			AddComponent(CreateComponent(config, component));
 		}
 		Updatables = new typeof(Updatables)();
 		Drawables = new typeof(Drawables)();

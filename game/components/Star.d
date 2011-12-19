@@ -5,17 +5,21 @@ import game.components.Position;
 import game.StarSystem;
 
 import engine.IComponentHolder;
+import engine.Config;
 
 import allegro5.allegro_primitives;
 
 class CStar : CDrawable
 {
+	this(CConfig config)
+	{
+		super(config);
+	}
+	
 	override
 	void WireUp(IComponentHolder holder)
 	{
-		Position = cast(CPosition)holder.GetComponent(CPosition.classinfo);
-		if(Position is null)
-			throw new Exception("star component requires the position component to be present.");
+		Position = GetComponent!(CPosition)(holder, "physics", "position");
 	}
 	
 	override
@@ -23,7 +27,7 @@ class CStar : CDrawable
 	{
 		if(StarSystem)
 		{
-			al_draw_filled_circle(Position.X, Position.Y, 100, StarSystem.Color);
+			al_draw_filled_circle(Position.Position.X, Position.Position.Y, 100, StarSystem.Color);
 		}
 	}
 	

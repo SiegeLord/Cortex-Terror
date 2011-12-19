@@ -1,6 +1,7 @@
 module engine.Component;
 
 import engine.Util;
+import engine.Config;
 import engine.IComponentHolder;
 
 class CComponentGroup(T)
@@ -23,8 +24,21 @@ protected:
 
 class CComponent
 {
+	this(CConfig config)
+	{
+		
+	}
+	
 	void WireUp(IComponentHolder obj)
 	{
 		
+	}
+	
+	T GetComponent(T)(IComponentHolder obj, const(char)[] this_name, const(char)[] comp_name)
+	{
+		auto ret = cast(T)obj.GetComponent(T.classinfo);
+		if(ret is null)
+			throw new Exception("'" ~ this_name.idup ~ "' component requires the '" ~ comp_name.idup ~ "' component to be present.");
+		return ret;
 	}
 }
