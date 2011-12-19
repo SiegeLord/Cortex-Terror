@@ -3,6 +3,7 @@ module game.TacticalScreen;
 import game.Screen;
 import game.IGameMode;
 import game.GameObject;
+import ss = game.StarSystem;
 import game.components.Star;
 import game.components.Sprite;
 import game.components.Position;
@@ -13,6 +14,10 @@ import game.components.Planet;
 import engine.MathTypes;
 
 import allegro5.allegro;
+import allegro5.allegro_primitives;
+import allegro5.allegro_font;
+
+import tango.stdc.stringz;
 
 class CTacticalScreen : CScreen
 {
@@ -62,7 +67,6 @@ class CTacticalScreen : CScreen
 		{
 			auto pos = cast(CPosition)MainShip.GetComponent(CPosition.classinfo);
 			MainShipPosition = pos.Position;
-			GameMode.SystemLocation = MainShipPosition;
 		}
 		auto mid = GameMode.Game.Gfx.ScreenSize / 2;
 		ALLEGRO_TRANSFORM trans;
@@ -74,6 +78,21 @@ class CTacticalScreen : CScreen
 			object.Draw(physics_alpha);
 		
 		GameMode.Game.Gfx.ResetTransform;
+		
+		if(DrawMap)
+		{
+			auto cur_sys = GameMode.CurrentStarSystem;
+			
+			al_identity_transform(&trans);
+			al_translate_transform(&trans, mid.X - MainShipPosition.X / ss.ConversionFactor, mid.Y - MainShipPosition.Y / ss.ConversionFactor);
+			al_use_transform(&trans);
+			
+			cur_sys.DrawSystemView(physics_alpha);
+			
+			GameMode.Game.Gfx.ResetTransform;
+			
+			al_draw_text(GameMode.UIFont.Get, al_map_rgb_f(0.5, 1, 0.5), mid.X, 2 * mid.Y - GameMode.UIFont.Height - 10, ALLEGRO_ALIGN_CENTRE, toStringz(cur_sys.Name));
+		}
 	}
 	
 	override
@@ -92,7 +111,7 @@ class CTacticalScreen : CScreen
 			switch(event.keyboard.keycode)
 			{
 				case ALLEGRO_KEY_TAB:
-					GameMode.PushScreen(EScreen.System);
+					DrawMap = !DrawMap;
 					break;
 				case ALLEGRO_KEY_ESCAPE:
 					GameMode.PopScreen;
@@ -108,6 +127,7 @@ class CTacticalScreen : CScreen
 	}
 	
 protected:
+	bool DrawMap = false;
 	SVector2D MainShipPosition;
 	CGameObject[] Objects;
 	CGameObject MainShip;

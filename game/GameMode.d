@@ -15,7 +15,6 @@ import game.GameObject;
 import game.Galaxy;
 import game.GalaxyScreen;
 import game.StarSystem;
-import game.SystemScreen;
 import game.Screen;
 import game.TacticalScreen;
 
@@ -182,11 +181,6 @@ class CGameMode : CMode, IGameMode
 				new_screen = new CGalaxyScreen(this);
 				break;
 			}
-			case EScreen.System:
-			{
-				new_screen = new CSystemScreen(this);
-				break;
-			}
 			case EScreen.Tactical:
 			{
 				new_screen = new CTacticalScreen(this);
@@ -203,7 +197,6 @@ class CGameMode : CMode, IGameMode
 	}
 	
 	mixin(Prop!("CGalaxy", "Galaxy", "override", "protected"));
-	mixin(Prop!("SVector2D", "SystemLocation", "override", "override"));
 	mixin(Prop!("SVector2D", "GalaxyLocation", "override", "protected"));
 	mixin(Prop!("bool", "Arrived", "override", "protected"));
 	mixin(Prop!("float", "WarpSpeed", "override", "override"));

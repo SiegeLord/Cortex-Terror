@@ -12,15 +12,12 @@ import engine.ConfigManager;
 enum EScreen
 {
 	Galaxy,
-	System,
 	Tactical
 }
 
 interface IGameMode
 {
 	SVector2D GalaxyLocation();
-	SVector2D SystemLocation();
-	SVector2D SystemLocation(SVector2D new_loc);
 	SVector2D ToGalaxyView(SVector2D galaxy_pos);
 	SVector2D FromGalaxyView(SVector2D galaxy_view);
 	float GalaxyZoom();
