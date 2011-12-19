@@ -12,9 +12,13 @@ class CPhysics : CUpdatable
 	this(CConfig config)
 	{
 		super(config);
+		Mass = config.Get!(float)("physics", "mass", 1);
+		Friction = config.Get!(float)("physics", "friction", 0.9);
 	}
 	
 	SVector2D Velocity;
+	float Mass = 1;
+	float Friction = 1;
 	
 	override
 	void WireUp(IComponentHolder holder)
@@ -26,8 +30,8 @@ class CPhysics : CUpdatable
 	void Update(float dt)
 	{
 		Position.Position += dt * Velocity;
+		Velocity *= Friction;
 	}
 protected:
 	CPosition Position;
 }
-

@@ -14,6 +14,8 @@ class CEngine : CUpdatable
 	this(CConfig config)
 	{
 		super(config);
+		Thrust = config.Get!(float)("engine", "thrust");
+		Omega = config.Get!(float)("engine", "omega");
 	}
 	
 	override
@@ -27,9 +29,29 @@ class CEngine : CUpdatable
 	override
 	void Update(float dt)
 	{
-		
+		if(On)
+		{
+			auto thrust_vec = SVector2D(Thrust / Physics.Mass, 0);
+			thrust_vec.Rotate(Orientation.Theta);
+			Physics.Velocity += dt * thrust_vec;
+		}
+		if(Left)
+		{
+			Orientation.Theta -= dt * Omega;
+		}
+		if(Right)
+		{
+			Orientation.Theta += dt * Omega;
+		}
 	}
+	
+	bool On = false;
+	bool Left = false;
+	bool Right = false;
 protected:
+	float Thrust = 1;
+	float Omega = 1;
+	
 	CPosition Position;
 	CPhysics Physics;
 	COrientation Orientation;
