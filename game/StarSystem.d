@@ -62,12 +62,12 @@ class CPlanet
 		al_compose_transform(&orbit_transform, &current_transform);
 		al_use_transform(&orbit_transform);
 		
-		al_draw_ellipse(sqrt(MajorAxis * MajorAxis - MinorAxis * MinorAxis), 0, MajorAxis, MinorAxis, al_map_rgb_f(1,1,1), 1);
+		al_draw_ellipse(sqrt(MajorAxis * MajorAxis - MinorAxis * MinorAxis), 0, MajorAxis, MinorAxis, al_map_rgba_f(0.5,0.5,0.5,0.5), 1);
 		
 		al_use_transform(&current_transform);
 		
 		auto pos = Position();
-		al_draw_filled_circle(pos.X, pos.Y, 10, al_map_rgb_f(1, 0.5, 0.5));
+		al_draw_filled_circle(pos.X, pos.Y, 10, al_map_rgba_f(0.5, 0.25, 0.25, 0.5));
 	}
 	
 	void DrawPreview(float physics_alpha)
@@ -87,7 +87,7 @@ protected:
 const MinRadius = 50.0f;
 const MaxRadius = 200.0f;
 const MaxPlanets = 5;
-const ConversionFactor = 20;
+const ConversionFactor = 40;
 
 class CStarSystem : CDisposable
 {
