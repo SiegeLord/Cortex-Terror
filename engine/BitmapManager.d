@@ -20,7 +20,9 @@ class CBitmapManager : CResourceManager!(CBitmap)
 		if(ret is null)
 		{
 			char[256] cache;
+			al_set_new_bitmap_flags(ALLEGRO_MAG_LINEAR | ALLEGRO_MIN_LINEAR);
 			auto bmp = al_load_bitmap(toStringz(filename, cache));
+			al_set_new_bitmap_flags(ALLEGRO_VIDEO_BITMAP);
 			if(bmp is null)
 				throw new Exception("Couldn't load '" ~ filename.idup ~ "'");
 			return Insert(filename, new CBitmap(bmp));
