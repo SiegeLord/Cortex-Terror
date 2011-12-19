@@ -58,16 +58,19 @@ class CTacticalScreen : CScreen
 	{
 		foreach(object; Objects)
 			object.Update(dt);
-	}
-	
-	override
-	void Draw(float physics_alpha)
-	{
+			
 		if(MainShip !is null)
 		{
 			auto pos = cast(CPosition)MainShip.GetComponent(CPosition.classinfo);
 			MainShipPosition = pos.Position;
 		}
+			
+		GameMode.Energy = GameMode.Energy + dt * GameMode.CurrentStarSystem.EnergyFlux(MainShipPosition.Length);
+	}
+	
+	override
+	void Draw(float physics_alpha)
+	{
 		auto mid = GameMode.Game.Gfx.ScreenSize / 2;
 		ALLEGRO_TRANSFORM trans;
 		al_identity_transform(&trans);

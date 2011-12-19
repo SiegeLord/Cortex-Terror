@@ -29,6 +29,7 @@ import tango.math.Math;
 
 const GalaxyRadius = 500;
 const NumStars = 256;
+const WarpConversionFactor = 2;
 
 class CGameMode : CMode, IGameMode
 {
@@ -81,7 +82,7 @@ class CGameMode : CMode, IGameMode
 			{
 				dir_to_dest.Normalize;
 				GalaxyLocation = GalaxyLocation + dt * dir_to_dest * WarpSpeed;
-				Energy = Energy - dt * WarpSpeed / 2;
+				Energy = Energy - dt * WarpSpeed / WarpConversionFactor;
 			}
 		}
 		
@@ -215,6 +216,34 @@ class CGameMode : CMode, IGameMode
 		al_draw_bitmap(UIBottomLeft.Get, 0, screen_size.Y - UIBottomLeft.Height, 0);
 	}
 	
+	override
+	float Energy()
+	{
+		return EnergyVal;
+	}
+	
+	override
+	float Energy(float val)
+	{
+		if(val > MaxEnergy)
+			val = MaxEnergy;
+		return EnergyVal = val;
+	}
+	
+	override
+	float Health()
+	{
+		return HealthVal;
+	}
+	
+	override
+	float Health(float val)
+	{
+		if(val > MaxHealth)
+			val = MaxHealth;
+		return HealthVal = val;
+	}
+	
 	mixin(Prop!("CGalaxy", "Galaxy", "override", "protected"));
 	mixin(Prop!("SVector2D", "GalaxyLocation", "override", "protected"));
 	mixin(Prop!("bool", "Arrived", "override", "protected"));
@@ -222,8 +251,6 @@ class CGameMode : CMode, IGameMode
 	mixin(Prop!("CFont", "UIFont", "override", "protected"));
 	mixin(Prop!("CBitmapManager", "BitmapManager", "override", "protected"));
 	mixin(Prop!("CConfigManager", "ConfigManager", "override", "protected"));
-	mixin(Prop!("float", "Health", "override", "override"));
-	mixin(Prop!("float", "Energy", "override", "override"));
 	mixin(Prop!("float", "MaxHealth", "override", "protected"));
 	mixin(Prop!("float", "MaxEnergy", "override", "protected"));
 protected:

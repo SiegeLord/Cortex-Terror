@@ -87,7 +87,7 @@ protected:
 const MinRadius = 50.0f;
 const MaxRadius = 200.0f;
 const MaxPlanets = 5;
-const ConversionFactor = 40;
+const ConversionFactor = 40; // Ratio of tactical units to star system units
 
 class CStarSystem : CDisposable
 {
@@ -147,6 +147,13 @@ class CStarSystem : CDisposable
 		}
 		
 		al_set_clipping_rectangle(0, 0, GameMode.Game.Gfx.ScreenWidth, GameMode.Game.Gfx.ScreenHeight);
+	}
+	
+	float EnergyFlux(float distance)
+	{
+		if(distance < 100)
+			distance = 100;
+		return 5e4f / (distance * distance);
 	}
 
 	mixin(Prop!("const(char)[]", "Name", "", "protected"));
