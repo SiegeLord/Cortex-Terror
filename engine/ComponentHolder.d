@@ -19,9 +19,19 @@ class CComponentHolder : CDisposable, IComponentHolder
 			component.WireUp(this);
 	}
 	
-	void opDispatch(immutable(char)[] method_name, ComponentType, Args...)(Args args)
+	struct SDispatchHelper(ComponentType)
 	{
-		GetComponent(ComponentType.classinfo, (CComponent comp) { mixin("(cast(ComponentType)comp)." ~ method_name ~ "(args);"); return true; });
+		CComponentHolder Holder;
+		
+		void opDispatch(immutable(char)[] method_name, Args...)(Args args)
+		{
+			Holder.GetComponent(ComponentType.classinfo, (CComponent comp) { mixin("(cast(ComponentType)comp)." ~ method_name ~ "(args);"); return true; });
+		}
+	}
+	
+	SDispatchHelper!(ComponentType) Select(ComponentType)()
+	{
+		return SDispatchHelper!(ComponentType)(this);
 	}
 	
 	override

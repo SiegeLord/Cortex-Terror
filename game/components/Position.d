@@ -11,5 +11,7 @@ class CPosition : CComponent
 		super(config);
 	}
 	
+	alias Position this;
+	
 	SVector2D Position;
 }

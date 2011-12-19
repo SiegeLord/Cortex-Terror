@@ -9,6 +9,7 @@ import game.components.Rectangle;
 import game.components.Star;
 import game.components.Orientation;
 import game.components.Engine;
+import game.components.Sprite;
 
 alias CComponent function(CConfig config) Creator;
 
@@ -35,4 +36,5 @@ static this()
 	Creators["star"] = &CreatorFunc!(CStar);
 	Creators["orientation"] = &CreatorFunc!(COrientation);
 	Creators["engine"] = &CreatorFunc!(CEngine);
+	Creators["sprite"] = &CreatorFunc!(CSprite);
 }

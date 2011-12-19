@@ -51,7 +51,7 @@ class CConfig : CHolder!(ALLEGRO_CONFIG*, al_destroy_config)
 			*is_def = false;
 		}
 		
-		auto str = fromStringz(value_ptr);
+		const(char)[] str = fromStringz(value_ptr);
 		static if(tr.isArrayType!(T) && !tr.isStringType!(T))
 		{
 			alias tr.ElementTypeOfArray!(T) E;

@@ -14,11 +14,9 @@ import allegro5.allegro;
 
 class CGalaxy : CDisposable
 {
-	this(IGameMode game_mode, uint seed, size_t num_stars = 256, float radius = 500)
+	this(IGameMode game_mode, Random random, size_t num_stars = 256, float radius = 500)
 	{
 		GameMode = game_mode;
-		Rand = new Random;
-		Rand.seed({ return seed; });
 		
 		Systems.length = num_stars;
 		
@@ -27,9 +25,9 @@ class CGalaxy : CDisposable
 			SVector2D pos;
 			do
 			{
-				pos = SVector2D(Rand.normalSigma(radius / 5), Rand.normalSigma(radius / 5));
+				pos = SVector2D(random.normalSigma(radius / 5), random.normalSigma(radius / 5));
 			} while(abs(pos.X) > radius || abs(pos.Y) > radius);
-			system = new CStarSystem(game_mode, Rand, pos);
+			system = new CStarSystem(game_mode, random, pos);
 		}
 	}
 	
@@ -71,7 +69,6 @@ class CGalaxy : CDisposable
 		return ret;
 	}
 protected:
-	Random Rand;
 	CStarSystem[] Systems;
 	IGameMode GameMode;
 }

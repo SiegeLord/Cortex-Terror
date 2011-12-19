@@ -23,6 +23,11 @@ import allegro5.allegro;
 
 import tango.io.Stdout;
 import tango.util.container.more.Stack;
+import tango.math.random.Random;
+import tango.math.Math;
+
+const GalaxyRadius = 500;
+const NumStars = 256;
 
 class CGameMode : CMode, IGameMode
 {
@@ -33,8 +38,14 @@ class CGameMode : CMode, IGameMode
 		FontManager = new CFontManager;
 		UIFont = FontManager.Load("data/fonts/Energon.ttf", 24);
 		BitmapManager = new CBitmapManager;
+		Rand = new Random;
+		Rand.seed({ return cast(int)(al_get_time() * 1000); });
 		
-		Galaxy = new CGalaxy(this, cast(int)(al_get_time() * 1000));
+		Galaxy = new CGalaxy(this, Rand, NumStars, GalaxyRadius);
+		
+		GalaxyLocation = SVector2D(Rand.uniformR2(GalaxyRadius / 3, GalaxyRadius / 2), 0);
+		GalaxyLocation.Rotate(Rand.uniformR(2 * PI));
+		
 		CurrentStarSystem = Galaxy.GetStarSystemAt(GalaxyLocation);
 		GalaxyLocation = CurrentStarSystem.Position;
 		ScreenStack.push(new CGalaxyScreen(this));
@@ -216,4 +227,5 @@ protected:
 	bool WantPop = false;
 	CStarSystem CurrentStarSystemVal;
 	float GalaxyZoomVal = 1;
+	Random Rand;
 }

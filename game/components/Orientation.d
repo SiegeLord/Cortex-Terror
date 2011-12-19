@@ -10,5 +10,11 @@ class COrientation : CComponent
 		super(config);
 	}
 	
+	void Set(float theta)
+	{
+		Theta = theta;
+	}
+	
 	float Theta = 0;
+	alias Theta this;
 }
