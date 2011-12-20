@@ -50,6 +50,17 @@ class CPlanet
 		MinorAxis = MaxRadius * Orbit / MaxPlanets + MinRadius;
 		MajorAxis = MinorAxis * random.uniformR2(1.0f, 1.002f);
 		PeriodOffset = random.uniformR2(0.0f, 1.0f);
+		auto r = random.uniformR2(0, 3);
+		switch(r)
+		{
+			case 0:
+				Bonus = EBonus.Health;
+				break;
+			case 1:
+				Bonus = EBonus.Energy;
+				break;
+			default:
+		}
 	}
 	
 	SVector2D Position()
@@ -103,6 +114,7 @@ class CPlanet
 	
 	const(char)[] Name;
 	const(char)[] Class = "M";
+	EBonus Bonus = EBonus.None;
 protected:
 	size_t Orbit;
 	IGameMode GameMode;
@@ -190,12 +202,22 @@ class CStarSystem : CDisposable
 		return false;
 	}
 	
+	bool HaveArtifacts()
+	{
+		foreach(planet; Planets)
+		{
+			if(planet.Bonus != EBonus.None)
+				return true;
+		}
+		return false;
+	}
+	
 	void DrawGalaxyView(float physics_alpha)
 	{
 		auto pos = GameMode.ToGalaxyView(Position);
-		auto col = Explored ? Color : al_map_rgb_f(0.5, 0.5, 0.5);
+		auto col = Scanned ? Color : al_map_rgb_f(0.5, 0.5, 0.5);
 		//al_draw_filled_circle(pos.X, pos.Y, 10, col);
-		if(Explored)
+		if(Scanned)
 		{
 			al_draw_tinted_bitmap(SmallStarHaloSprite.Get, col, pos.X - SmallStarHaloSprite.Width / 2, pos.Y - SmallStarHaloSprite.Height / 2, 0);
 			if(HaveLifeforms)
@@ -204,6 +226,10 @@ class CStarSystem : CDisposable
 				auto vtx = SVector2D(tri_rad, 0);
 				vtx.Rotate(PI / 6);
 				al_draw_triangle(pos.X, pos.Y - tri_rad, pos.X - vtx.X, pos.Y + vtx.Y, pos.X + vtx.X, pos.Y + vtx.Y, al_map_rgb_f(1, 0, 0), 2);
+			}
+			else if(Visited && HaveArtifacts)
+			{
+				al_draw_rectangle(pos.X - 20, pos.Y - 20, pos.X + 20, pos.Y + 20, al_map_rgb_f(0, 0, 1), 2);
 			}
 		}
 		al_draw_bitmap(SmallStarSprite.Get, pos.X - SmallStarSprite.Width / 2, pos.Y - SmallStarSprite.Height / 2, 0);
@@ -242,6 +268,20 @@ class CStarSystem : CDisposable
 			draw_line("Present", al_map_rgb_f(1, 0, 0), true);
 		else
 			draw_line("None", al_map_rgb_f(0.5, 1, 0.5), true);
+		
+		draw_line("Artifacts", al_map_rgb_f(0.5, 0.5, 1));
+		if(!Visited)
+		{
+			draw_line("Unknown", al_map_rgb_f(0.5, 1, 0.5), true);
+		}
+		else
+		{
+			if(HaveArtifacts)
+				draw_line("Present", al_map_rgb_f(1, 0, 0), true);
+			else
+				draw_line("None", al_map_rgb_f(0.5, 1, 0.5), true);
+		}
+		
 		draw_line("Distance", al_map_rgb_f(0.5, 0.5, 1));
 		draw_line(Format("{} Tk", cast(int)((Position - GameMode.GalaxyLocation).Length)), al_map_rgb_f(0.5, 1, 0.5), true);
 		
@@ -272,7 +312,8 @@ class CStarSystem : CDisposable
 	mixin(Prop!("const(char)[]", "Class", "", "protected"));
 
 	SVector2D Position;
-	bool Explored = false;
+	bool Scanned = false;
+	bool Visited = false;
 	CPlanet[] Planets;
 protected:
 	float ClassFraction;

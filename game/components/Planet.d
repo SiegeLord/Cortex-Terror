@@ -79,6 +79,11 @@ class CPlanet : CUpdatable
 	void Damage(float damage)
 	{
 		Planet.Population = Planet.Population - 10 * cast(int)damage;
+		if(Planet.Population == 0)
+		{
+			Screen.GameMode.AddBonus(Planet.Bonus);
+			Planet.Bonus = EBonus.None;
+		}
 	}
 	
 	ss.CPlanet Planet;

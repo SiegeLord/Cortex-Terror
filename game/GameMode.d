@@ -21,8 +21,10 @@ import game.TacticalScreen;
 
 import allegro5.allegro;
 import allegro5.allegro_primitives;
+import allegro5.allegro_font;
 
 import tango.io.Stdout;
+import tango.text.convert.Format;
 import tango.util.container.more.Stack;
 import tango.math.random.Random;
 import tango.math.Math;
@@ -176,7 +178,7 @@ class CGameMode : CMode, IGameMode
 		{
 			Arrived = false;
 			CurrentStarSystemVal = new_star_system;
-			CurrentStarSystemVal.Explored = true;
+			CurrentStarSystemVal.Scanned = true;
 		}
 		return CurrentStarSystemVal;
 	}
@@ -218,6 +220,13 @@ class CGameMode : CMode, IGameMode
 	{
 		auto screen_size = Game.Gfx.ScreenSize;
 		
+		auto lh = 5 + UIFont.Height;
+		auto x = 10;
+		auto y = screen_size.Y - SideBarWidth - 4 * lh;
+		
+		al_draw_text(UIFont.Get, al_map_rgb_f(0.5, 0.5, 1), x, y, 0, Format("H: {}\0", HealthBonusCount).ptr);
+		al_draw_text(UIFont.Get, al_map_rgb_f(0.5, 0.5, 1), x, y + lh, 0, Format("E: {}\0", EnergyBonusCount).ptr);
+		
 		const space = 15;
 		
 		auto health_arc = 3 * PI / 2 * Health / MaxHealth;
@@ -258,6 +267,37 @@ class CGameMode : CMode, IGameMode
 		return HealthVal = val;
 	}
 	
+	override
+	float MaxEnergy()
+	{
+		return BaseEnergy + EnergyBonusCount * 25;
+	}
+	
+	override
+	float MaxHealth()
+	{
+		return BaseHealth + HealthBonusCount * 25;
+	}
+	
+	override
+	void AddBonus(EBonus bonus)
+	{
+		final switch(bonus)
+		{
+			case EBonus.Health:
+				auto old_max_health = MaxHealth;
+				HealthBonusCount++;
+				auto new_max_health = MaxHealth;
+				Health = Health + new_max_health - old_max_health;
+				break;
+			case EBonus.Energy:
+				EnergyBonusCount++;
+				break;
+			case EBonus.None:
+				break;
+		}
+	}
+	
 	mixin(Prop!("CGalaxy", "Galaxy", "override", "protected"));
 	mixin(Prop!("SVector2D", "GalaxyLocation", "override", "protected"));
 	mixin(Prop!("bool", "Arrived", "override", "protected"));
@@ -265,15 +305,15 @@ class CGameMode : CMode, IGameMode
 	mixin(Prop!("CFont", "UIFont", "override", "protected"));
 	mixin(Prop!("CBitmapManager", "BitmapManager", "override", "protected"));
 	mixin(Prop!("CConfigManager", "ConfigManager", "override", "protected"));
-	mixin(Prop!("float", "MaxHealth", "override", "protected"));
-	mixin(Prop!("float", "MaxEnergy", "override", "protected"));
 protected:
 	CBitmap UIBottomLeft;
 
 	float HealthVal = 100;
-	float MaxHealthVal = 100;
+	float BaseHealth = 100;
 	float EnergyVal = 25;
-	float MaxEnergyVal = 50;
+	float BaseEnergy = 50;
+	int HealthBonusCount = 0;
+	int EnergyBonusCount = 0;
 
 	CFont UIFontVal;
 	CFontManager FontManager;

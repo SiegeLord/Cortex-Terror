@@ -17,6 +17,13 @@ enum EScreen
 	Tactical
 }
 
+enum EBonus
+{
+	Health,
+	Energy,
+	None
+}
+
 interface IGameMode
 {
 	SVector2D GalaxyLocation();
@@ -34,6 +41,7 @@ interface IGameMode
 	float Energy();
 	float Energy(float new_energy);
 	float MaxEnergy();
+	void AddBonus(EBonus bonus);
 	
 	bool Arrived();
 	IGame Game();

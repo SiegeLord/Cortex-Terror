@@ -30,6 +30,9 @@ class CTacticalScreen : CScreen, ITacticalScreen
 	this(IGameMode game_mode)
 	{
 		super(game_mode);
+		
+		game_mode.CurrentStarSystem.Visited = true;
+		
 		auto star_obj = AddObject("star");
 		auto star = cast(CStar)star_obj.GetComponent(CStar.classinfo);
 		if(star is null)
