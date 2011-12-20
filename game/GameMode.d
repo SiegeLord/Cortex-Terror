@@ -122,6 +122,12 @@ class CGameMode : CMode, IGameMode
 		ConfigManager.Dispose;
 		FontManager.Dispose;
 		BitmapManager.Dispose;
+		
+		while(ScreenStack.size > 0)
+		{
+			ScreenStack.top.Dispose;
+			ScreenStack.pop;
+		}
 	}
 	
 	override
