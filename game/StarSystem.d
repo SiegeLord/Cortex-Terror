@@ -55,7 +55,7 @@ class CPlanet
 	SVector2D Position()
 	{
 		auto e = sqrt(1.0f - (MinorAxis * MinorAxis / MajorAxis / MajorAxis));
-		auto period = MajorAxis * 10;
+		auto period = MajorAxis * 100;
 		auto theta = (GameMode.Game.Time / period + PeriodOffset) * 2 * PI;
 		auto r = MajorAxis * (1.0f - e * e) / (1 - e * cos(PI + theta + PeriastronTheta));
 		auto ret = SVector2D(r, 0);
@@ -119,7 +119,7 @@ const MaxPlanets = 5;
 const ConversionFactor = 40; // Ratio of tactical units to star system units
 const UniAge = 0.5;
 const BaseLifeProbability = 0.25;
-const MaxPlanetPopulation = 40000;
+const MeanPlanetPopulation = 10000;
 
 class CStarSystem : CDisposable
 {
@@ -179,7 +179,7 @@ class CStarSystem : CDisposable
 			auto prob = BaseLifeProbability / (abs(planet.Orbit - habitable_orbit) + 1);
 			if(random.uniformR2(0.0f, 1.0f) < prob)
 			{
-				planet.Population = random.exp!(float)() * MaxPlanetPopulation;
+				planet.Population = random.exp!(float)() * MeanPlanetPopulation;
 			}
 		}
 		

@@ -12,7 +12,7 @@ import tango.io.Stdout;
 
 import allegro5.allegro;
 
-const NumRaces = 20;
+const NumRaces = 40;
 
 class CGalaxy : CDisposable
 {
