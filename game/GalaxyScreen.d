@@ -63,19 +63,10 @@ class CGalaxyScreen : CScreen
 		auto sys = GameMode.CurrentStarSystem;
 		if(DestinationSystem !is null)
 			sys = DestinationSystem;
-		
-		ALLEGRO_TRANSFORM trans;
-		al_identity_transform(&trans);
-		al_translate_transform(&trans, screen_size.X - SideBarWidth / 2, screen_size.Y / 2);
-		al_use_transform(&trans);
-		
-		sys.DrawPreview(physics_alpha, cast(int)screen_size.X - SideBarWidth, cast(int)screen_size.X);
-		
-		GameMode.Game.Gfx.ResetTransform();
+
+		sys.DrawPreview(physics_alpha);
 		
 		al_draw_rectangle(screen_size.X - SideBarWidth + 1, 1, screen_size.X - 1, screen_size.Y - 1, al_map_rgb_f(0.5, 1, 0.5), 2);
-		
-		al_draw_text(GameMode.UIFont.Get, al_map_rgb_f(0.5, 1, 0.5), screen_size.X - SideBarWidth / 2, screen_size.Y / 2 - GameMode.UIFont.Height - 40, ALLEGRO_ALIGN_CENTRE, toStringz(sys.Name));
 		
 		GameMode.DrawLeftSideBar(physics_alpha);
 	}

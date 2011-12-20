@@ -12,6 +12,8 @@ import tango.io.Stdout;
 
 import allegro5.allegro;
 
+const NumRaces = 20;
+
 class CGalaxy : CDisposable
 {
 	this(IGameMode game_mode, Random random, size_t num_stars = 256, float radius = 500)
@@ -28,6 +30,15 @@ class CGalaxy : CDisposable
 				pos = SVector2D(random.normalSigma(radius / 5), random.normalSigma(radius / 5));
 			} while(abs(pos.X) > radius || abs(pos.Y) > radius);
 			system = new CStarSystem(game_mode, random, pos);
+		}
+		
+		foreach(race; 0..NumRaces)
+		{
+			foreach(system; Systems)
+			{
+				if(system.SpawnLife(random))
+					break;
+			}
 		}
 	}
 	

@@ -10,11 +10,14 @@ import engine.Bitmap;
 
 import allegro5.allegro;
 import allegro5.allegro_primitives;
+import allegro5.allegro_font;
 
 import tango.io.Stdout;
 import tango.math.random.Random;
 import tango.math.Math;
 import tango.core.Array;
+import tango.stdc.stringz;
+import tango.text.convert.Format;
 
 /*
  * Star class ranges from 0 (blue) to 1 (red)
@@ -79,10 +82,10 @@ class CPlanet
 		al_draw_filled_circle(pos.X, pos.Y, 10, al_map_rgba_f(0.5, 0.25, 0.25, 0.5));
 	}
 	
-	void DrawPreview(float physics_alpha)
+	void DrawPreview(float physics_alpha, float cx, float cy)
 	{
-		al_draw_circle(0, 0, MinorAxis, al_map_rgb_f(1, 1, 1), 1);
-		al_draw_filled_circle(0, MinorAxis, 10, al_map_rgb_f(1, 0.5, 0.5));
+		al_draw_circle(cx, cy, MinorAxis, al_map_rgb_f(1, 1, 1), 1);
+		al_draw_filled_circle(cx, cy + MinorAxis, 10, al_map_rgb_f(1, 0.5, 0.5));
 	}
 	
 	const(char)[] Name;
@@ -103,6 +106,8 @@ const MaxRadius = 200.0f;
 const MaxPlanets = 5;
 const ConversionFactor = 40; // Ratio of tactical units to star system units
 const UniAge = 0.5;
+const BaseLifeProbability = 0.25;
+const MaxPlanetPopulation = 40000;
 
 class CStarSystem : CDisposable
 {
@@ -116,8 +121,8 @@ class CStarSystem : CDisposable
 		auto r = random.uniformR2(0.0f, 1.0f);
 		
 		auto classes = ["O", "B", "A", "F", "G", "K", "M", "L", "T"];
-		auto class_frac = GetStarClass(r, UniAge) / 1.0001;
-		Class = classes[cast(size_t)(class_frac * classes.length)];
+		ClassFraction = GetStarClass(r, UniAge) / 1.0001;
+		Class = classes[cast(size_t)(ClassFraction * classes.length)];
 		
 		Brightness = r - UniAge;
 		if(Brightness > 0)
@@ -150,6 +155,35 @@ class CStarSystem : CDisposable
 		}
 	}
 	
+	bool SpawnLife(Random random)
+	{
+		if(HaveLifeforms)
+			return false;
+		
+		auto habitable_orbit = (1 - ClassFraction) * (MaxPlanets - 1);
+		
+		foreach(planet; Planets)
+		{
+			auto prob = BaseLifeProbability / (abs(planet.Orbit - habitable_orbit) + 1);
+			if(random.uniformR2(0.0f, 1.0f) < prob)
+			{
+				planet.Population = random.uniformR2(0, cast(int)MaxPlanetPopulation);
+			}
+		}
+		
+		return HaveLifeforms;
+	}
+	
+	bool HaveLifeforms()
+	{
+		foreach(planet; Planets)
+		{
+			if(planet.Population > 0)
+				return true;
+		}
+		return false;
+	}
+	
 	void DrawGalaxyView(float physics_alpha)
 	{
 		auto pos = GameMode.ToGalaxyView(Position);
@@ -169,17 +203,43 @@ class CStarSystem : CDisposable
 		}
 	}
 	
-	void DrawPreview(float physics_alpha, int bar_left, int bar_right)
+	void DrawPreview(float physics_alpha)
 	{
-		al_draw_filled_circle(0, 0, 20, Color);
+		auto font = GameMode.UIFont;
+		auto bar_left = GameMode.Game.Gfx.ScreenSize.X - SideBarWidth;
+		auto bar_right = GameMode.Game.Gfx.ScreenSize.X;
+		auto lh = 5 + font.Height;
+		auto y = 10;
 		
-		auto clip_h = GameMode.Game.Gfx.ScreenHeight / 2;
+		void draw_line(const(char)[] text, ALLEGRO_COLOR color, bool right = false)
+		{
+			al_draw_text(font.Get, color, right ? bar_right - 10 : bar_left + 10, 
+			    y, right ? ALLEGRO_ALIGN_RIGHT : ALLEGRO_ALIGN_LEFT, toStringz(text));
+			y += lh;
+		}
 		
-		al_set_clipping_rectangle(bar_left, clip_h, bar_right, clip_h);
+		draw_line("Target", al_map_rgb_f(0.5, 0.5, 1));
+		draw_line(Name, al_map_rgb_f(0.5, 1, 0.5), true);
+		draw_line("Class", al_map_rgb_f(0.5, 0.5, 1));
+		draw_line(Class, al_map_rgb_f(0.5, 1, 0.5), true);
+		draw_line("Lifeforms", al_map_rgb_f(0.5, 0.5, 1));
+		if(HaveLifeforms)
+			draw_line("Present", al_map_rgb_f(1, 0, 0), true);
+		else
+			draw_line("None", al_map_rgb_f(0.5, 1, 0.5), true);
+		draw_line("Distance", al_map_rgb_f(0.5, 0.5, 1));
+		draw_line(Format("{} Tk", cast(int)((Position - GameMode.GalaxyLocation).Length)), al_map_rgb_f(0.5, 1, 0.5), true);
+		
+		auto x = GameMode.Game.Gfx.ScreenSize.X - SideBarWidth / 2;
+		y += 40;
+		
+		al_draw_filled_circle(x, y, 20, Color);
+		
+		al_set_clipping_rectangle(cast(int)bar_left, y, cast(int)bar_right, GameMode.Game.Gfx.ScreenHeight - y);
 		
 		foreach(planet; Planets)
 		{
-			planet.DrawPreview(physics_alpha);
+			planet.DrawPreview(physics_alpha, x, y);
 		}
 		
 		al_set_clipping_rectangle(0, 0, GameMode.Game.Gfx.ScreenWidth, GameMode.Game.Gfx.ScreenHeight);
@@ -200,6 +260,7 @@ class CStarSystem : CDisposable
 	bool Explored = false;
 	CPlanet[] Planets;
 protected:
+	float ClassFraction;
 	const(char)[] ClassVal;
 	float Brightness = 1;
 	CBitmap SmallStarSprite;
