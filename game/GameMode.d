@@ -324,7 +324,7 @@ class CGameMode : CMode, IGameMode
 	mixin(Prop!("CBitmapManager", "BitmapManager", "override", "protected"));
 	mixin(Prop!("CConfigManager", "ConfigManager", "override", "protected"));
 protected:
-	SColor ColorVal;
+	SColor ColorVal = SColor(EColor.Green | EColor.Red | EColor.Blue);
 		
 	CBitmap UIBottomLeft;
 

@@ -17,15 +17,29 @@ class CDamageable : CUpdatable
 		MaxHitpoints = config.Get!(float)("damageable", "max_hitpoints", 100.0f);
 	}
 	
-	void Damage(float damage, SColor color)
+	override
+	void Update(float dt)
 	{
-		if(color == ShieldColor)
-			Hitpoints -= damage;
-		
-		if(Hitpoints < 0)
-			Hitpoints = 0;
+		ShieldTimeout -= dt;
+		if(ShieldTimeout < 0)
+			ShieldOn = false;
 	}
 	
+	void Damage(float damage, SColor color)
+	{
+		if(color == ShieldColor || Hitpoints == 0)
+		{
+			Hitpoints -= damage;
+		}
+		else
+		{
+			ShieldOn = true;
+			ShieldTimeout = 0.5;
+		}
+	}
+	
+	float ShieldTimeout = 0;
+	bool ShieldOn = false;
 	SColor ShieldColor;
 	float Hitpoints = 0;
 	float MaxHitpoints;

@@ -2,7 +2,6 @@ module game.components.Sprite;
 
 import game.components.Drawable;
 import game.components.Position;
-import game.components.Physics;
 import game.components.Orientation;
 import game.IGameMode;
 
@@ -31,7 +30,7 @@ class CSprite : CDrawable
 	override
 	void WireUp(IComponentHolder holder)
 	{
-		Position = GetComponent!(CPosition)(holder, "engine", "position");
+		Position = GetComponent!(CPosition)(holder, "sprite", "position");
 		Orientation = cast(COrientation)holder.GetComponent(COrientation.classinfo);
 	}
 	

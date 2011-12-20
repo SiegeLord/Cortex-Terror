@@ -45,7 +45,7 @@ class CPlanet : CUpdatable
 		if(Planet)
 		{
 			Planet.Population = Damageable.Hitpoints * PopPerDamage;
-			if(Planet.Population == 0)
+			if(Damageable.Hitpoints < 0)
 			{
 				Screen.GameMode.AddBonus(Planet.Bonus);
 				Planet.Bonus = EBonus.None;
