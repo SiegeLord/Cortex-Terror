@@ -108,9 +108,6 @@ class CGameMode : CMode, IGameMode
 				break;
 			}
 			default:
-			{
-				
-			}
 		}
 	}
 	
@@ -208,7 +205,7 @@ class CGameMode : CMode, IGameMode
 	}
 	
 	override
-	void DrawLeftSideBar()
+	void DrawLeftSideBar(float physics_alpha)
 	{
 		auto screen_size = Game.Gfx.ScreenSize;
 		

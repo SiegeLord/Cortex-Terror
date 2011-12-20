@@ -75,6 +75,9 @@ class CPlanet
 		al_draw_circle(0, 0, MinorAxis, al_map_rgb_f(1, 1, 1), 1);
 		al_draw_filled_circle(0, MinorAxis, 10, al_map_rgb_f(1, 0.5, 0.5));
 	}
+	
+	const(char)[] Name;
+	mixin(Prop!("int", "Population", "", "protected"));
 protected:
 	size_t Orbit;
 	IGameMode GameMode;
@@ -82,6 +85,7 @@ protected:
 	float MinorAxis = 100;
 	float MajorAxis = 100;
 	float PeriodOffset = 0;
+	int PopulationVal = 0;
 }
 
 const MinRadius = 50.0f;
@@ -119,6 +123,15 @@ class CStarSystem : CDisposable
 		foreach(ii, ref planet; Planets)
 		{
 			planet = new CPlanet(GameMode, random, orbits[ii]);
+		}
+		
+		sort(Planets, (CPlanet a, CPlanet b) { return a.Orbit < b.Orbit; });
+		
+		auto roman_numerals = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
+		
+		foreach(ii, planet; Planets)
+		{
+			planet.Name = Name ~ " " ~ roman_numerals[ii];
 		}
 	}
 	

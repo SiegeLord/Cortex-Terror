@@ -6,4 +6,5 @@ import game.IGameMode;
 interface ITacticalScreen
 {
 	IGameMode GameMode();
+	SVector2D MainShipPosition();
 }

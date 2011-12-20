@@ -45,5 +45,5 @@ interface IGameMode
 	CFont UIFont();
 	CBitmapManager BitmapManager();
 	CConfigManager ConfigManager();
-	void DrawLeftSideBar();
+	void DrawLeftSideBar(float physics_alpha);
 }

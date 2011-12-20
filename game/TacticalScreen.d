@@ -14,6 +14,7 @@ import game.components.Planet;
 import game.components.BeamCannon;
 
 import engine.MathTypes;
+import engine.Util;
 
 import allegro5.allegro;
 import allegro5.allegro_primitives;
@@ -22,6 +23,7 @@ import allegro5.allegro_font;
 import tango.stdc.stringz;
 import tango.math.random.Random;
 import tango.math.Math;
+import tango.io.Stdout;
 
 class CTacticalScreen : CScreen, ITacticalScreen
 {
@@ -33,6 +35,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 		if(star is null)
 			throw new Exception("'star.cfg' object needs a 'star' component");
 		star.StarSystem = game_mode.CurrentStarSystem;
+		star.Screen = this;
 		
 		foreach(planet; game_mode.CurrentStarSystem.Planets)
 		{
@@ -41,6 +44,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 			if(planet_comp is null)
 				throw new Exception("'planet.cfg' object needs a 'planet' component");
 			planet_comp.Planet = planet;
+			planet_comp.Screen = this;
 		}
 		
 		auto start_pos = SVector2D(ss.MaxRadius * 0.5 * ss.ConversionFactor, 0);
@@ -106,10 +110,9 @@ class CTacticalScreen : CScreen, ITacticalScreen
 			
 			al_draw_text(GameMode.UIFont.Get, al_map_rgb_f(0.5, 1, 0.5), mid.X, 2 * mid.Y - GameMode.UIFont.Height - 10, ALLEGRO_ALIGN_CENTRE, toStringz(cur_sys.Name));
 		}
-		//else
-		//{
-		GameMode.DrawLeftSideBar();
-		//}
+		GameMode.DrawLeftSideBar(physics_alpha);
+		if(TargetDrawer !is null)
+			TargetDrawer(physics_alpha);
 	}
 	
 	override
@@ -139,6 +142,36 @@ class CTacticalScreen : CScreen, ITacticalScreen
 				}
 				break;
 			}
+			case ALLEGRO_EVENT_MOUSE_BUTTON_DOWN:
+			{
+				if(event.mouse.button == 1)
+				{
+					auto world_pos = SVector2D(event.mouse.x, event.mouse.y) + MainShipPosition - GameMode.Game.Gfx.ScreenSize / 2;
+					foreach(object; Objects)
+					{
+						if(object != MainShip)
+						{
+							auto planet = cast(CPlanet)object.GetComponent(CPlanet.classinfo);
+							if(planet !is null && planet.Collide(world_pos))
+							{
+								TargetDrawer = &planet.DrawTarget;
+								break;
+							}
+							
+							auto star = cast(CStar)object.GetComponent(CStar.classinfo);
+							if(star !is null && star.Collide(world_pos))
+							{
+								TargetDrawer = &star.DrawTarget;
+								break;
+							}
+						}
+					}
+				}
+				else if(event.mouse.button == 2)
+				{
+					TargetDrawer = null;
+				}
+			}
 			default:
 		}
 		
@@ -153,9 +186,12 @@ class CTacticalScreen : CScreen, ITacticalScreen
 	{
 		return super.GameMode;
 	}
+	
+	mixin(Prop!("SVector2D", "MainShipPosition", "override", ""));
 protected:
+	void delegate(float) TargetDrawer;
 	bool DrawMap = false;
-	SVector2D MainShipPosition;
+	SVector2D MainShipPositionVal;
 	CGameObject[] Objects;
 	CGameObject MainShip;
 	CController MainShipController;

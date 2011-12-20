@@ -77,7 +77,7 @@ class CGalaxyScreen : CScreen
 		
 		al_draw_text(GameMode.UIFont.Get, al_map_rgb_f(0.5, 1, 0.5), screen_size.X - SideBarWidth / 2, screen_size.Y / 2 - GameMode.UIFont.Height - 40, ALLEGRO_ALIGN_CENTRE, toStringz(sys.Name));
 		
-		GameMode.DrawLeftSideBar();
+		GameMode.DrawLeftSideBar(physics_alpha);
 	}
 	
 	override
