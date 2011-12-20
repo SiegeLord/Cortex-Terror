@@ -71,9 +71,14 @@ class CPlanet : CUpdatable
 		draw_line("Distance", al_map_rgb_f(0.5, 0.5, 1));
 		draw_line(Format("{} kk", cast(int)((Position.Position - Screen.MainShipPosition).Length)), al_map_rgb_f(0.5, 1, 0.5), true);
 		draw_line("Population", al_map_rgb_f(0.5, 0.5, 1));
-		draw_line(Format("{} M", Planet.Population), al_map_rgb_f(0.5, 1, 0.5), true);
+		draw_line(Format("{} M", cast(int)Planet.Population), al_map_rgb_f(0.5, 1, 0.5), true);
 		
 		//al_draw_filled_circle(Screen.GameMode.Game.Gfx.ScreenSize.X - SideBarWidth / 2, y + 120, 60, StarSystem.Color);
+	}
+	
+	void Damage(float damage)
+	{
+		Planet.Population = Planet.Population - 10 * cast(int)damage;
 	}
 	
 	ss.CPlanet Planet;

@@ -186,6 +186,23 @@ class CTacticalScreen : CScreen, ITacticalScreen
 	}
 	
 	override
+	void Damage(SVector2D pos, float damage)
+	{
+		foreach(object; Objects)
+		{
+			if(object != MainShip)
+			{
+				auto planet = cast(CPlanet)object.GetComponent(CPlanet.classinfo);
+				if(planet !is null && planet.Collide(pos))
+				{
+					planet.Damage(damage);
+					break;
+				}
+			}
+		}
+	}
+	
+	override
 	IGameMode GameMode()
 	{
 		return super.GameMode;

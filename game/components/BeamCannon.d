@@ -105,6 +105,11 @@ class CBeamCannon : CUpdatable
 					n++;
 			}
 			
+			if(n > 0)
+			{
+				Screen.Damage(Target, n);
+			}
+			
 			auto energy_usage = dt * n * BeamEnergy;
 			
 			if(Screen.GameMode.Energy < energy_usage)

@@ -88,9 +88,21 @@ class CPlanet
 		al_draw_filled_circle(cx, cy + MinorAxis, 10, al_map_rgb_f(1, 0.5, 0.5));
 	}
 	
+	float Population()
+	{
+		return PopulationVal;
+	}
+	
+	float Population(float new_pop)
+	{
+		if(new_pop < 0)
+			new_pop = 0;
+		
+		return PopulationVal = new_pop;
+	}
+	
 	const(char)[] Name;
 	const(char)[] Class = "M";
-	mixin(Prop!("int", "Population", "", "protected"));
 protected:
 	size_t Orbit;
 	IGameMode GameMode;
@@ -98,7 +110,7 @@ protected:
 	float MinorAxis = 100;
 	float MajorAxis = 100;
 	float PeriodOffset = 0;
-	int PopulationVal = 0;
+	float PopulationVal = 0;
 }
 
 const MinRadius = 50.0f;
@@ -167,7 +179,7 @@ class CStarSystem : CDisposable
 			auto prob = BaseLifeProbability / (abs(planet.Orbit - habitable_orbit) + 1);
 			if(random.uniformR2(0.0f, 1.0f) < prob)
 			{
-				planet.Population = random.uniformR2(0, cast(int)MaxPlanetPopulation);
+				planet.Population = random.exp!(float)() * MaxPlanetPopulation;
 			}
 		}
 		
