@@ -89,6 +89,7 @@ class CGameMode : CMode, IGameMode
 			if(len_sq < WarpSpeed * WarpSpeed * dt * dt)
 			{
 				GalaxyLocation = CurrentStarSystem.Position;
+				CurrentStarSystem.Visited = true;
 				Arrived = true;
 			}
 			else
