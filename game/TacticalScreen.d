@@ -2,6 +2,7 @@ module game.TacticalScreen;
 
 import game.Screen;
 import game.IGameMode;
+import game.ITacticalScreen;
 import game.GameObject;
 import ss = game.StarSystem;
 import game.components.Star;
@@ -10,6 +11,7 @@ import game.components.Position;
 import game.components.Orientation;
 import game.components.Controller;
 import game.components.Planet;
+import game.components.BeamCannon;
 
 import engine.MathTypes;
 
@@ -21,7 +23,7 @@ import tango.stdc.stringz;
 import tango.math.random.Random;
 import tango.math.Math;
 
-class CTacticalScreen : CScreen
+class CTacticalScreen : CScreen, ITacticalScreen
 {
 	this(IGameMode game_mode)
 	{
@@ -49,12 +51,14 @@ class CTacticalScreen : CScreen
 		MainShip.Select!(CPosition).Set(start_pos.X, start_pos.Y);
 		MainShip.Select!(COrientation).Set(theta);
 		MainShipController = cast(CController)MainShip.GetComponent(CController.classinfo);
+		MainShipController.Screen(this);
 	}
 	
 	CGameObject AddObject(const(char)[] name)
 	{
 		auto ret = new CGameObject(GameMode, name);
 		ret.Select!(CSprite).LoadBitmaps(GameMode);
+		ret.Select!(CBeamCannon).Screen(this);
 		Objects ~= ret;
 		return ret;
 	}
@@ -119,18 +123,23 @@ class CTacticalScreen : CScreen
 	override
 	void Input(ALLEGRO_EVENT* event)
 	{
-		if(event.type == ALLEGRO_EVENT_KEY_DOWN)
+		switch(event.type)
 		{
-			switch(event.keyboard.keycode)
+			case ALLEGRO_EVENT_KEY_DOWN:
 			{
-				case ALLEGRO_KEY_TAB:
-					DrawMap = !DrawMap;
-					break;
-				case ALLEGRO_KEY_ESCAPE:
-					GameMode.PopScreen;
-					break;
-				default:
+				switch(event.keyboard.keycode)
+				{
+					case ALLEGRO_KEY_TAB:
+						DrawMap = !DrawMap;
+						break;
+					case ALLEGRO_KEY_ESCAPE:
+						GameMode.PopScreen;
+						break;
+					default:
+				}
+				break;
 			}
+			default:
 		}
 		
 		if(MainShipController !is null)
@@ -139,6 +148,11 @@ class CTacticalScreen : CScreen
 		}
 	}
 	
+	override
+	IGameMode GameMode()
+	{
+		return super.GameMode;
+	}
 protected:
 	bool DrawMap = false;
 	SVector2D MainShipPosition;

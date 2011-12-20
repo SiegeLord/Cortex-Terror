@@ -107,7 +107,7 @@ class CStarSystem : CDisposable
 			Brightness /= UniAge;
 		Brightness = exp(2 * (2 - Brightness) - 1);
 		Color = GetStarColor(r, UniAge);
-		Planets.length = random.uniformR2(1, cast(int)MaxPlanets);
+		Planets.length = random.uniformR2(0, cast(int)MaxPlanets);
 		Name = GenerateRandomName(random);
 		
 		size_t[MaxPlanets] orbits;

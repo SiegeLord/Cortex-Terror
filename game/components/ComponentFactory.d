@@ -12,6 +12,8 @@ import game.components.Engine;
 import game.components.Sprite;
 import game.components.Controller;
 import game.components.Planet;
+import game.components.BeamCannon;
+import game.components.Beam;
 
 alias CComponent function(CConfig config) Creator;
 
@@ -33,6 +35,7 @@ CComponent CreateComponent(CConfig config, const(char)[] name)
 static this()
 {
 	Creators["position"] = &CreatorFunc!(CPosition);
+	Creators["position"] = &CreatorFunc!(CPosition);
 	Creators["physics"] = &CreatorFunc!(CPhysics);
 	Creators["rectangle"] = &CreatorFunc!(CRectangle);
 	Creators["star"] = &CreatorFunc!(CStar);
@@ -41,4 +44,6 @@ static this()
 	Creators["sprite"] = &CreatorFunc!(CSprite);
 	Creators["controller"] = &CreatorFunc!(CController);
 	Creators["planet"] = &CreatorFunc!(CPlanet);
+	Creators["beam_cannon"] = &CreatorFunc!(CBeamCannon);
+	Creators["beam"] = &CreatorFunc!(CBeam);
 }

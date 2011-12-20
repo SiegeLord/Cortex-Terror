@@ -227,6 +227,8 @@ class CGameMode : CMode, IGameMode
 	{
 		if(val > MaxEnergy)
 			val = MaxEnergy;
+		if(val < 0)
+			val = 0;
 		return EnergyVal = val;
 	}
 	

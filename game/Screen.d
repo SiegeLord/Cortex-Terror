@@ -1,6 +1,7 @@
 module game.Screen;
 
 import engine.Disposable;
+import engine.Util;
 
 import game.IGameMode;
 
@@ -16,6 +17,7 @@ class CScreen : CDisposable
 	void Update(float dt) {};
 	void Draw(float physics_alpha) {};
 	void Input(ALLEGRO_EVENT* event) {};
+	mixin(Prop!("IGameMode", "GameMode", "", "protected"));
 protected:
-	IGameMode GameMode;
+	IGameMode GameModeVal;
 }

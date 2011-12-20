@@ -117,3 +117,11 @@ struct SVector2D
 		}
 	}
 }
+
+unittest
+{
+	SVector2D vec;
+	vec.Set(0, 0);
+	vec += SVector2D(1, 2);
+	assert(vec == SVector2D(1, 2));
+}
