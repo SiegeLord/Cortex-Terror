@@ -190,7 +190,16 @@ class CStarSystem : CDisposable
 		auto col = Explored ? Color : al_map_rgb_f(0.5, 0.5, 0.5);
 		//al_draw_filled_circle(pos.X, pos.Y, 10, col);
 		if(Explored)
+		{
 			al_draw_tinted_bitmap(SmallStarHaloSprite.Get, col, pos.X - SmallStarHaloSprite.Width / 2, pos.Y - SmallStarHaloSprite.Height / 2, 0);
+			if(HaveLifeforms)
+			{
+				auto tri_rad = 20;
+				auto vtx = SVector2D(tri_rad, 0);
+				vtx.Rotate(PI / 6);
+				al_draw_triangle(pos.X, pos.Y - tri_rad, pos.X - vtx.X, pos.Y + vtx.Y, pos.X + vtx.X, pos.Y + vtx.Y, al_map_rgb_f(1, 0, 0), 2);
+			}
+		}
 		al_draw_bitmap(SmallStarSprite.Get, pos.X - SmallStarSprite.Width / 2, pos.Y - SmallStarSprite.Height / 2, 0);
 	}
 	

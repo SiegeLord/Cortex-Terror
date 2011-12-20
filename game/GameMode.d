@@ -46,10 +46,14 @@ class CGameMode : CMode, IGameMode
 		
 		Galaxy = new CGalaxy(this, Rand, NumStars, GalaxyRadius);
 		
-		GalaxyLocation = SVector2D(Rand.uniformR2(GalaxyRadius / 3, GalaxyRadius / 2), 0);
-		GalaxyLocation.Rotate(Rand.uniformR(2 * PI));
+		do
+		{
+			GalaxyLocation = SVector2D(Rand.uniformR2(GalaxyRadius / 3, GalaxyRadius / 2), 0);
+			GalaxyLocation.Rotate(Rand.uniformR(2 * PI));
+			
+			CurrentStarSystem = Galaxy.GetStarSystemAt(GalaxyLocation);
+		} while(CurrentStarSystem.HaveLifeforms);
 		
-		CurrentStarSystem = Galaxy.GetStarSystemAt(GalaxyLocation);
 		GalaxyLocation = CurrentStarSystem.Position;
 		ScreenStack.push(new CGalaxyScreen(this));
 	}

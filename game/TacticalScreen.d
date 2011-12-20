@@ -47,7 +47,11 @@ class CTacticalScreen : CScreen, ITacticalScreen
 			planet_comp.Screen = this;
 		}
 		
-		auto start_pos = SVector2D(ss.MaxRadius * 0.5 * ss.ConversionFactor, 0);
+		SVector2D start_pos;
+		if(game_mode.CurrentStarSystem.HaveLifeforms)
+			start_pos = SVector2D(ss.MaxRadius * 1.1 * ss.ConversionFactor, 0);
+		else
+			start_pos = SVector2D(ss.MaxRadius * 0.1 * ss.ConversionFactor, 0);
 		auto theta = rand.uniformR(2 * PI);
 		start_pos.Rotate(theta + PI);
 		
