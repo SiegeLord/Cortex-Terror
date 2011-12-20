@@ -31,12 +31,19 @@ class CBeam : CDrawable
 	override
 	void Draw(float physics_alpha)
 	{
+		auto color = al_map_rgb_f(0, 0, 0);
+		if(BeamCannon.Color(EColor.Red))
+			color.r = 1;
+		if(BeamCannon.Color(EColor.Green))
+			color.g = 1;
+		if(BeamCannon.Color(EColor.Blue))
+			color.b = 1;
 		foreach(cannon; BeamCannon.Cannons)
 		{
 			if(cannon.On)
 			{
 				auto from = cannon.GetWorldLocation(Position.Position, Orientation.Theta);
-				al_draw_line(from.X, from.Y, BeamCannon.Target.X, BeamCannon.Target.Y, al_map_rgb_f(1, 1, 0), 2);
+				al_draw_line(from.X, from.Y, BeamCannon.Target.X, BeamCannon.Target.Y, color, 2);
 			}
 		}
 	}

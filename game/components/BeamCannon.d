@@ -51,6 +51,13 @@ struct SCannon
 
 const BeamEnergy = 0.1f;
 
+enum EColor : int
+{
+	Red = 1,
+	Green = 2,
+	Blue = 4
+}
+
 class CBeamCannon : CUpdatable
 {
 	this(CConfig config)
@@ -156,10 +163,27 @@ class CBeamCannon : CUpdatable
 		return OnVal;
 	}
 	
+	bool Color(EColor color)
+	{
+		return (ColorFlag & color) != 0;
+	}
+	
+	bool ToggleColor(EColor color)
+	{
+		ColorFlag ^= color;
+		if(ColorFlag == 0)
+			ColorFlag |= color;
+		
+		return Color(color);
+	}
+	
+	
 	SCannon[] Cannons;
 	mixin(Prop!("ITacticalScreen", "Screen", "", ""));
 	mixin(Prop!("SVector2D", "Target", "", "protected"));
 protected:
+	int ColorFlag = EColor.Red;
+	
 	SVector2D ScreenTargetVal;
 	SVector2D TargetVal;
 	float MaxRange;

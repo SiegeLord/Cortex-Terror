@@ -45,6 +45,15 @@ class CController : CComponent
 					case ALLEGRO_KEY_D:
 						Engine.Right = true;
 						break;
+					case ALLEGRO_KEY_1:
+						BeamCannon.ToggleColor(EColor.Red);
+						break;
+					case ALLEGRO_KEY_2:
+						BeamCannon.ToggleColor(EColor.Green);
+						break;
+					case ALLEGRO_KEY_3:
+						BeamCannon.ToggleColor(EColor.Blue);
+						break;
 					default:
 				}
 				break;
