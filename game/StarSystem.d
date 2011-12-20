@@ -20,24 +20,24 @@ import tango.stdc.stringz;
 import tango.text.convert.Format;
 
 /*
- * Star class ranges from 0 (blue) to 1 (red)
+ * Star fraction ranges from 0 (blue) to 1 (red)
  * Age ranges from 0 (all red) to 1 (all blue)
  */
-ALLEGRO_COLOR GetStarColor(float star_class, float age)
+ALLEGRO_COLOR GetStarColor(float star_fraction, float age)
 {
-	if(star_class < age)
-		return al_map_rgb_f(star_class / age, star_class / age, 1);
+	if(star_fraction < age)
+		return al_map_rgb_f(star_fraction / age, star_fraction / age, 1);
 	else
-		return al_map_rgb_f(1, (star_class - age) / (1 - age), (star_class - age) / (1 - age));
+		return al_map_rgb_f(1, 1 - (star_fraction - age) / (1.0f - age), 1 - (star_fraction - age) / (1 - age));
 }
 
 /* Scales the star_class so that the return ranges from 0 to 1, with 0.5 being white, 0 being blue and 1 being red*/
-float GetStarClass(float star_class, float age)
+float GetStarClass(float star_fraction, float age)
 {
-	if(star_class < age)
-		return star_class / age * 0.5;
+	if(star_fraction < age)
+		return star_fraction / age * 0.5;
 	else
-		return (star_class - age) / (1 - age) * 0.5 + 0.5;
+		return (star_fraction - age) / (1.0f - age) * 0.5 + 0.5;
 }
 
 class CPlanet
@@ -135,13 +135,7 @@ class CStarSystem : CDisposable
 		auto classes = ["O", "B", "A", "F", "G", "K", "M", "L", "T"];
 		ClassFraction = GetStarClass(r, UniAge) / 1.0001;
 		Class = classes[cast(size_t)(ClassFraction * classes.length)];
-		
-		Brightness = r - UniAge;
-		if(Brightness > 0)
-			Brightness /= (1.0 - UniAge);
-		else
-			Brightness /= UniAge;
-		Brightness = exp(2 * (2 - Brightness) - 1);
+		Brightness = exp(2.0f * (1.0f - ClassFraction));
 		Color = GetStarColor(r, UniAge);
 		Planets.length = random.uniformR2(0, cast(int)MaxPlanets);
 		Name = GenerateRandomName(random);
@@ -270,7 +264,7 @@ class CStarSystem : CDisposable
 	{
 		if(distance < 100)
 			distance = 100;
-		return Brightness * 1e3f / (distance * distance);
+		return Brightness * 5e3f / (distance * distance);
 	}
 
 	mixin(Prop!("const(char)[]", "Name", "", "protected"));
