@@ -17,6 +17,8 @@ import tango.math.Math;
 import tango.io.Stdout;
 import tango.text.convert.Format;
 
+import allegro5.allegro;
+
 struct SCannon
 {
 	SVector2D Location;
@@ -166,6 +168,11 @@ class CBeamCannon : CUpdatable
 	bool ToggleColor(EColor color)
 	{		
 		return ColorVal.Toggle(color);
+	}
+	
+	ALLEGRO_COLOR ToColor()
+	{
+		return ColorVal.ToColor;
 	}
 	
 	

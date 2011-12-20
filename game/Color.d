@@ -1,5 +1,7 @@
 module game.Color;
 
+import allegro5.allegro;
+
 enum EColor : int
 {
 	Red = 1,
@@ -27,6 +29,25 @@ struct SColor
 	void TurnOn(EColor color)
 	{
 		ColorFlag |= color;
+	}
+	
+	const
+	ALLEGRO_COLOR ToColor()
+	{
+		auto color = al_map_rgb_f(0, 0, 0);
+		if(Check(EColor.Red))
+			color.r = 1;
+		if(Check(EColor.Green))
+			color.g = 1;
+		if(Check(EColor.Blue))
+			color.b = 1;
+		return color;
+	}
+	
+	const
+	bool opEquals(SColor other)
+	{
+		return other.ColorFlag == ColorFlag;
 	}
 	
 	int ColorFlag = EColor.Red;

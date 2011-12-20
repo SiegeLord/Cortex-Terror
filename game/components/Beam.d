@@ -33,13 +33,7 @@ class CBeam : CDrawable
 	override
 	void Draw(float physics_alpha)
 	{
-		auto color = al_map_rgb_f(0, 0, 0);
-		if(BeamCannon.Color(EColor.Red))
-			color.r = 1;
-		if(BeamCannon.Color(EColor.Green))
-			color.g = 1;
-		if(BeamCannon.Color(EColor.Blue))
-			color.b = 1;
+		auto color = BeamCannon.ToColor();
 		foreach(cannon; BeamCannon.Cannons)
 		{
 			if(cannon.On)
