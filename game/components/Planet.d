@@ -1,8 +1,10 @@
 module game.components.Planet;
 
+import game.Color;
 import game.components.Updatable;
 import game.components.Position;
 import game.components.Orientation;
+import game.components.Damageable;
 import ss = game.StarSystem;
 import game.ITacticalScreen;
 import game.IGameMode;
@@ -20,6 +22,8 @@ import allegro5.allegro;
 import allegro5.allegro_font;
 import allegro5.allegro_primitives;
 
+const PopPerDamage = 10.0f;
+
 class CPlanet : CUpdatable
 {
 	this(CConfig config)
@@ -32,6 +36,7 @@ class CPlanet : CUpdatable
 	{
 		Position = GetComponent!(CPosition)(holder, "planet", "position");
 		Orientation = GetComponent!(COrientation)(holder, "planet", "orientation");
+		Damageable = GetComponent!(CDamageable)(holder, "planet", "damageable");
 	}
 	
 	override
@@ -39,11 +44,17 @@ class CPlanet : CUpdatable
 	{
 		if(Planet)
 		{
+			Planet.Population = Damageable.Hitpoints * PopPerDamage;
+			if(Planet.Population == 0)
+			{
+				Screen.GameMode.AddBonus(Planet.Bonus);
+				Planet.Bonus = EBonus.None;
+			}
+			
 			Position = Planet.Position * ss.ConversionFactor;
 			Orientation = PI + atan2(Position.Y, Position.X);
 		}
 	}
-	
 	
 	bool Collide(SVector2D pos)
 	{
@@ -76,20 +87,23 @@ class CPlanet : CUpdatable
 		//al_draw_filled_circle(Screen.GameMode.Game.Gfx.ScreenSize.X - SideBarWidth / 2, y + 120, 60, StarSystem.Color);
 	}
 	
-	void Damage(float damage)
+	ss.CPlanet Planet(ss.CPlanet planet)
 	{
-		Planet.Population = Planet.Population - 10 * cast(int)damage;
-		if(Planet.Population == 0)
-		{
-			Screen.GameMode.AddBonus(Planet.Bonus);
-			Planet.Bonus = EBonus.None;
-		}
+		PlanetVal = planet;
+		Damageable.Hitpoints = planet.Population / PopPerDamage;
+		return PlanetVal;
 	}
 	
-	ss.CPlanet Planet;
+	ss.CPlanet Planet()
+	{
+		return PlanetVal;
+	}
+	
 	ITacticalScreen Screen;
 protected:
+	ss.CPlanet PlanetVal;
 	CPosition Position;	
-	COrientation Orientation;	
+	COrientation Orientation;
+	CDamageable Damageable;
 }
 

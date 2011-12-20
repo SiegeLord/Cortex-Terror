@@ -111,7 +111,7 @@ class CBeamCannon : CUpdatable
 			
 			if(n > 0)
 			{
-				Screen.Damage(Target, n);
+				Screen.Damage(Target, n, ColorVal);
 			}
 			
 			auto energy_usage = dt * n * BeamEnergy;

@@ -2,6 +2,7 @@ module game.StarSystem;
 
 import game.IGameMode;
 import game.RandomName;
+import game.Color;
 
 import engine.Disposable;
 import engine.MathTypes;
@@ -124,6 +125,7 @@ class CPlanet
 	const(char)[] Name;
 	const(char)[] Class = "M";
 	EBonus Bonus = EBonus.None;
+	SColor ShieldColor;
 protected:
 	size_t Orbit;
 	IGameMode GameMode;

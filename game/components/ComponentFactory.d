@@ -14,6 +14,7 @@ import game.components.Controller;
 import game.components.Planet;
 import game.components.BeamCannon;
 import game.components.Beam;
+import game.components.Damageable;
 
 alias CComponent function(CConfig config) Creator;
 
@@ -46,4 +47,5 @@ static this()
 	Creators["planet"] = &CreatorFunc!(CPlanet);
 	Creators["beam_cannon"] = &CreatorFunc!(CBeamCannon);
 	Creators["beam"] = &CreatorFunc!(CBeam);
+	Creators["damageable"] = &CreatorFunc!(CDamageable);
 }

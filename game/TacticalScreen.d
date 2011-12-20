@@ -1,6 +1,7 @@
 module game.TacticalScreen;
 
 import game.Screen;
+import game.Color;
 import game.IGameMode;
 import game.ITacticalScreen;
 import game.GameObject;
@@ -12,6 +13,7 @@ import game.components.Orientation;
 import game.components.Controller;
 import game.components.Planet;
 import game.components.BeamCannon;
+import game.components.Damageable;
 
 import engine.MathTypes;
 import engine.Util;
@@ -189,7 +191,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 	}
 	
 	override
-	void Damage(SVector2D pos, float damage)
+	void Damage(SVector2D pos, float damage, SColor color)
 	{
 		foreach(object; Objects)
 		{
@@ -198,7 +200,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 				auto planet = cast(CPlanet)object.GetComponent(CPlanet.classinfo);
 				if(planet !is null && planet.Collide(pos))
 				{
-					planet.Damage(damage);
+					object.Select!(CDamageable).Damage(damage, color);
 					break;
 				}
 			}
