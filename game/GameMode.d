@@ -18,6 +18,7 @@ import game.GalaxyScreen;
 import game.StarSystem;
 import game.Screen;
 import game.TacticalScreen;
+import game.components.BeamCannon;
 
 import allegro5.allegro;
 import allegro5.allegro_primitives;
@@ -293,9 +294,24 @@ class CGameMode : CMode, IGameMode
 			case EBonus.Energy:
 				EnergyBonusCount++;
 				break;
+			case EBonus.RedBeam:
+				ColorFlag |= EColor.Red;
+				break;
+			case EBonus.GreenBeam:
+				ColorFlag |= EColor.Green;
+				break;
+			case EBonus.BlueBeam:
+				ColorFlag |= EColor.Blue;
+				break;
 			case EBonus.None:
 				break;
 		}
+	}
+	
+	override
+	bool Color(EColor color)
+	{
+		return (ColorFlag & color) != 0;
 	}
 	
 	mixin(Prop!("CGalaxy", "Galaxy", "override", "protected"));
@@ -306,6 +322,8 @@ class CGameMode : CMode, IGameMode
 	mixin(Prop!("CBitmapManager", "BitmapManager", "override", "protected"));
 	mixin(Prop!("CConfigManager", "ConfigManager", "override", "protected"));
 protected:
+	int ColorFlag = EColor.Red;
+	
 	CBitmap UIBottomLeft;
 
 	float HealthVal = 100;

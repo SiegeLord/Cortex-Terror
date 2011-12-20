@@ -4,6 +4,7 @@ import game.components.Drawable;
 import game.components.BeamCannon;
 import game.components.Position;
 import game.components.Orientation;
+import game.IGameMode;
 
 import engine.IComponentHolder;
 import engine.MathTypes;

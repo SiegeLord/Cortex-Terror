@@ -4,6 +4,7 @@ import game.components.Engine;
 import game.components.BeamCannon;
 import game.components.Position;
 import game.ITacticalScreen;
+import game.IGameMode;
 
 import engine.IComponentHolder;
 import engine.Component;
@@ -46,13 +47,16 @@ class CController : CComponent
 						Engine.Right = true;
 						break;
 					case ALLEGRO_KEY_1:
-						BeamCannon.ToggleColor(EColor.Red);
+						if(Screen.GameMode.Color(EColor.Red))
+							BeamCannon.ToggleColor(EColor.Red);
 						break;
 					case ALLEGRO_KEY_2:
-						BeamCannon.ToggleColor(EColor.Green);
+						if(Screen.GameMode.Color(EColor.Green))
+							BeamCannon.ToggleColor(EColor.Green);
 						break;
 					case ALLEGRO_KEY_3:
-						BeamCannon.ToggleColor(EColor.Blue);
+						if(Screen.GameMode.Color(EColor.Blue))
+							BeamCannon.ToggleColor(EColor.Blue);
 						break;
 					default:
 				}

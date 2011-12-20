@@ -17,10 +17,20 @@ enum EScreen
 	Tactical
 }
 
+enum EColor : int
+{
+	Red = 1,
+	Green = 2,
+	Blue = 4
+}
+
 enum EBonus
 {
 	Health,
 	Energy,
+	RedBeam,
+	GreenBeam,
+	BlueBeam,
 	None
 }
 
@@ -42,6 +52,8 @@ interface IGameMode
 	float Energy(float new_energy);
 	float MaxEnergy();
 	void AddBonus(EBonus bonus);
+	
+	bool Color(EColor color);
 	
 	bool Arrived();
 	IGame Game();

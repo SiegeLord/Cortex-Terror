@@ -4,6 +4,7 @@ import game.components.Updatable;
 import game.components.Position;
 import game.components.Orientation;
 import game.ITacticalScreen;
+import game.IGameMode;
 
 import engine.IComponentHolder;
 import engine.MathTypes;
@@ -50,13 +51,6 @@ struct SCannon
 }
 
 const BeamEnergy = 0.1f;
-
-enum EColor : int
-{
-	Red = 1,
-	Green = 2,
-	Blue = 4
-}
 
 class CBeamCannon : CUpdatable
 {

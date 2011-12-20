@@ -50,7 +50,7 @@ class CPlanet
 		MinorAxis = MaxRadius * Orbit / MaxPlanets + MinRadius;
 		MajorAxis = MinorAxis * random.uniformR2(1.0f, 1.002f);
 		PeriodOffset = random.uniformR2(0.0f, 1.0f);
-		auto r = random.uniformR2(0, 3);
+		auto r = random.uniformR2(0, 5);
 		switch(r)
 		{
 			case 0:
@@ -58,6 +58,15 @@ class CPlanet
 				break;
 			case 1:
 				Bonus = EBonus.Energy;
+				break;
+			case 2:
+				Bonus = EBonus.RedBeam;
+				break;
+			case 3:
+				Bonus = EBonus.GreenBeam;
+				break;
+			case 4:
+				Bonus = EBonus.BlueBeam;
 				break;
 			default:
 		}
