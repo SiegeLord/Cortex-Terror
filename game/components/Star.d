@@ -62,6 +62,8 @@ class CStar : CDrawable
 		
 		draw_line("Target", al_map_rgb_f(0.5, 0.5, 1));
 		draw_line(StarSystem.Name, al_map_rgb_f(0.5, 1, 0.5), true);
+		draw_line("Class", al_map_rgb_f(0.5, 0.5, 1));
+		draw_line(StarSystem.Class, al_map_rgb_f(0.5, 1, 0.5), true);
 		draw_line("Distance", al_map_rgb_f(0.5, 0.5, 1));
 		draw_line(Format("{} kk", cast(int)((Position.Position - Screen.MainShipPosition).Length)), al_map_rgb_f(0.5, 1, 0.5), true);
 		

@@ -66,6 +66,8 @@ class CPlanet : CUpdatable
 		
 		draw_line("Target", al_map_rgb_f(0.5, 0.5, 1));
 		draw_line(Planet.Name, al_map_rgb_f(0.5, 1, 0.5), true);
+		draw_line("Class", al_map_rgb_f(0.5, 0.5, 1));
+		draw_line(Planet.Class, al_map_rgb_f(0.5, 1, 0.5), true);
 		draw_line("Distance", al_map_rgb_f(0.5, 0.5, 1));
 		draw_line(Format("{} kk", cast(int)((Position.Position - Screen.MainShipPosition).Length)), al_map_rgb_f(0.5, 1, 0.5), true);
 		draw_line("Population", al_map_rgb_f(0.5, 0.5, 1));

@@ -28,6 +28,15 @@ ALLEGRO_COLOR GetStarColor(float star_class, float age)
 		return al_map_rgb_f(1, (star_class - age) / (1 - age), (star_class - age) / (1 - age));
 }
 
+/* Scales the star_class so that the return ranges from 0 to 1, with 0.5 being white, 0 being blue and 1 being red*/
+float GetStarClass(float star_class, float age)
+{
+	if(star_class < age)
+		return star_class / age * 0.5;
+	else
+		return (star_class - age) / (1 - age) * 0.5 + 0.5;
+}
+
 class CPlanet
 {
 	this(IGameMode game_mode, Random random, size_t orbit)
@@ -77,6 +86,7 @@ class CPlanet
 	}
 	
 	const(char)[] Name;
+	const(char)[] Class = "M";
 	mixin(Prop!("int", "Population", "", "protected"));
 protected:
 	size_t Orbit;
@@ -104,6 +114,11 @@ class CStarSystem : CDisposable
 		Position = position;
 		GameMode = game_mode;
 		auto r = random.uniformR2(0.0f, 1.0f);
+		
+		auto classes = ["O", "B", "A", "F", "G", "K", "M", "L", "T"];
+		auto class_frac = GetStarClass(r, UniAge) / 1.0001;
+		Class = classes[cast(size_t)(class_frac * classes.length)];
+		
 		Brightness = r - UniAge;
 		if(Brightness > 0)
 			Brightness /= (1.0 - UniAge);
@@ -179,11 +194,13 @@ class CStarSystem : CDisposable
 
 	mixin(Prop!("const(char)[]", "Name", "", "protected"));
 	mixin(Prop!("ALLEGRO_COLOR", "Color", "", "protected"));
+	mixin(Prop!("const(char)[]", "Class", "", "protected"));
 
 	SVector2D Position;
 	bool Explored = false;
 	CPlanet[] Planets;
 protected:
+	const(char)[] ClassVal;
 	float Brightness = 1;
 	CBitmap SmallStarSprite;
 	CBitmap SmallStarHaloSprite;
