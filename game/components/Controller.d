@@ -5,6 +5,7 @@ import game.components.BeamCannon;
 import game.components.Position;
 import game.ITacticalScreen;
 import game.IGameMode;
+import game.Color;
 
 import engine.IComponentHolder;
 import engine.Component;

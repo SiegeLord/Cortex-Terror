@@ -5,6 +5,7 @@ import game.components.Position;
 import game.components.Orientation;
 import game.ITacticalScreen;
 import game.IGameMode;
+import game.Color;
 
 import engine.IComponentHolder;
 import engine.MathTypes;
@@ -159,16 +160,12 @@ class CBeamCannon : CUpdatable
 	
 	bool Color(EColor color)
 	{
-		return (ColorFlag & color) != 0;
+		return ColorVal.Check(color);
 	}
 	
 	bool ToggleColor(EColor color)
-	{
-		ColorFlag ^= color;
-		if(ColorFlag == 0)
-			ColorFlag |= color;
-		
-		return Color(color);
+	{		
+		return ColorVal.Toggle(color);
 	}
 	
 	
@@ -176,7 +173,7 @@ class CBeamCannon : CUpdatable
 	mixin(Prop!("ITacticalScreen", "Screen", "", ""));
 	mixin(Prop!("SVector2D", "Target", "", "protected"));
 protected:
-	int ColorFlag = EColor.Red;
+	SColor ColorVal;
 	
 	SVector2D ScreenTargetVal;
 	SVector2D TargetVal;

@@ -3,6 +3,7 @@ module game.IGameMode;
 import game.IGame;
 import game.Galaxy;
 import game.StarSystem;
+import game.Color;
 
 import engine.Font;
 import engine.MathTypes;
@@ -15,13 +16,6 @@ enum EScreen
 {
 	Galaxy,
 	Tactical
-}
-
-enum EColor : int
-{
-	Red = 1,
-	Green = 2,
-	Blue = 4
 }
 
 enum EBonus

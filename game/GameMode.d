@@ -10,6 +10,7 @@ import engine.Bitmap;
 import engine.BitmapManager;
 
 import game.Mode;
+import game.Color;
 import game.IGame;
 import game.IGameMode;
 import game.GameObject;
@@ -295,13 +296,13 @@ class CGameMode : CMode, IGameMode
 				EnergyBonusCount++;
 				break;
 			case EBonus.RedBeam:
-				ColorFlag |= EColor.Red;
+				ColorVal.TurnOn(EColor.Red);
 				break;
 			case EBonus.GreenBeam:
-				ColorFlag |= EColor.Green;
+				ColorVal.TurnOn(EColor.Green);
 				break;
 			case EBonus.BlueBeam:
-				ColorFlag |= EColor.Blue;
+				ColorVal.TurnOn(EColor.Blue);
 				break;
 			case EBonus.None:
 				break;
@@ -311,7 +312,7 @@ class CGameMode : CMode, IGameMode
 	override
 	bool Color(EColor color)
 	{
-		return (ColorFlag & color) != 0;
+		return ColorVal.Check(color);
 	}
 	
 	mixin(Prop!("CGalaxy", "Galaxy", "override", "protected"));
@@ -322,8 +323,8 @@ class CGameMode : CMode, IGameMode
 	mixin(Prop!("CBitmapManager", "BitmapManager", "override", "protected"));
 	mixin(Prop!("CConfigManager", "ConfigManager", "override", "protected"));
 protected:
-	int ColorFlag = EColor.Red;
-	
+	SColor ColorVal;
+		
 	CBitmap UIBottomLeft;
 
 	float HealthVal = 100;
