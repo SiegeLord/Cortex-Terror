@@ -285,6 +285,43 @@ class CTacticalScreen : CScreen, ITacticalScreen
 	override
 	void Input(ALLEGRO_EVENT* event)
 	{
+		void check_target(int mx, int my)
+		{
+			auto world_pos = SVector2D(mx, my) + MainShipPosition - GameMode.Game.Gfx.ScreenSize / 2;
+			foreach(object; Objects)
+			{
+				if(object != MainShip)
+				{
+					auto damageable = cast(CDamageable)object.GetComponent(CDamageable.classinfo);
+					if(damageable !is null && damageable.Collide(world_pos))
+					{
+						auto planet = cast(CPlanet)object.GetComponent(CPlanet.classinfo);
+						if(planet !is null)
+						{
+							TargetObject = object;
+							TargetDrawer = &planet.DrawTarget;
+							break;
+						}
+						
+						auto ship = cast(CShip)object.GetComponent(CShip.classinfo);
+						if(ship !is null)
+						{
+							TargetObject = object;
+							TargetDrawer = &ship.DrawTarget;
+							break;
+						}
+					}
+					
+					auto star = cast(CStar)object.GetComponent(CStar.classinfo);
+					if(star !is null && star.Collide(world_pos))
+					{
+						TargetDrawer = &star.DrawTarget;
+						break;
+					}
+				}
+			}
+		}
+		
 		switch(event.type)
 		{
 			case ALLEGRO_EVENT_KEY_DOWN:
@@ -306,6 +343,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 			{
 				if(event.mouse.button == 1)
 				{
+					check_target(event.mouse.x, event.mouse.y);
 					Firing = true;
 				}
 				else if(event.mouse.button == 2)
@@ -327,39 +365,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 			{
 				if(Firing)
 				{
-					auto world_pos = SVector2D(event.mouse.x, event.mouse.y) + MainShipPosition - GameMode.Game.Gfx.ScreenSize / 2;
-					foreach(object; Objects)
-					{
-						if(object != MainShip)
-						{
-							auto damageable = cast(CDamageable)object.GetComponent(CDamageable.classinfo);
-							if(damageable !is null && damageable.Collide(world_pos))
-							{
-								auto planet = cast(CPlanet)object.GetComponent(CPlanet.classinfo);
-								if(planet !is null)
-								{
-									TargetObject = object;
-									TargetDrawer = &planet.DrawTarget;
-									break;
-								}
-								
-								auto ship = cast(CShip)object.GetComponent(CShip.classinfo);
-								if(ship !is null)
-								{
-									TargetObject = object;
-									TargetDrawer = &ship.DrawTarget;
-									break;
-								}
-							}
-							
-							auto star = cast(CStar)object.GetComponent(CStar.classinfo);
-							if(star !is null && star.Collide(world_pos))
-							{
-								TargetDrawer = &star.DrawTarget;
-								break;
-							}
-						}
-					}
+					check_target(event.mouse.x, event.mouse.y);
 				}
 			}
 			default:
