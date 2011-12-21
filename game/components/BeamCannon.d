@@ -175,6 +175,16 @@ class CBeamCannon : CUpdatable
 		return ColorVal.ToColor;
 	}
 	
+	SColor Selection()
+	{
+		return ColorVal;
+	}
+	
+	SColor Selection(SColor color)
+	{
+		return ColorVal = color;
+	}
+	
 	
 	SCannon[] Cannons;
 	mixin(Prop!("ITacticalScreen", "Screen", "", ""));

@@ -61,6 +61,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 		MainShip = AddObject("main_ship");
 		MainShip.Select!(CPosition).Set(start_pos.X, start_pos.Y);
 		MainShip.Select!(COrientation).Set(theta);
+		MainShip.Select!(CBeamCannon).Selection(GameMode.BeamSelection);
 		MainShipController = cast(CController)MainShip.GetComponent(CController.classinfo);
 		MainShipController.Screen(this);
 	}
@@ -84,6 +85,8 @@ class CTacticalScreen : CScreen, ITacticalScreen
 		{
 			auto pos = cast(CPosition)MainShip.GetComponent(CPosition.classinfo);
 			MainShipPosition = pos.Position;
+			auto beam = cast(CBeamCannon)MainShip.GetComponent(CBeamCannon.classinfo);
+			GameMode.BeamSelection = beam.Selection();
 		}
 			
 		GameMode.Energy = GameMode.Energy + dt * GameMode.CurrentStarSystem.EnergyFlux(MainShipPosition.Length);

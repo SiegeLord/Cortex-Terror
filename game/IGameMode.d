@@ -45,7 +45,11 @@ interface IGameMode
 	float Energy();
 	float Energy(float new_energy);
 	float MaxEnergy();
+	
 	void AddBonus(EBonus bonus);
+	
+	SColor BeamSelection();
+	SColor BeamSelection(SColor new_sel);
 	
 	bool Color(EColor color);
 	

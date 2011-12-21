@@ -323,7 +323,9 @@ class CGameMode : CMode, IGameMode
 	mixin(Prop!("CFont", "UIFont", "override", "protected"));
 	mixin(Prop!("CBitmapManager", "BitmapManager", "override", "protected"));
 	mixin(Prop!("CConfigManager", "ConfigManager", "override", "protected"));
+	mixin(Prop!("SColor", "BeamSelection", "override", "override"));
 protected:
+	SColor BeamSelectionVal;
 	SColor ColorVal = SColor(EColor.Green | EColor.Red | EColor.Blue);
 		
 	CBitmap UIBottomLeft;
