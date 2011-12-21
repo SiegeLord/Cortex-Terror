@@ -10,6 +10,7 @@ import engine.IComponentHolder;
 import engine.Config;
 import engine.MathTypes;
 import engine.Util;
+import engine.Gfx;
 
 import allegro5.allegro;
 import allegro5.allegro_primitives;
@@ -37,7 +38,8 @@ class CStar : CDrawable
 	{
 		if(StarSystem)
 		{
-			al_draw_filled_circle(Position.Position.X, Position.Position.Y, 100, StarSystem.Color);
+			DrawCircleGradient(Position.Position.X, Position.Position.Y, 50, StarSystem.StarRadius * 10, StarSystem.Color, al_map_rgba_f(0, 0, 0, 0));
+			al_draw_filled_circle(Position.Position.X, Position.Position.Y, StarSystem.StarRadius, al_map_rgb_f(1,1,1));
 		}
 	}
 	
@@ -67,7 +69,11 @@ class CStar : CDrawable
 		draw_line("Distance", al_map_rgb_f(0.5, 0.5, 1));
 		draw_line(Format("{} kk", cast(int)((Position.Position - Screen.MainShipPosition).Length)), al_map_rgb_f(0.5, 1, 0.5), true);
 		
-		al_draw_filled_circle(Screen.GameMode.Game.Gfx.ScreenSize.X - SideBarWidth / 2, y + 120, 60, StarSystem.Color);
+		auto cx = Screen.GameMode.Game.Gfx.ScreenSize.X - SideBarWidth / 2;
+		auto cy = y + 120;
+		
+		DrawCircleGradient(cx, cy, 5, 60, StarSystem.Color, al_map_rgba_f(0, 0, 0, 0));
+		al_draw_filled_circle(cx, cy, 10, al_map_rgb_f(1,1,1));
 	}
 	
 	CStarSystem StarSystem;

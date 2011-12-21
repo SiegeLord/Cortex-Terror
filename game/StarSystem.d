@@ -162,6 +162,7 @@ class CStarSystem : CDisposable
 		Color = GetStarColor(r, UniAge);
 		Planets.length = random.uniformR2(0, cast(int)MaxPlanets);
 		Name = GenerateRandomName(random);
+		StarRadiusVal = random.uniformR2(100, 200);
 		
 		size_t[MaxPlanets] orbits;
 		foreach(ii, ref orbit; orbits)
@@ -331,12 +332,14 @@ class CStarSystem : CDisposable
 	mixin(Prop!("const(char)[]", "Name", "", "protected"));
 	mixin(Prop!("ALLEGRO_COLOR", "Color", "", "protected"));
 	mixin(Prop!("const(char)[]", "Class", "", "protected"));
+	mixin(Prop!("float", "StarRadius", "", "protected"));
 
 	SVector2D Position;
 	bool Scanned = false;
 	bool Visited = false;
 	CPlanet[] Planets;
 protected:
+	float StarRadiusVal;
 	SColor ShieldColor;
 	float ClassFraction;
 	const(char)[] ClassVal;
