@@ -27,6 +27,7 @@ class CAIController : CUpdatable
 		SenseRange = config.Get!(float)("ai_controller", "sense_range", 300);
 		MinRange = config.Get!(float)("ai_controller", "min_range", 200);
 		MaxRange = config.Get!(float)("ai_controller", "max_range", 300);
+		MaxRunAwayTime = config.Get!(float)("ai_controller", "max_run_away_time", 5);
 	}
 	
 	override
@@ -60,12 +61,20 @@ class CAIController : CUpdatable
 		Engine.On = true;
 		
 		if(range < MinRange)
+		{
 			Chasing = false;
-		else if(range > MaxRange)
+		}
+		else if(range > MaxRange || RunAwayTime > MaxRunAwayTime)
+		{
+			RunAwayTime = 0;
 			Chasing = true;
+		}
 		
 		if(!Chasing)
+		{
 			dir = -dir;
+			RunAwayTime += dt;
+		}
 		
 		if(attacking && range < MaxRange)
 		{
@@ -104,6 +113,8 @@ class CAIController : CUpdatable
 	
 	mixin(Prop!("ITacticalScreen", "Screen", "", ""));
 protected:
+	float RunAwayTime = 0;
+	float MaxRunAwayTime = 2;
 	bool Chasing = true;
 	float MinRange;
 	float MaxRange;
