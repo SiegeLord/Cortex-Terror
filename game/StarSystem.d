@@ -51,22 +51,22 @@ class CPlanet
 		MinorAxis = MaxRadius * Orbit / MaxPlanets + MinRadius;
 		MajorAxis = MinorAxis * random.uniformR2(1.0f, 1.002f);
 		PeriodOffset = random.uniformR2(0.0f, 1.0f);
-		auto r = random.uniformR2(0, 5);
+		auto r = random.uniformR2(0, 120);
 		switch(r)
 		{
-			case 0:
+			case 0: .. case 3:
 				Bonus = EBonus.Health;
 				break;
-			case 1:
+			case 10: .. case 13:
 				Bonus = EBonus.Energy;
 				break;
-			case 2:
+			case 50:
 				Bonus = EBonus.RedBeam;
 				break;
-			case 3:
+			case 51:
 				Bonus = EBonus.GreenBeam;
 				break;
-			case 4:
+			case 52:
 				Bonus = EBonus.BlueBeam;
 				break;
 			default:
@@ -184,19 +184,28 @@ class CStarSystem : CDisposable
 		}
 	}
 	
-	bool SpawnLife(Random random)
+	bool SpawnLife(Random random, SColor color, EBonus bonus)
 	{
 		if(HaveLifeforms)
 			return false;
 		
 		auto habitable_orbit = (1 - ClassFraction) * (MaxPlanets - 1);
 		
+		bool bonus_given = false;
+		
 		foreach(planet; Planets)
 		{
 			auto prob = BaseLifeProbability / (abs(planet.Orbit - habitable_orbit) + 1);
 			if(random.uniformR2(0.0f, 1.0f) < prob)
 			{
-				planet.Population = random.exp!(float)() * MeanPlanetPopulation;
+				planet.Population = 1 + random.exp!(float)() * MeanPlanetPopulation;
+				planet.ShieldColor = color;
+				ShieldColor = color;
+				if(!bonus_given && bonus != EBonus.None)
+				{
+					planet.Bonus = bonus;
+					bonus_given = true;
+				}
 			}
 		}
 		
@@ -233,10 +242,11 @@ class CStarSystem : CDisposable
 			al_draw_tinted_bitmap(SmallStarHaloSprite.Get, col, pos.X - SmallStarHaloSprite.Width / 2, pos.Y - SmallStarHaloSprite.Height / 2, 0);
 			if(HaveLifeforms)
 			{
+				auto color = ShieldColor.ToColor;
 				auto tri_rad = 20;
 				auto vtx = SVector2D(tri_rad, 0);
 				vtx.Rotate(PI / 6);
-				al_draw_triangle(pos.X, pos.Y - tri_rad, pos.X - vtx.X, pos.Y + vtx.Y, pos.X + vtx.X, pos.Y + vtx.Y, al_map_rgb_f(1, 0, 0), 2);
+				al_draw_triangle(pos.X, pos.Y - tri_rad, pos.X - vtx.X, pos.Y + vtx.Y, pos.X + vtx.X, pos.Y + vtx.Y, color, 2);
 			}
 			else if(Visited && HaveArtifacts)
 			{
@@ -327,6 +337,7 @@ class CStarSystem : CDisposable
 	bool Visited = false;
 	CPlanet[] Planets;
 protected:
+	SColor ShieldColor;
 	float ClassFraction;
 	const(char)[] ClassVal;
 	float Brightness = 1;

@@ -5,6 +5,7 @@ import engine.MathTypes;
 
 import game.StarSystem;
 import game.IGameMode;
+import game.Color;
 
 import tango.math.random.Random;
 import tango.math.Math;
@@ -12,7 +13,14 @@ import tango.io.Stdout;
 
 import allegro5.allegro;
 
+/* Needs to be greater than 6 */
 const NumRaces = 40;
+
+const ProbRed = 0.5;
+const ProbGreen = 0.4;
+const ProbBlue = 0.3;
+
+const ExtraBeams = 1;
 
 class CGalaxy : CDisposable
 {
@@ -32,12 +40,52 @@ class CGalaxy : CDisposable
 			system = new CStarSystem(game_mode, random, pos);
 		}
 		
+		size_t extra_green = 0;
+		size_t extra_blue = 0;
+		
 		foreach(race; 0..NumRaces)
 		{
+			auto color = SColor(0);
+			auto bonus = EBonus.None;
+			
+			if(race < 7)
+			{
+				color.ColorFlag = race + 1;
+				if(race == 0)
+					bonus = EBonus.GreenBeam;
+				else if(race == 1)
+					bonus = EBonus.BlueBeam;
+			}
+			else
+			{
+				if(random.uniformR2(0.0f, 1.0f) < ProbRed)
+					color.TurnOn(EColor.Red);
+				
+				if(random.uniformR2(0.0f, 1.0f) < ProbBlue)
+					color.TurnOn(EColor.Blue);
+				
+				if(random.uniformR2(0.0f, 1.0f) < ProbGreen)
+					color.TurnOn(EColor.Green);
+				
+				if(!color.Check(EColor.Green) && extra_green < ExtraBeams)
+				{
+					extra_green++;
+					bonus = EBonus.GreenBeam;
+				}
+				
+				if(!color.Check(EColor.Blue) && extra_blue < ExtraBeams)
+				{
+					extra_blue++;
+					bonus = EBonus.BlueBeam;
+				}
+			}
+					
 			foreach(system; Systems)
 			{
-				if(system.SpawnLife(random))
+				if(system.SpawnLife(random, color, bonus))
+				{
 					break;
+				}
 			}
 		}
 	}
