@@ -106,8 +106,10 @@ class CGalaxy : CDisposable
 	void Draw(float physics_alpha)
 	{
 		al_set_blender(ALLEGRO_BLEND_OPERATIONS.ALLEGRO_ADD, ALLEGRO_BLEND_MODE.ALLEGRO_ONE, ALLEGRO_BLEND_MODE.ALLEGRO_ONE);
+		al_hold_bitmap_drawing(true);
 		foreach(system; Systems)
 			system.DrawGalaxyView(physics_alpha);
+		al_hold_bitmap_drawing(false);
 		al_set_blender(ALLEGRO_BLEND_OPERATIONS.ALLEGRO_ADD, ALLEGRO_BLEND_MODE.ALLEGRO_ONE, ALLEGRO_BLEND_MODE.ALLEGRO_INVERSE_ALPHA);
 	}
 	

@@ -281,6 +281,26 @@ class CTacticalScreen : CScreen, ITacticalScreen
 			{
 				if(event.mouse.button == 1)
 				{
+					Firing = true;
+				}
+				else if(event.mouse.button == 2)
+				{
+					TargetDrawer = null;
+				}
+				break;
+			}
+			case ALLEGRO_EVENT_MOUSE_BUTTON_UP:
+			{
+				if(event.mouse.button == 1)
+				{
+					Firing = false;
+				}
+				break;
+			}
+			case ALLEGRO_EVENT_MOUSE_AXES:
+			{
+				if(Firing)
+				{
 					auto world_pos = SVector2D(event.mouse.x, event.mouse.y) + MainShipPosition - GameMode.Game.Gfx.ScreenSize / 2;
 					foreach(object; Objects)
 					{
@@ -305,10 +325,6 @@ class CTacticalScreen : CScreen, ITacticalScreen
 							}
 						}
 					}
-				}
-				else if(event.mouse.button == 2)
-				{
-					TargetDrawer = null;
 				}
 			}
 			default:
@@ -356,6 +372,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 	
 	mixin(Prop!("SVector2D", "MainShipPosition", "override", ""));
 protected:
+	bool Firing = false;
 	bool SystemWasAlive = false;
 	SBullet[] ActiveBullets;
 	SBullet[] AllBullets;
