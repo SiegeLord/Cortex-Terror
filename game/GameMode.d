@@ -34,7 +34,7 @@ import tango.math.Math;
 const GalaxyRadius = 500;
 const NumStars = 256;
 const WarpConversionFactor = 0.25f;
-const HealthRate = 0.02f; /* Frac of max */
+const HealthRate = 0.03f; /* Frac of max */
 const HealthConversionFactor = 0.5f;
 
 class CGameMode : CMode, IGameMode

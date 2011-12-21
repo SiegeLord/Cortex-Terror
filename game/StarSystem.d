@@ -325,7 +325,7 @@ class CStarSystem : CDisposable
 	{
 		if(distance < 100)
 			distance = 100;
-		return Brightness * 1e4f / (distance * distance);
+		return Brightness * 1e2f / (distance);
 	}
 
 	mixin(Prop!("const(char)[]", "Name", "", "protected"));
