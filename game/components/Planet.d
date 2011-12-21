@@ -56,11 +56,6 @@ class CPlanet : CUpdatable
 		}
 	}
 	
-	bool Collide(SVector2D pos)
-	{
-		return (Position.Position - pos).LengthSq < (32 * 32);
-	}
-	
 	void DrawTarget(float physics_alpha)
 	{
 		auto font = Screen.GameMode.UIFont;

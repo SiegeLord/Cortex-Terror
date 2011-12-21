@@ -1,11 +1,13 @@
 module game.components.Damageable;
 
 import game.components.Updatable;
+import game.components.Position;
 import game.Color;
 
 import engine.IComponentHolder;
 import engine.Config;
 import engine.Util;
+import engine.MathTypes;
 
 import tango.io.Stdout;
 
@@ -15,6 +17,13 @@ class CDamageable : CUpdatable
 	{
 		super(config);
 		MaxHitpoints = config.Get!(float)("damageable", "max_hitpoints", 100.0f);
+		Hitpoints = MaxHitpoints;
+	}
+	
+	override
+	void WireUp(IComponentHolder holder)
+	{
+		Position = GetComponent!(CPosition)(holder, "damageable", "position");
 	}
 	
 	override
@@ -38,10 +47,17 @@ class CDamageable : CUpdatable
 		}
 	}
 	
+	bool Collide(SVector2D pos)
+	{
+		return (Position.Position - pos).LengthSq < (32 * 32);
+	}
+	
 	float ShieldTimeout = 0;
 	bool ShieldOn = false;
 	SColor ShieldColor;
 	float Hitpoints = 0;
 	float MaxHitpoints;
+protected:
+	CPosition Position;
 }
 

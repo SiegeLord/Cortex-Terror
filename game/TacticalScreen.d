@@ -10,6 +10,7 @@ import game.components.Star;
 import game.components.Sprite;
 import game.components.Position;
 import game.components.Orientation;
+import game.components.AIController;
 import game.components.Controller;
 import game.components.Planet;
 import game.components.BeamCannon;
@@ -57,6 +58,11 @@ class CTacticalScreen : CScreen, ITacticalScreen
 			start_pos = SVector2D(ss.MaxRadius * 0.1 * ss.ConversionFactor, 0);
 		auto theta = rand.uniformR(2 * PI);
 		start_pos.Rotate(theta + PI);
+		
+		auto ship = AddObject("ship");
+		ship.Select!(CPosition).Set(start_pos.X + 100, start_pos.Y);
+		auto controller = cast(CAIController)ship.GetComponent(CAIController.classinfo);
+		controller.Screen(this);
 		
 		MainShip = AddObject("main_ship");
 		MainShip.Select!(CPosition).Set(start_pos.X, start_pos.Y);
@@ -161,11 +167,15 @@ class CTacticalScreen : CScreen, ITacticalScreen
 					{
 						if(object != MainShip)
 						{
-							auto planet = cast(CPlanet)object.GetComponent(CPlanet.classinfo);
-							if(planet !is null && planet.Collide(world_pos))
+							auto damageable = cast(CDamageable)object.GetComponent(CDamageable.classinfo);
+							if(damageable !is null && damageable.Collide(world_pos))
 							{
-								TargetDrawer = &planet.DrawTarget;
-								break;
+								auto planet = cast(CPlanet)object.GetComponent(CPlanet.classinfo);
+								if(planet !is null)
+								{
+									TargetDrawer = &planet.DrawTarget;
+									break;
+								}
 							}
 							
 							auto star = cast(CStar)object.GetComponent(CStar.classinfo);
@@ -198,11 +208,10 @@ class CTacticalScreen : CScreen, ITacticalScreen
 		{
 			if(object != MainShip)
 			{
-				auto planet = cast(CPlanet)object.GetComponent(CPlanet.classinfo);
-				if(planet !is null && planet.Collide(pos))
+				auto damageable = cast(CDamageable)object.GetComponent(CDamageable.classinfo);
+				if(damageable !is null && damageable.Collide(pos))
 				{
-					object.Select!(CDamageable).Damage(damage, color);
-					break;
+					damageable.Damage(damage, color);
 				}
 			}
 		}
