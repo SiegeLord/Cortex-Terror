@@ -68,7 +68,9 @@ class CTacticalScreen : CScreen, ITacticalScreen
 				void add_ship(const(char)[] type)
 				{
 					auto ship = AddObject(type);
-					ship.Select!(CPosition).Set(planet_pos.X * ss.ConversionFactor + 10, planet_pos.Y * ss.ConversionFactor);
+					auto offset = SVector2D(100, 0);
+					offset.Rotate(rand.uniformR(2 * PI));
+					ship.Select!(CPosition).Set(planet_pos.X * ss.ConversionFactor + offset.X, planet_pos.Y * ss.ConversionFactor + offset.Y);
 					auto controller = cast(CAIController)ship.GetComponent(CAIController.classinfo);
 					controller.Screen(this);
 					controller.Planet(planet);
