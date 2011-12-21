@@ -1,6 +1,7 @@
 module game.TacticalScreen;
 
 import game.Screen;
+import game.Bullet;
 import game.Color;
 import game.IGameMode;
 import game.ITacticalScreen;
@@ -15,6 +16,7 @@ import game.components.Controller;
 import game.components.Planet;
 import game.components.BeamCannon;
 import game.components.Damageable;
+import game.components.Cannon;
 
 import engine.MathTypes;
 import engine.Util;
@@ -77,7 +79,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 	{
 		auto ret = new CGameObject(GameMode, name);
 		ret.Select!(CSprite).LoadBitmaps(GameMode);
-		ret.Select!(CBeamCannon).Screen(this);
+		ret.Select!(CCannon).Screen(this);
 		Objects ~= ret;
 		return ret;
 	}
@@ -87,6 +89,9 @@ class CTacticalScreen : CScreen, ITacticalScreen
 	{
 		foreach(object; Objects)
 			object.Update(dt);
+			
+		foreach(ref bullet; ActiveBullets)
+			bullet.Update(dt);
 			
 		if(MainShip !is null)
 		{
@@ -113,6 +118,9 @@ class CTacticalScreen : CScreen, ITacticalScreen
 			obj.Dispose();
 		
 		Objects.length = new_len;
+		
+		new_len = ar.removeIf(ActiveBullets, (SBullet bullet) { return bullet.Life < 0; });
+		ActiveBullets = AllBullets[0..new_len];
 	}
 	
 	override
@@ -126,6 +134,9 @@ class CTacticalScreen : CScreen, ITacticalScreen
 		
 		foreach(object; Objects)
 			object.Draw(physics_alpha);
+			
+		foreach(bullet; ActiveBullets)
+			bullet.Draw(physics_alpha);
 		
 		GameMode.Game.Gfx.ResetTransform;
 		
@@ -235,6 +246,18 @@ class CTacticalScreen : CScreen, ITacticalScreen
 	}
 	
 	override
+	void FireBullet(SVector2D origin)
+	{
+		if(ActiveBullets.length == AllBullets.length)
+		{
+			AllBullets.length = AllBullets.length + 1;
+		}
+		
+		AllBullets[ActiveBullets.length].Launch(origin, (MainShipPosition - origin).Normalize);
+		ActiveBullets = AllBullets[0..ActiveBullets.length + 1];
+	}
+	
+	override
 	IGameMode GameMode()
 	{
 		return super.GameMode;
@@ -242,6 +265,8 @@ class CTacticalScreen : CScreen, ITacticalScreen
 	
 	mixin(Prop!("SVector2D", "MainShipPosition", "override", ""));
 protected:
+	SBullet[] ActiveBullets;
+	SBullet[] AllBullets;
 	void delegate(float) TargetDrawer;
 	bool DrawMap = false;
 	SVector2D MainShipPositionVal;

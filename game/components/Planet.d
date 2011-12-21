@@ -102,4 +102,3 @@ protected:
 	COrientation Orientation;
 	CDamageable Damageable;
 }
-

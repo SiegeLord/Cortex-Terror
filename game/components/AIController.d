@@ -4,6 +4,7 @@ import game.components.Updatable;
 import game.components.Engine;
 import game.components.Position;
 import game.components.Orientation;
+import game.components.PulseCannon;
 import game.ITacticalScreen;
 import game.IGameMode;
 import game.Color;
@@ -34,15 +35,18 @@ class CAIController : CUpdatable
 		Engine = GetComponent!(CEngine)(holder, "ai_controller", "engine");
 		Position = GetComponent!(CPosition)(holder, "ai_controller", "position");
 		Orientation = GetComponent!(COrientation)(holder, "ai_controller", "orientation");
+		PulseCannon = GetComponent!(CPulseCannon)(holder, "ai_controller", "pulse_cannon");
 	}
 	
 	override
 	void Update(float dt)
 	{
 		auto to_main = Screen.MainShipPosition - Position.Position;
+		bool attacking = false;
 		if(to_main.LengthSq < SenseRange * SenseRange)
 		{
 			Target = Screen.MainShipPosition;
+			attacking = true;
 		}
 		else
 		{
@@ -57,7 +61,15 @@ class CAIController : CUpdatable
 		
 		if(range < MinRange)
 			dir = -dir;
-		
+			
+		if(attacking && range < MaxRange)
+		{
+			PulseCannon.Target = Target;
+			PulseCannon.On = true;
+		}
+		else
+			PulseCannon.On = false;
+			
 		auto face_vec = SVector2D(1, 0);
 		face_vec.Rotate(Orientation.Theta);
 		auto cross = dir.CrossProduct(face_vec);
@@ -93,6 +105,7 @@ protected:
 	SVector2D Target;
 	CPosition Position;
 	COrientation Orientation;
+	CPulseCannon PulseCannon;
 	CEngine Engine;
 	ITacticalScreen ScreenVal;
 }

@@ -15,24 +15,28 @@ struct SVector2D
 		Y = y;
 	}
 
-	void Rotate(float cosine, float sine)
+	SVector2D Rotate(float cosine, float sine)
 	{
 		auto t = X * cosine - Y * sine;
 		Y = X * sine + Y * cosine;
 		X = t;
+		
+		return this;
 	}
 	
-	void Rotate(float theta)
+	SVector2D Rotate(float theta)
 	{
-		Rotate(cos(theta), sin(theta));
+		return Rotate(cos(theta), sin(theta));
 	}
 	
 	//rotates this vector by pi/2
-	void MakeNormal()
+	SVector2D MakeNormal()
 	{
 		float t = Y;
 		Y = X;
 		X = -t;
+		
+		return this;
 	}
 	
 	float DotProduct(SVector2D other)
@@ -90,9 +94,10 @@ struct SVector2D
 		return SVector2D(-X, -Y);
 	}
 
-	void Normalize()
+	SVector2D Normalize()
 	{
 		this /= Length;
+		return this;
 	}
 	
 	float opIndex(size_t i)

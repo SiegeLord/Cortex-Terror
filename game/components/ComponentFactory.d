@@ -14,6 +14,7 @@ import game.components.Controller;
 import game.components.AIController;
 import game.components.Planet;
 import game.components.BeamCannon;
+import game.components.PulseCannon;
 import game.components.Beam;
 import game.components.Damageable;
 import game.components.Shield;
@@ -52,4 +53,5 @@ static this()
 	Creators["damageable"] = &CreatorFunc!(CDamageable);
 	Creators["shield"] = &CreatorFunc!(CShield);
 	Creators["ai_controller"] = &CreatorFunc!(CAIController);
+	Creators["pulse_cannon"] = &CreatorFunc!(CPulseCannon);
 }
