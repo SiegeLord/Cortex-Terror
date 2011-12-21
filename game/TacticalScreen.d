@@ -388,6 +388,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 				if(damageable !is null && damageable.Collide(pos))
 				{
 					damageable.Damage(damage, color);
+					break;
 				}
 			}
 		}
