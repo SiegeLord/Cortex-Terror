@@ -60,8 +60,13 @@ class CAIController : CUpdatable
 		Engine.On = true;
 		
 		if(range < MinRange)
+			Chasing = false;
+		else if(range > MaxRange)
+			Chasing = true;
+		
+		if(!Chasing)
 			dir = -dir;
-			
+		
 		if(attacking && range < MaxRange)
 		{
 			PulseCannon.Target = Target;
@@ -99,6 +104,7 @@ class CAIController : CUpdatable
 	
 	mixin(Prop!("ITacticalScreen", "Screen", "", ""));
 protected:
+	bool Chasing = true;
 	float MinRange;
 	float MaxRange;
 	float SenseRange;

@@ -5,8 +5,8 @@ import engine.MathTypes;
 import allegro5.allegro;
 import allegro5.allegro_primitives;
 
-const BulletSpeed = 200.0f;
-const BulletLife = 3.0f;
+const BulletSpeed = 500.0f;
+const BulletLife = 2.0f;
 
 struct SBullet
 {
