@@ -52,7 +52,7 @@ class CAIController : CUpdatable
 		auto to_home = home_target - Position.Position;
 		
 		bool attacking = false;
-		if(to_home.LengthSq > MaxPatrolRange * MaxPatrolRange)
+		if(Planet.Population > 0 && to_home.LengthSq > MaxPatrolRange * MaxPatrolRange)
 		{
 			Target = home_target;
 		}
