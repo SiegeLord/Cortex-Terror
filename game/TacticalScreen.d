@@ -209,7 +209,8 @@ class CTacticalScreen : CScreen, ITacticalScreen
 						DrawMap = !DrawMap;
 						break;
 					case ALLEGRO_KEY_ESCAPE:
-						GameMode.PopScreen;
+						if(MainShip is null || GameMode.Health == GameMode.MaxHealth)
+							GameMode.PopScreen;
 						break;
 					default:
 				}
