@@ -69,6 +69,9 @@ class CGalaxy : CDisposable
 				if(random.uniformR2(0.0f, 1.0f) < ProbGreen)
 					color.TurnOn(EColor.Green);
 				
+				if(color.ColorFlag == 0)
+					color.TurnOn(EColor.Red);
+				
 				if(!color.Check(EColor.Green) && extra_green < ExtraBeams)
 				{
 					extra_green++;
