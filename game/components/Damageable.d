@@ -37,14 +37,17 @@ class CDamageable : CUpdatable
 	
 	void Damage(float damage, SColor color)
 	{
-		if(color == ShieldColor || Hitpoints <= 0)
+		if(damage > 0)
 		{
-			Hitpoints -= damage;
-		}
-		else
-		{
-			ShieldOn = true;
-			ShieldTimeout = 0.5;
+			if(color == ShieldColor || Hitpoints <= 0)
+			{
+				Hitpoints -= damage;
+			}
+			else
+			{
+				ShieldOn = true;
+				ShieldTimeout = 0.5;
+			}
 		}
 	}
 	

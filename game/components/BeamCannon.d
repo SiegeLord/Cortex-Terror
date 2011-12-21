@@ -37,31 +37,31 @@ class CBeamCannon : CCannon
 		
 		if(On)
 		{
-			size_t n;
+			auto energy_usage = 0.0f;
+			size_t n = 0;
 			foreach(ref cannon; Cannons)
 			{
 				cannon.CheckArc(Target, Position.Position, Orientation.Theta, MaxRange);
 				if(cannon.On)
-					n++;
+				{
+					energy_usage += dt * BeamEnergy;
+					
+					if(energy_usage > Screen.GameMode.Energy)
+					{
+						cannon.On = false;
+					}
+					else
+					{
+						n++;
+					}
+				}
 			}
+			
+			Screen.GameMode.Energy = Screen.GameMode.Energy - dt * n * BeamEnergy;
 			
 			if(n > 0)
 			{
 				Screen.Damage(Target, n, ColorVal);
-			}
-			
-			auto energy_usage = dt * n * BeamEnergy;
-			
-			if(Screen.GameMode.Energy < energy_usage)
-			{
-				foreach(ref cannon; Cannons)
-				{
-					cannon.On = false;
-				}
-			}
-			else
-			{
-				Screen.GameMode.Energy = Screen.GameMode.Energy - energy_usage;
 			}
 		}
 	}
