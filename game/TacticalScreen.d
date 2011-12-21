@@ -57,11 +57,32 @@ class CTacticalScreen : CScreen, ITacticalScreen
 			
 			if(planet.Population > 0)
 			{
-				auto ship = AddObject("ship");
-				ship.Select!(CPosition).Set(planet_pos.X + 10, planet_pos.Y);
-				auto controller = cast(CAIController)ship.GetComponent(CAIController.classinfo);
-				controller.Screen(this);
-				controller.Planet(planet);
+				int threat = 0;
+				if(planet.ShieldColor.Check(EColor.Red))
+					threat++;
+				if(planet.ShieldColor.Check(EColor.Green))
+					threat++;
+				if(planet.ShieldColor.Check(EColor.Blue))
+					threat++;
+				
+				void add_ship(const(char)[] type)
+				{
+					auto ship = AddObject(type);
+					ship.Select!(CPosition).Set(planet_pos.X * ss.ConversionFactor + 10, planet_pos.Y * ss.ConversionFactor);
+					auto controller = cast(CAIController)ship.GetComponent(CAIController.classinfo);
+					controller.Screen(this);
+					controller.Planet(planet);
+				}
+				
+				foreach(ii; 0..threat * 2)
+				{
+					add_ship("small_ship");
+				}
+				
+				foreach(ii; 0..(threat - 1))
+				{
+					add_ship("medium_ship");
+				}
 			}
 		}
 		
@@ -106,7 +127,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 			{
 				if(MainShipDamageable.Collide(bullet.Position))
 				{
-					GameMode.Health = GameMode.Health - 25;
+					GameMode.Health = GameMode.Health - 5;
 					bullet.Life = -1;
 				}
 			}
