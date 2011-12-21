@@ -73,6 +73,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 		MainShip.Select!(CBeamCannon).Selection(GameMode.BeamSelection);
 		MainShipController = cast(CController)MainShip.GetComponent(CController.classinfo);
 		MainShipController.Screen(this);
+		MainShipDamageable = cast(CDamageable)MainShip.GetComponent(CDamageable.classinfo);
 	}
 	
 	CGameObject AddObject(const(char)[] name)
@@ -92,6 +93,18 @@ class CTacticalScreen : CScreen, ITacticalScreen
 			
 		foreach(ref bullet; ActiveBullets)
 			bullet.Update(dt);
+			
+		if(MainShipDamageable !is null)
+		{
+			foreach(ref bullet; ActiveBullets)
+			{
+				if(MainShipDamageable.Collide(bullet.Position))
+				{
+					GameMode.Health = GameMode.Health - 5;
+					bullet.Life = -1;
+				}
+			}
+		}
 			
 		if(MainShip !is null)
 		{
@@ -271,6 +284,8 @@ protected:
 	bool DrawMap = false;
 	SVector2D MainShipPositionVal;
 	CGameObject[] Objects;
+	
 	CGameObject MainShip;
 	CController MainShipController;
+	CDamageable MainShipDamageable;
 }

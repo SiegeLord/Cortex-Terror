@@ -33,7 +33,9 @@ import tango.math.Math;
 
 const GalaxyRadius = 500;
 const NumStars = 256;
-const WarpConversionFactor = 4;
+const WarpConversionFactor = 0.25f;
+const HealthRate = 0.02f; /* Frac of max */
+const HealthConversionFactor = 0.5f;
 
 class CGameMode : CMode, IGameMode
 {
@@ -96,8 +98,22 @@ class CGameMode : CMode, IGameMode
 			{
 				dir_to_dest.Normalize;
 				GalaxyLocation = GalaxyLocation + dt * dir_to_dest * WarpSpeed;
-				Energy = Energy - dt * WarpSpeed / WarpConversionFactor;
+				Energy = Energy - dt * WarpSpeed * WarpConversionFactor;
 			}
+		}
+		
+		if(Health - MaxHealth)
+		{
+			auto old_health = Health;
+			auto energy_use = HealthRate * MaxHealth * dt * HealthConversionFactor;
+			
+			if(energy_use > Energy)
+				energy_use = Energy;
+			auto health_bonus = energy_use / HealthConversionFactor;
+
+			Health = Health + health_bonus;
+			auto actual_energy_use = (Health - old_health) * HealthConversionFactor;
+			Energy = Energy - actual_energy_use;
 		}
 		
 		ScreenStack.top.Update(dt);
@@ -267,6 +283,8 @@ class CGameMode : CMode, IGameMode
 	{
 		if(val > MaxHealth)
 			val = MaxHealth;
+		if(val < 0)
+			val = 0;
 		return HealthVal = val;
 	}
 	
