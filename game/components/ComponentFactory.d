@@ -18,6 +18,7 @@ import game.components.PulseCannon;
 import game.components.Beam;
 import game.components.Damageable;
 import game.components.Shield;
+import game.components.ShieldRotator;
 
 alias CComponent function(CConfig config) Creator;
 
@@ -54,4 +55,5 @@ static this()
 	Creators["shield"] = &CreatorFunc!(CShield);
 	Creators["ai_controller"] = &CreatorFunc!(CAIController);
 	Creators["pulse_cannon"] = &CreatorFunc!(CPulseCannon);
+	Creators["shield_rotator"] = &CreatorFunc!(CShieldRotator);
 }

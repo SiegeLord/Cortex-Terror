@@ -46,13 +46,13 @@ class CAIController : CUpdatable
 	override
 	void Update(float dt)
 	{
-		auto home_target = Planet is null ? SVector2D(0, 0) : (Planet.Position * ConversionFactor);
+		auto home_target = (Planet is null || Planet.Population <= 0)? SVector2D(0, 0) : (Planet.Position * ConversionFactor);
 		
 		auto to_main = Screen.MainShipPosition - Position.Position;
 		auto to_home = home_target - Position.Position;
 		
 		bool attacking = false;
-		if(Planet.Population > 0 && to_home.LengthSq > MaxPatrolRange * MaxPatrolRange)
+		if(to_home.LengthSq > MaxPatrolRange * MaxPatrolRange)
 		{
 			Target = home_target;
 		}

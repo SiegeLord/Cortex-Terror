@@ -44,6 +44,8 @@ class CTacticalScreen : CScreen, ITacticalScreen
 		star.StarSystem = game_mode.CurrentStarSystem;
 		star.Screen = this;
 		
+		SystemWasAlive = game_mode.CurrentStarSystem.HaveLifeforms;
+		
 		foreach(planet; game_mode.CurrentStarSystem.Planets)
 		{
 			auto planet_obj = AddObject("planet");
@@ -165,6 +167,15 @@ class CTacticalScreen : CScreen, ITacticalScreen
 		}
 		);
 		
+		if(BossShip !is null)
+		{
+			auto dmg = cast(CDamageable)BossShip.GetComponent(CDamageable.classinfo);
+			if(dmg !is null && dmg.Mortal && dmg.Hitpoints <= 0)
+			{
+				BossShip = null;
+			}
+		}
+		
 		foreach(obj; Objects[new_len..$])
 			obj.Dispose();
 		
@@ -172,6 +183,27 @@ class CTacticalScreen : CScreen, ITacticalScreen
 		
 		new_len = ar.removeIf(ActiveBullets, (SBullet bullet) { return bullet.Life < 0; });
 		ActiveBullets = AllBullets[0..new_len];
+		
+		if(SystemWasAlive && !GameMode.CurrentStarSystem.HaveLifeforms)
+		{
+			GameMode.RacesLeft = GameMode.RacesLeft - 1;
+			Stdout(GameMode.RacesLeft).nl;
+			SystemWasAlive = false;
+			
+			if(GameMode.RacesLeft == 39 && MainShip !is null)
+			{
+				Stdout("Here").nl;
+				
+				auto ship = AddObject("large_ship");
+				auto offset = SVector2D(100, 0);
+				offset.Rotate(rand.uniformR(2 * PI));
+				ship.Select!(CPosition).Set(MainShipPosition.X + offset.X, MainShipPosition.Y + offset.Y);
+				auto controller = cast(CAIController)ship.GetComponent(CAIController.classinfo);
+				controller.Screen(this);
+				
+				BossShip = ship;
+			}
+		}
 	}
 	
 	override
@@ -324,6 +356,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 	
 	mixin(Prop!("SVector2D", "MainShipPosition", "override", ""));
 protected:
+	bool SystemWasAlive = false;
 	SBullet[] ActiveBullets;
 	SBullet[] AllBullets;
 	void delegate(float) TargetDrawer;
@@ -331,6 +364,7 @@ protected:
 	SVector2D MainShipPositionVal;
 	CGameObject[] Objects;
 	
+	CGameObject BossShip;
 	CGameObject MainShip;
 	CController MainShipController;
 	CDamageable MainShipDamageable;

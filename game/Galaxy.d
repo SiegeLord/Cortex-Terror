@@ -28,6 +28,8 @@ class CGalaxy : CDisposable
 	{
 		GameMode = game_mode;
 		
+		GameMode.RacesLeft = NumRaces;
+		
 		Systems.length = num_stars;
 		
 		foreach(ii, ref system; Systems)

@@ -46,6 +46,9 @@ interface IGameMode
 	float Energy(float new_energy);
 	float MaxEnergy();
 	
+	int RacesLeft();
+	int RacesLeft(int new_sys);
+	
 	void AddBonus(EBonus bonus);
 	
 	SColor BeamSelection();

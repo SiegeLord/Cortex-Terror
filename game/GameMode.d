@@ -345,7 +345,9 @@ class CGameMode : CMode, IGameMode
 	mixin(Prop!("CBitmapManager", "BitmapManager", "override", "protected"));
 	mixin(Prop!("CConfigManager", "ConfigManager", "override", "protected"));
 	mixin(Prop!("SColor", "BeamSelection", "override", "override"));
+	mixin(Prop!("int", "RacesLeft", "override", "override"));
 protected:
+	int RacesLeftVal;
 	SColor BeamSelectionVal;
 	SColor ColorVal = SColor(EColor.Green | EColor.Red | EColor.Blue);
 		
