@@ -17,6 +17,7 @@ class CDamageable : CUpdatable
 	{
 		super(config);
 		MaxHitpoints = config.Get!(float)("damageable", "max_hitpoints", 100.0f);
+		Mortal = config.Get!(bool)("damageable", "mortal", true);
 		Hitpoints = MaxHitpoints;
 	}
 	
@@ -56,8 +57,11 @@ class CDamageable : CUpdatable
 	bool ShieldOn = false;
 	SColor ShieldColor;
 	float Hitpoints = 0;
-	float MaxHitpoints;
+
+	mixin(Prop!("bool", "Mortal", "", "protected"));
 protected:
+	bool MortalVal;
+	float MaxHitpoints;
 	CPosition Position;
 }
 

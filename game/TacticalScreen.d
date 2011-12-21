@@ -27,6 +27,7 @@ import tango.stdc.stringz;
 import tango.math.random.Random;
 import tango.math.Math;
 import tango.io.Stdout;
+import ar = tango.core.Array;
 
 class CTacticalScreen : CScreen, ITacticalScreen
 {
@@ -96,6 +97,22 @@ class CTacticalScreen : CScreen, ITacticalScreen
 		}
 			
 		GameMode.Energy = GameMode.Energy + dt * GameMode.CurrentStarSystem.EnergyFlux(MainShipPosition.Length);
+		
+		auto new_len = ar.removeIf(Objects, 
+		(CGameObject obj)
+		{
+			auto dmg = cast(CDamageable)obj.GetComponent(CDamageable.classinfo);
+			if(dmg !is null)
+				return dmg.Mortal && dmg.Hitpoints <= 0;
+			else
+				return false;
+		}
+		);
+		
+		foreach(obj; Objects[new_len..$])
+			obj.Dispose();
+		
+		Objects.length = new_len;
 	}
 	
 	override

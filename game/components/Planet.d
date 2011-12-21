@@ -86,6 +86,7 @@ class CPlanet : CUpdatable
 	{
 		PlanetVal = planet;
 		Damageable.Hitpoints = planet.Population / PopPerDamage;
+		Damageable.ShieldColor = planet.ShieldColor;
 		return PlanetVal;
 	}
 	
