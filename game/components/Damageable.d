@@ -53,6 +53,11 @@ class CDamageable : CUpdatable
 		return (Position.Position - pos).LengthSq < (32 * 32);
 	}
 	
+	float Health()
+	{
+		return Hitpoints / MaxHitpoints;
+	}
+	
 	float ShieldTimeout = 0;
 	bool ShieldOn = false;
 	SColor ShieldColor;

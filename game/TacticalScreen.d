@@ -17,6 +17,7 @@ import game.components.Planet;
 import game.components.BeamCannon;
 import game.components.Damageable;
 import game.components.Cannon;
+import game.components.Ship;
 
 import engine.MathTypes;
 import engine.Util;
@@ -74,8 +75,17 @@ class CTacticalScreen : CScreen, ITacticalScreen
 					offset.Rotate(rand.uniformR(2 * PI));
 					ship.Select!(CPosition).Set(planet_pos.X * ss.ConversionFactor + offset.X, planet_pos.Y * ss.ConversionFactor + offset.Y);
 					auto controller = cast(CAIController)ship.GetComponent(CAIController.classinfo);
+					if(controller is null)
+						throw new Exception("'"~ type.idup ~ ".cfg' object needs a 'ai_controller' component");
+					
 					controller.Screen(this);
 					controller.Planet(planet);
+						
+					auto ship_comp = cast(CShip)ship.GetComponent(CShip.classinfo);
+					if(ship_comp !is null)
+					{
+						ship_comp.Screen = this;
+					}
 				}
 				
 				foreach(ii; 0..threat * 2)
@@ -177,7 +187,14 @@ class CTacticalScreen : CScreen, ITacticalScreen
 		}
 		
 		foreach(obj; Objects[new_len..$])
+		{
+			if(obj == TargetObject)
+			{
+				TargetObject = null;
+				TargetDrawer = null;
+			}
 			obj.Dispose();
+		}
 		
 		Objects.length = new_len;
 		
@@ -199,7 +216,15 @@ class CTacticalScreen : CScreen, ITacticalScreen
 				offset.Rotate(rand.uniformR(2 * PI));
 				ship.Select!(CPosition).Set(MainShipPosition.X + offset.X, MainShipPosition.Y + offset.Y);
 				auto controller = cast(CAIController)ship.GetComponent(CAIController.classinfo);
+				if(controller is null)
+					throw new Exception("'large_ship.cfg' object needs a 'ai_controller' component");
 				controller.Screen(this);
+				
+				auto ship_comp = cast(CShip)ship.GetComponent(CShip.classinfo);
+				if(ship_comp !is null)
+				{
+					ship_comp.Screen = this;
+				}
 				
 				BossShip = ship;
 			}
@@ -285,6 +310,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 				}
 				else if(event.mouse.button == 2)
 				{
+					TargetObject = null;
 					TargetDrawer = null;
 				}
 				break;
@@ -312,7 +338,16 @@ class CTacticalScreen : CScreen, ITacticalScreen
 								auto planet = cast(CPlanet)object.GetComponent(CPlanet.classinfo);
 								if(planet !is null)
 								{
+									TargetObject = object;
 									TargetDrawer = &planet.DrawTarget;
+									break;
+								}
+								
+								auto ship = cast(CShip)object.GetComponent(CShip.classinfo);
+								if(ship !is null)
+								{
+									TargetObject = object;
+									TargetDrawer = &ship.DrawTarget;
 									break;
 								}
 							}
@@ -376,7 +411,10 @@ protected:
 	bool SystemWasAlive = false;
 	SBullet[] ActiveBullets;
 	SBullet[] AllBullets;
+	
+	CGameObject TargetObject;
 	void delegate(float) TargetDrawer;
+	
 	bool DrawMap = false;
 	SVector2D MainShipPositionVal;
 	CGameObject[] Objects;

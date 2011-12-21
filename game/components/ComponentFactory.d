@@ -19,6 +19,7 @@ import game.components.Beam;
 import game.components.Damageable;
 import game.components.Shield;
 import game.components.ShieldRotator;
+import game.components.Ship;
 
 alias CComponent function(CConfig config) Creator;
 
@@ -56,4 +57,5 @@ static this()
 	Creators["ai_controller"] = &CreatorFunc!(CAIController);
 	Creators["pulse_cannon"] = &CreatorFunc!(CPulseCannon);
 	Creators["shield_rotator"] = &CreatorFunc!(CShieldRotator);
+	Creators["ship"] = &CreatorFunc!(CShip);
 }
