@@ -5,6 +5,8 @@ import game.components.Engine;
 import game.components.Position;
 import game.components.Orientation;
 import game.components.PulseCannon;
+import game.components.Damageable;
+import game.StarSystem;
 import game.ITacticalScreen;
 import game.IGameMode;
 import game.Color;
@@ -28,6 +30,7 @@ class CAIController : CUpdatable
 		MinRange = config.Get!(float)("ai_controller", "min_range", 200);
 		MaxRange = config.Get!(float)("ai_controller", "max_range", 300);
 		MaxRunAwayTime = config.Get!(float)("ai_controller", "max_run_away_time", 5);
+		MaxPatrolRange = config.Get!(float)("ai_controller", "max_patrol_range", 5000);
 	}
 	
 	override
@@ -37,21 +40,30 @@ class CAIController : CUpdatable
 		Position = GetComponent!(CPosition)(holder, "ai_controller", "position");
 		Orientation = GetComponent!(COrientation)(holder, "ai_controller", "orientation");
 		PulseCannon = GetComponent!(CPulseCannon)(holder, "ai_controller", "pulse_cannon");
+		Damageable = cast(CDamageable)holder.GetComponent(CDamageable.classinfo);
 	}
 	
 	override
 	void Update(float dt)
 	{
+		auto home_target = Planet is null ? SVector2D(0, 0) : (Planet.Position * ConversionFactor);
+		
 		auto to_main = Screen.MainShipPosition - Position.Position;
+		auto to_home = home_target - Position.Position;
+		
 		bool attacking = false;
-		if(to_main.LengthSq < SenseRange * SenseRange)
+		if(to_home.LengthSq > MaxPatrolRange * MaxPatrolRange)
+		{
+			Target = home_target;
+		}
+		else if(to_main.LengthSq < SenseRange * SenseRange)
 		{
 			Target = Screen.MainShipPosition;
 			attacking = true;
 		}
 		else
 		{
-			Target = SVector2D(0, 0);
+			Target = home_target;
 		}
 		
 		auto dir = Target - Position.Position;
@@ -111,18 +123,36 @@ class CAIController : CUpdatable
 		}
 	}
 	
+	CPlanet Planet(CPlanet planet)
+	{
+		PlanetVal = planet;
+		if(Damageable)
+		{
+			Damageable.ShieldColor = Planet.ShieldColor;
+		}
+		return planet;
+	}
+	
+	CPlanet Planet()
+	{
+		return PlanetVal;
+	}
+	
 	mixin(Prop!("ITacticalScreen", "Screen", "", ""));
 protected:
+	CPlanet PlanetVal;
 	float RunAwayTime = 0;
 	float MaxRunAwayTime = 2;
 	bool Chasing = true;
 	float MinRange;
 	float MaxRange;
+	float MaxPatrolRange;
 	float SenseRange;
 	SVector2D Target;
 	CPosition Position;
 	COrientation Orientation;
 	CPulseCannon PulseCannon;
+	CDamageable Damageable;
 	CEngine Engine;
 	ITacticalScreen ScreenVal;
 }

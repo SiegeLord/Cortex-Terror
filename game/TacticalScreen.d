@@ -52,6 +52,17 @@ class CTacticalScreen : CScreen, ITacticalScreen
 				throw new Exception("'planet.cfg' object needs a 'planet' component");
 			planet_comp.Planet = planet;
 			planet_comp.Screen = this;
+			
+			auto planet_pos = planet.Position;
+			
+			if(planet.Population > 0)
+			{
+				auto ship = AddObject("ship");
+				ship.Select!(CPosition).Set(planet_pos.X + 10, planet_pos.Y);
+				auto controller = cast(CAIController)ship.GetComponent(CAIController.classinfo);
+				controller.Screen(this);
+				controller.Planet(planet);
+			}
 		}
 		
 		SVector2D start_pos;
@@ -61,11 +72,6 @@ class CTacticalScreen : CScreen, ITacticalScreen
 			start_pos = SVector2D(ss.MaxRadius * 0.1 * ss.ConversionFactor, 0);
 		auto theta = rand.uniformR(2 * PI);
 		start_pos.Rotate(theta + PI);
-		
-		auto ship = AddObject("ship");
-		ship.Select!(CPosition).Set(start_pos.X + 100, start_pos.Y);
-		auto controller = cast(CAIController)ship.GetComponent(CAIController.classinfo);
-		controller.Screen(this);
 		
 		MainShip = AddObject("main_ship");
 		MainShip.Select!(CPosition).Set(start_pos.X, start_pos.Y);
