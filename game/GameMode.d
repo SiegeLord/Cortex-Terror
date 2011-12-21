@@ -102,7 +102,7 @@ class CGameMode : CMode, IGameMode
 			}
 		}
 		
-		if(Health - MaxHealth)
+		if(!Dead && Health - MaxHealth)
 		{
 			auto old_health = Health;
 			auto energy_use = HealthRate * MaxHealth * dt * HealthConversionFactor;
@@ -283,8 +283,11 @@ class CGameMode : CMode, IGameMode
 	{
 		if(val > MaxHealth)
 			val = MaxHealth;
-		if(val < 0)
+		if(val <= 0)
+		{
+			Dead = true;
 			val = 0;
+		}
 		return HealthVal = val;
 	}
 	
@@ -348,6 +351,7 @@ protected:
 		
 	CBitmap UIBottomLeft;
 
+	bool Dead = false;
 	float HealthVal = 100;
 	float BaseHealth = 100;
 	float EnergyVal = 25;

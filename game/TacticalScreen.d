@@ -100,10 +100,19 @@ class CTacticalScreen : CScreen, ITacticalScreen
 			{
 				if(MainShipDamageable.Collide(bullet.Position))
 				{
-					GameMode.Health = GameMode.Health - 5;
+					GameMode.Health = GameMode.Health - 25;
 					bullet.Life = -1;
 				}
 			}
+		}
+		
+		if(GameMode.Health == 0 && MainShip !is null)
+		{
+			Objects.length = ar.remove(Objects, MainShip);
+			MainShip.Dispose;
+			MainShip = null;
+			MainShipController = null;
+			MainShipDamageable = null;
 		}
 			
 		if(MainShip !is null)
