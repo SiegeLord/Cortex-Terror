@@ -162,23 +162,30 @@ class CTacticalScreen : CScreen, ITacticalScreen
 		
 		GameMode.Game.Gfx.ResetTransform;
 		
-		if(DrawMap)
+		if(MainShip is null)
 		{
-			auto cur_sys = GameMode.CurrentStarSystem;
-			
-			al_identity_transform(&trans);
-			al_translate_transform(&trans, mid.X - MainShipPosition.X / ss.ConversionFactor, mid.Y - MainShipPosition.Y / ss.ConversionFactor);
-			al_use_transform(&trans);
-			
-			cur_sys.DrawSystemView(physics_alpha);
-			
-			GameMode.Game.Gfx.ResetTransform;
-			
-			al_draw_text(GameMode.UIFont.Get, al_map_rgb_f(0.5, 1, 0.5), mid.X, 2 * mid.Y - GameMode.UIFont.Height - 10, ALLEGRO_ALIGN_CENTRE, toStringz(cur_sys.Name));
+			al_draw_text(GameMode.UIFont.Get, al_map_rgb_f(0.5, 1, 0.5), mid.X, mid.Y - GameMode.UIFont.Height / 2, ALLEGRO_ALIGN_CENTRE, "Game Over");
 		}
-		GameMode.DrawLeftSideBar(physics_alpha);
-		if(TargetDrawer !is null)
-			TargetDrawer(physics_alpha);
+		else
+		{
+			if(DrawMap)
+			{
+				auto cur_sys = GameMode.CurrentStarSystem;
+				
+				al_identity_transform(&trans);
+				al_translate_transform(&trans, mid.X - MainShipPosition.X / ss.ConversionFactor, mid.Y - MainShipPosition.Y / ss.ConversionFactor);
+				al_use_transform(&trans);
+				
+				cur_sys.DrawSystemView(physics_alpha);
+				
+				GameMode.Game.Gfx.ResetTransform;
+				
+				al_draw_text(GameMode.UIFont.Get, al_map_rgb_f(0.5, 1, 0.5), mid.X, 2 * mid.Y - GameMode.UIFont.Height - 10, ALLEGRO_ALIGN_CENTRE, toStringz(cur_sys.Name));
+			}
+			GameMode.DrawLeftSideBar(physics_alpha);
+			if(TargetDrawer !is null)
+				TargetDrawer(physics_alpha);
+		}
 	}
 	
 	override

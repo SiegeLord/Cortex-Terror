@@ -77,7 +77,7 @@ class CGameMode : CMode, IGameMode
 			ScreenStack.top.Dispose;
 			ScreenStack.pop;
 			WantPop = false;
-			if(ScreenStack.size == 0)
+			if(ScreenStack.size == 0 || Dead)
 			{
 				Game.NextMode = EMode.Exit;
 				return;
