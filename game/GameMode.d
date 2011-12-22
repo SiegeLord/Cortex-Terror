@@ -55,7 +55,7 @@ class CGameMode : CMode, IGameMode
 		CStarSystem sys;
 		while(true)
 		{
-			auto vec = SVector2D(Rand.uniformR2(0, GalaxyRadius / 2), 0);
+			auto vec = SVector2D(Rand.uniformR2(0, GalaxyRadius / 3), 0);
 			vec.Rotate(Rand.uniformR2(0.0f, cast(float)(2.0f * PI)));
 			GalaxyLocation = vec;
 			
