@@ -18,6 +18,8 @@ class CDamageable : CUpdatable
 		super(config);
 		MaxHitpoints = config.Get!(float)("damageable", "max_hitpoints", 100.0f);
 		Mortal = config.Get!(bool)("damageable", "mortal", true);
+		ShieldRadius = config.Get!(float)("damageable", "shield_radius", 60);
+		CollideRadius = config.Get!(float)("damageable", "collide_radius", 32);
 		Hitpoints = MaxHitpoints;
 	}
 	
@@ -46,7 +48,7 @@ class CDamageable : CUpdatable
 			else
 			{
 				ShieldOn = true;
-				ShieldTimeout = 0.5;
+				ShieldTimeout = 1.0f;
 			}
 		}
 	}
@@ -65,6 +67,8 @@ class CDamageable : CUpdatable
 	bool ShieldOn = false;
 	SColor ShieldColor;
 	float Hitpoints = 0;
+	float CollideRadius;
+	float ShieldRadius;
 
 	mixin(Prop!("bool", "Mortal", "", "protected"));
 protected:

@@ -45,7 +45,10 @@ class CStar : CDrawable
 	
 	bool Collide(SVector2D pos)
 	{
-		return (Position.Position - pos).LengthSq < (100 * 100);
+		if(StarSystem)
+			return (Position.Position - pos).LengthSq < (StarSystem.StarRadius * StarSystem.StarRadius);
+		else
+			return false;
 	}
 	
 	void DrawTarget(float physics_alpha)
