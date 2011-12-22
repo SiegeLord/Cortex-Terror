@@ -8,6 +8,7 @@ import engine.Disposable;
 import engine.MathTypes;
 import engine.Util;
 import engine.Bitmap;
+import engine.Gfx;
 
 import allegro5.allegro;
 import allegro5.allegro_primitives;
@@ -243,7 +244,7 @@ class CStarSystem : CDisposable
 			al_draw_tinted_bitmap(SmallStarHaloSprite.Get, col, pos.X - SmallStarHaloSprite.Width / 2, pos.Y - SmallStarHaloSprite.Height / 2, 0);
 			if(HaveLifeforms)
 			{
-				auto color = ShieldColor.ToColor;
+				auto color = Visited ? ShieldColor.ToColor : al_map_rgb_f(0.5, 0.5, 0.5);
 				auto tri_rad = 20;
 				auto vtx = SVector2D(tri_rad, 0);
 				vtx.Rotate(PI / 6);
@@ -259,7 +260,9 @@ class CStarSystem : CDisposable
 	
 	void DrawSystemView(float physics_alpha)
 	{
-		al_draw_filled_circle(0, 0, 20, Color);
+		DrawCircleGradient(0, 0, 5, 30, Blend(Color, al_map_rgba_f(0, 0, 0, 0), 0.25), al_map_rgba_f(0, 0, 0, 0));
+		DrawCircleGradient(0, 0, 0, 5, al_map_rgba_f(0.75, 0.75, 0.75, 0.75), al_map_rgba_f(0.75, 0.75, 0.75, 0.75));
+		
 		foreach(planet; Planets)
 		{
 			planet.DrawSystemView(physics_alpha);
@@ -310,7 +313,8 @@ class CStarSystem : CDisposable
 		auto x = GameMode.Game.Gfx.ScreenSize.X - SideBarWidth / 2;
 		y += 40;
 		
-		al_draw_filled_circle(x, y, 20, Color);
+		DrawCircleGradient(x, y, 5, 30, Blend(Color, al_map_rgba_f(0, 0, 0, 0), 0.25), al_map_rgba_f(0, 0, 0, 0));
+		DrawCircleGradient(x, y, 0, 5, al_map_rgb_f(1, 1, 1), al_map_rgb_f(1, 1, 1));
 		
 		al_set_clipping_rectangle(cast(int)bar_left, y, cast(int)bar_right, GameMode.Game.Gfx.ScreenHeight - y);
 		

@@ -75,7 +75,7 @@ class CStar : CDrawable
 		auto cx = Screen.GameMode.Game.Gfx.ScreenSize.X - SideBarWidth / 2;
 		auto cy = y + 120;
 		
-		DrawCircleGradient(cx, cy, 5, 60, StarSystem.Color, al_map_rgba_f(0, 0, 0, 0));
+		DrawCircleGradient(cx, cy, 5, 60, Blend(StarSystem.Color, al_map_rgba_f(0, 0, 0, 0), 0.25), al_map_rgba_f(0, 0, 0, 0));
 		al_draw_filled_circle(cx, cy, 10, al_map_rgb_f(1,1,1));
 	}
 	

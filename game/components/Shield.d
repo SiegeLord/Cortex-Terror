@@ -43,6 +43,3 @@ protected:
 	CPosition Position;
 	CDamageable Damageable;
 }
-
-
-
