@@ -260,7 +260,8 @@ class CGameMode : CMode, IGameMode
 		foreach(ii; 1..8)
 		{
 			int color = [1, 2, 4, 3, 5, 6, 7][ii - 1];
-			al_draw_text(UIFont.Get, Color(color) ? SColor(color).ToColor : al_map_rgb_f(0.5, 0.5, 0.5), x, y, 0, Format("{}\0", ii).ptr);
+			al_draw_text(UIFont.Get, Color(color) ? SColor(color).ToColor : al_map_rgb_f(0.5, 0.5, 0.5), x, y, 0, 
+			    Format("{}{}\0", BeamSelection.ColorFlag == color ? " " : "", ii).ptr);
 			y -= lh;
 		}
 		
