@@ -254,6 +254,17 @@ class CGameMode : CMode, IGameMode
 		al_draw_arc(SideBarWidth / 2, screen_size.Y - SideBarWidth / 2, 65 - space, PI / 2, energy_arc, al_map_rgb_f(1, 1, 0), space * 2);
 		al_draw_arc(SideBarWidth / 2, screen_size.Y - SideBarWidth / 2, 65 + space, PI / 2, health_arc, al_map_rgb_f(0, 0, 1), space * 2);
 		al_draw_bitmap(UIBottomLeft.Get, 0, screen_size.Y - UIBottomLeft.Height, 0);
+		
+		y = screen_size.Y - SideBarWidth - 6 * lh;
+		
+		foreach(ii; 1..8)
+		{
+			int color = [1, 2, 4, 3, 5, 6, 7][ii - 1];
+			al_draw_text(UIFont.Get, Color(color) ? SColor(color).ToColor : al_map_rgb_f(0.5, 0.5, 0.5), x, y, 0, Format("{}\0", ii).ptr);
+			y -= lh;
+		}
+		
+		al_draw_text(UIFont.Get, al_map_rgb_f(0.5, 0.5, 1), x, y, 0, "Beams");
 	}
 	
 	override
@@ -332,7 +343,7 @@ class CGameMode : CMode, IGameMode
 	}
 	
 	override
-	bool Color(EColor color)
+	bool Color(int color)
 	{
 		return ColorVal.Check(color);
 	}
@@ -349,7 +360,7 @@ class CGameMode : CMode, IGameMode
 protected:
 	int RacesLeftVal;
 	SColor BeamSelectionVal;
-	SColor ColorVal = SColor(EColor.Green | EColor.Red | EColor.Blue);
+	SColor ColorVal = SColor(/*EColor.Green |*/ EColor.Red | EColor.Blue);
 		
 	CBitmap UIBottomLeft;
 

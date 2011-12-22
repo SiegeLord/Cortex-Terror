@@ -54,7 +54,7 @@ interface IGameMode
 	SColor BeamSelection();
 	SColor BeamSelection(SColor new_sel);
 	
-	bool Color(EColor color);
+	bool Color(int color);
 	
 	bool Arrived();
 	IGame Game();

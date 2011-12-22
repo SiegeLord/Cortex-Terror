@@ -12,9 +12,9 @@ enum EColor : int
 struct SColor
 {
 	const
-	bool Check(EColor color)
+	bool Check(int color)
 	{
-		return (ColorFlag & color) != 0;
+		return (ColorFlag & color) == color;
 	}
 	
 	bool Toggle(EColor color)

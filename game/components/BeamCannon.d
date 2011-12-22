@@ -96,6 +96,11 @@ class CBeamCannon : CCannon
 		return OnVal;
 	}
 	
+	void SetColor(int color)
+	{
+		ColorVal.ColorFlag = color;
+	}
+	
 	bool Color(EColor color)
 	{
 		return ColorVal.Check(color);

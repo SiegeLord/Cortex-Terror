@@ -49,15 +49,31 @@ class CController : CComponent
 						break;
 					case ALLEGRO_KEY_1:
 						if(Screen.GameMode.Color(EColor.Red))
-							BeamCannon.ToggleColor(EColor.Red);
+							BeamCannon.SetColor = EColor.Red;
 						break;
 					case ALLEGRO_KEY_2:
 						if(Screen.GameMode.Color(EColor.Green))
-							BeamCannon.ToggleColor(EColor.Green);
+							BeamCannon.SetColor = EColor.Green;
 						break;
 					case ALLEGRO_KEY_3:
 						if(Screen.GameMode.Color(EColor.Blue))
-							BeamCannon.ToggleColor(EColor.Blue);
+							BeamCannon.SetColor = EColor.Blue;
+						break;
+					case ALLEGRO_KEY_4:
+						if(Screen.GameMode.Color(EColor.Red) && Screen.GameMode.Color(EColor.Green))
+							BeamCannon.SetColor = EColor.Red | EColor.Green;
+						break;
+					case ALLEGRO_KEY_5:
+						if(Screen.GameMode.Color(EColor.Red) && Screen.GameMode.Color(EColor.Blue))
+							BeamCannon.SetColor = EColor.Red | EColor.Blue;
+						break;
+					case ALLEGRO_KEY_6:
+						if(Screen.GameMode.Color(EColor.Green) && Screen.GameMode.Color(EColor.Blue))
+							BeamCannon.SetColor = EColor.Green | EColor.Blue;
+						break;
+					case ALLEGRO_KEY_7:
+						if(Screen.GameMode.Color(EColor.Red) && Screen.GameMode.Color(EColor.Green) && Screen.GameMode.Color(EColor.Blue))
+							BeamCannon.SetColor = EColor.Red | EColor.Green | EColor.Blue;
 						break;
 					default:
 				}
