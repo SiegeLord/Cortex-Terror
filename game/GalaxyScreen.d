@@ -3,6 +3,7 @@ module game.GalaxyScreen;
 import game.Screen;
 import game.IGameMode;
 import game.StarSystem;
+import game.StarField;
 
 import engine.MathTypes;
 
@@ -19,6 +20,7 @@ class CGalaxyScreen : CScreen
 	this(IGameMode game_mode)
 	{
 		super(game_mode);
+		StarField = new CStarField(game_mode, GameMode.GalaxyLocation, 0.5, 100);
 	}
 	
 	override
@@ -26,11 +28,14 @@ class CGalaxyScreen : CScreen
 	{
 		CurrentZoom += dt * (TargetZoom - CurrentZoom) / 0.25;
 		GameMode.GalaxyZoom = CurrentZoom;
+		StarField.Update(GameMode.GalaxyLocation);
 	}
 	
 	override
 	void Draw(float physics_alpha)
 	{
+		StarField.Draw(GameMode.GalaxyLocation, physics_alpha);
+		
 		GameMode.Galaxy.Draw(physics_alpha);
 		
 		auto cur_pos = GameMode.ToGalaxyView(GameMode.GalaxyLocation);
@@ -130,6 +135,7 @@ class CGalaxyScreen : CScreen
 		}
 	}
 protected:
+	CStarField StarField;
 	float CurrentZoom = 1;
 	float TargetZoom = 1;
 	CStarSystem DestinationSystem;

@@ -6,6 +6,7 @@ import game.Color;
 import game.IGameMode;
 import game.ITacticalScreen;
 import game.GameObject;
+import game.StarField;
 import ss = game.StarSystem;
 import game.components.Star;
 import game.components.Sprite;
@@ -117,6 +118,10 @@ class CTacticalScreen : CScreen, ITacticalScreen
 		MainShipController = cast(CController)MainShip.GetComponent(CController.classinfo);
 		MainShipController.Screen(this);
 		MainShipDamageable = cast(CDamageable)MainShip.GetComponent(CDamageable.classinfo);
+		MainShipPosition = start_pos;
+		
+		StarFields[0] = new CStarField(GameMode, MainShipPosition, 1, 50);
+		StarFields[1] = new CStarField(GameMode, MainShipPosition, 0.5, 100);
 	}
 	
 	CGameObject AddObject(const(char)[] name)
@@ -169,6 +174,9 @@ class CTacticalScreen : CScreen, ITacticalScreen
 			auto beam = cast(CBeamCannon)MainShip.GetComponent(CBeamCannon.classinfo);
 			GameMode.BeamSelection = beam.Selection();
 		}
+		
+		foreach(field; StarFields)
+			field.Update(MainShipPosition);
 			
 		GameMode.Energy = GameMode.Energy + dt * GameMode.CurrentStarSystem.EnergyFlux(MainShipPosition.Length);
 		
@@ -240,6 +248,9 @@ class CTacticalScreen : CScreen, ITacticalScreen
 	override
 	void Draw(float physics_alpha)
 	{
+		foreach(field; StarFields)
+			field.Draw(MainShipPosition, physics_alpha);
+		
 		auto mid = GameMode.Game.Gfx.ScreenSize / 2;
 		ALLEGRO_TRANSFORM trans;
 		
@@ -481,4 +492,6 @@ protected:
 	CGameObject MainShip;
 	CController MainShipController;
 	CDamageable MainShipDamageable;
+	
+	CStarField[2] StarFields;
 }
