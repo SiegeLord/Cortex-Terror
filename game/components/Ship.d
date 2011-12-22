@@ -5,6 +5,7 @@ import engine.Config;
 import engine.Component;
 import engine.MathTypes;
 
+import game.components.Sprite;
 import game.components.Damageable;
 import game.components.Physics;
 import game.components.Position;
@@ -33,6 +34,7 @@ class CShip : CComponent
 		Damageable = GetComponent!(CDamageable)(holder, "ship", "damageable");
 		Physics = GetComponent!(CPhysics)(holder, "ship", "physics");
 		Position = GetComponent!(CPosition)(holder, "ship", "position");
+		Sprite = GetComponent!(CSprite)(holder, "ship", "sprite");
 	}
 	
 	void DrawTarget(float physics_alpha)
@@ -57,6 +59,13 @@ class CShip : CComponent
 		draw_line(Format("{}%", cast(int)(100 * Damageable.Health)), al_map_rgb_f(0.5, 1, 0.5), true);
 		draw_line("Distance", al_map_rgb_f(0.5, 0.5, 1));
 		draw_line(Format("{} kk", cast(int)((Position.Position - Screen.MainShipPosition).Length)), al_map_rgb_f(0.5, 1, 0.5), true);
+		
+		auto cx = Screen.GameMode.Game.Gfx.ScreenSize.X - SideBarWidth / 2;
+		auto cy = y + 120;
+		
+		auto bmp = Sprite.ShipSprite;
+		
+		al_draw_rotated_bitmap(bmp.Get, bmp.Width / 2, bmp.Height / 2, cx, cy, -PI / 2, 0);
 	}
 	
 	ITacticalScreen Screen;
@@ -64,4 +73,5 @@ protected:
 	CPosition Position;
 	CPhysics Physics;
 	CDamageable Damageable;
+	CSprite Sprite;
 }

@@ -9,6 +9,7 @@ import engine.IComponentHolder;
 import engine.MathTypes;
 import engine.Bitmap;
 import engine.Config;
+import engine.Util;
 
 import allegro5.allegro;
 
@@ -48,9 +49,11 @@ class CSprite : CDrawable
 			al_draw_bitmap(ShipSprite.Get, Position.X - cx, Position.Y - cy, 0);
 		}
 	}
+	
+	mixin(Prop!("CBitmap", "ShipSprite", "", "protected"));
 protected:
 	const(char)[] ShipSpriteName;
-	CBitmap ShipSprite;
+	CBitmap ShipSpriteVal;
 	CPosition Position;
 	COrientation Orientation;
 }
