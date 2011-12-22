@@ -274,6 +274,27 @@ class CTacticalScreen : CScreen, ITacticalScreen
 				
 				al_draw_text(GameMode.UIFont.Get, al_map_rgb_f(0.5, 1, 0.5), mid.X, 2 * mid.Y - GameMode.UIFont.Height - 10, ALLEGRO_ALIGN_CENTRE, toStringz(cur_sys.Name));
 			}
+			else if(TargetObject !is null)
+			{
+				auto pos = cast(CPosition)TargetObject.GetComponent(CPosition.classinfo);
+				assert(pos);
+				auto dir = pos.Position - MainShipPosition;
+				auto theta = atan2(dir.Y, dir.X);
+
+				al_identity_transform(&trans);
+				al_translate_transform(&trans, 0, -200);
+				al_rotate_transform(&trans, theta + PI / 2);
+				al_translate_transform(&trans, GameMode.Game.Gfx.ScreenWidth / 2, GameMode.Game.Gfx.ScreenHeight / 2);
+				al_use_transform(&trans);
+
+				auto tri_rad = 20;
+				auto vtx = SVector2D(tri_rad, 0);
+				vtx.Rotate(PI / 6);
+				al_draw_triangle(0, -tri_rad, -vtx.X, vtx.Y, vtx.X, vtx.Y, al_map_rgb_f(0.5, 1, 0.5), 2);
+				
+				GameMode.Game.Gfx.ResetTransform;
+			}
+			
 			GameMode.DrawLeftSideBar(physics_alpha);
 			if(TargetDrawer !is null)
 				TargetDrawer(physics_alpha);
@@ -321,6 +342,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 					auto star = cast(CStar)object.GetComponent(CStar.classinfo);
 					if(star !is null && star.Collide(world_pos))
 					{
+						TargetObject = object;
 						TargetDrawer = &star.DrawTarget;
 						break;
 					}
