@@ -242,9 +242,15 @@ class CTacticalScreen : CScreen, ITacticalScreen
 	{
 		auto mid = GameMode.Game.Gfx.ScreenSize / 2;
 		ALLEGRO_TRANSFORM trans;
-		al_identity_transform(&trans);
-		al_translate_transform(&trans, mid.X - MainShipPosition.X, mid.Y - MainShipPosition.Y);
-		al_use_transform(&trans);
+		
+		void set_camera()
+		{
+			al_identity_transform(&trans);
+			al_translate_transform(&trans, mid.X - MainShipPosition.X, mid.Y - MainShipPosition.Y);
+			al_use_transform(&trans);
+		}		
+		
+		set_camera;
 		
 		foreach(object; Objects)
 			object.Draw(physics_alpha);
@@ -280,19 +286,34 @@ class CTacticalScreen : CScreen, ITacticalScreen
 				assert(pos);
 				auto dir = pos.Position - MainShipPosition;
 				auto theta = atan2(dir.Y, dir.X);
-
-				al_identity_transform(&trans);
-				al_translate_transform(&trans, 0, -200);
-				al_rotate_transform(&trans, theta + PI / 2);
-				al_translate_transform(&trans, GameMode.Game.Gfx.ScreenWidth / 2, GameMode.Game.Gfx.ScreenHeight / 2);
-				al_use_transform(&trans);
-
-				auto tri_rad = 20;
-				auto vtx = SVector2D(tri_rad, 0);
-				vtx.Rotate(PI / 6);
-				al_draw_triangle(0, -tri_rad, -vtx.X, vtx.Y, vtx.X, vtx.Y, al_map_rgb_f(0.5, 1, 0.5), 2);
 				
-				GameMode.Game.Gfx.ResetTransform;
+				if(dir.LengthSq < 400 * 400)
+				{
+					/*auto tri_rad = 50;
+					auto vtx = SVector2D(tri_rad, 0);
+					vtx.Rotate(PI / 6);
+					
+					set_camera;
+					
+					al_draw_triangle(pos.X, pos.Y - tri_rad, pos.X - vtx.X, pos.Y + vtx.Y, pos.X + vtx.X, pos.Y + vtx.Y, al_map_rgb_f(0.5, 1, 0.5), 2);
+					
+					GameMode.Game.Gfx.ResetTransform;*/
+				}
+				else
+				{
+					al_identity_transform(&trans);
+					al_translate_transform(&trans, 0, -200);
+					al_rotate_transform(&trans, theta + PI / 2);
+					al_translate_transform(&trans, GameMode.Game.Gfx.ScreenWidth / 2, GameMode.Game.Gfx.ScreenHeight / 2);
+					al_use_transform(&trans);
+
+					auto tri_rad = 20;
+					auto vtx = SVector2D(tri_rad, 0);
+					vtx.Rotate(PI / 6);
+					al_draw_triangle(0, -tri_rad, -vtx.X, vtx.Y, vtx.X, vtx.Y, al_map_rgb_f(0.5, 1, 0.5), 2);
+					
+					GameMode.Game.Gfx.ResetTransform;
+				}
 			}
 			
 			GameMode.DrawLeftSideBar(physics_alpha);
