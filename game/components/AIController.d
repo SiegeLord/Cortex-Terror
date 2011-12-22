@@ -10,6 +10,7 @@ import game.StarSystem;
 import game.ITacticalScreen;
 import game.IGameMode;
 import game.Color;
+import game.Bullet;
 
 import engine.IComponentHolder;
 import engine.Component;
@@ -20,6 +21,7 @@ import engine.Util;
 import allegro5.allegro;
 
 import tango.io.Stdout;
+import tango.math.Math;
 
 class CAIController : CUpdatable
 {
@@ -91,6 +93,7 @@ class CAIController : CUpdatable
 		if(attacking && range < MaxRange)
 		{
 			PulseCannon.Target = Target;
+			PulseCannon.TargetVelocity = Screen.MainShipVelocity;
 			PulseCannon.On = true;
 		}
 		else

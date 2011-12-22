@@ -35,7 +35,7 @@ class CPulseCannon : CCannon
 			bool any_on = false;
 			foreach(ref cannon; Cannons)
 			{
-				cannon.CheckArc(Target, Position.Position, Orientation.Theta, MaxRange);
+				cannon.CheckArcLead(Target, TargetVelocity, Position.Position, Orientation.Theta, MaxRange);
 				any_on |= cannon.On;
 			}
 			
@@ -45,7 +45,7 @@ class CPulseCannon : CCannon
 				
 				foreach(cannon; Cannons)
 				{
-					Screen.FireBullet(cannon.GetWorldLocation(Position.Position, Orientation.Theta));
+					Screen.FireBullet(cannon.GetWorldLocation(Position.Position, Orientation.Theta), cannon.Target);
 				}
 			}
 		}
@@ -56,6 +56,8 @@ class CPulseCannon : CCannon
 	{
 		return "pulse_cannon";
 	}
+	
+	SVector2D TargetVelocity;
 protected:
 	float Cooldown;
 	float Heat = 0;

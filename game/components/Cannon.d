@@ -6,6 +6,7 @@ import game.components.Orientation;
 import game.ITacticalScreen;
 import game.IGameMode;
 import game.Color;
+import game.Bullet;
 
 import engine.IComponentHolder;
 import engine.MathTypes;
@@ -18,6 +19,7 @@ import tango.io.Stdout;
 import tango.text.convert.Format;
 
 import allegro5.allegro;
+import allegro5.allegro_primitives;
 
 struct SCannon
 {
@@ -25,6 +27,7 @@ struct SCannon
 	float Theta;
 	float Spread;
 	bool On;
+	SVector2D Target;
 	
 	SVector2D GetWorldLocation(SVector2D ship_pos, float ship_theta)
 	{
@@ -32,6 +35,30 @@ struct SCannon
 		loc.Rotate(ship_theta);
 		loc += ship_pos;
 		return loc;
+	}
+	
+	void CheckArcLead(SVector2D target, SVector2D target_velocity, SVector2D ship_pos, float ship_theta, float max_range)
+	{
+		auto dir = target - GetWorldLocation(ship_pos, ship_theta);
+		
+		auto a = BulletSpeed * BulletSpeed;
+		auto b = -2.0f * (dir.X * target_velocity.X + dir.Y * target_velocity.Y);
+		auto c = -(dir.LengthSq);
+		
+		auto det = b * b - 4 * a * c;
+		if(det > 0)
+		{
+			auto t1 = (-b + sqrt(det)) / (2 * a);
+			auto t2 = (-b - sqrt(det)) / (2 * a);
+			
+			auto t = max(t2, t1);
+			if(t > 0)
+			{
+				target += target_velocity * t;
+			}
+		}
+		
+		CheckArc(target, ship_pos, ship_theta, max_range);
 	}
 	
 	void CheckArc(SVector2D target, SVector2D ship_pos, float ship_theta, float max_range)
@@ -49,6 +76,7 @@ struct SCannon
 		auto dot = dir.DotProduct(cannon_dir);
 		auto min_dot = cos(Spread / 2);
 		On = dot > min_dot;
+		Target = target;
 	}
 }
 
@@ -79,7 +107,7 @@ class CCannon : CUpdatable
 			if(is_def)
 				break;
 
-			Cannons ~= SCannon(SVector2D(location[0], location[1]), theta, spread, false);
+			Cannons ~= SCannon(SVector2D(location[0], location[1]), theta, spread, false, SVector2D(0, 0));
 
 			n++;
 		}

@@ -8,6 +8,7 @@ interface ITacticalScreen
 {
 	IGameMode GameMode();
 	SVector2D MainShipPosition();
+	SVector2D MainShipVelocity();
 	void Damage(SVector2D pos, float damage, SColor color);
-	void FireBullet(SVector2D origin);
+	void FireBullet(SVector2D origin, SVector2D target);
 }

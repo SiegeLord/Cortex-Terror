@@ -18,6 +18,7 @@ import game.components.BeamCannon;
 import game.components.Damageable;
 import game.components.Cannon;
 import game.components.Ship;
+import game.components.Physics;
 
 import engine.MathTypes;
 import engine.Util;
@@ -160,7 +161,11 @@ class CTacticalScreen : CScreen, ITacticalScreen
 		if(MainShip !is null)
 		{
 			auto pos = cast(CPosition)MainShip.GetComponent(CPosition.classinfo);
+			assert(pos);
 			MainShipPosition = pos.Position;
+			auto phys = cast(CPhysics)MainShip.GetComponent(CPhysics.classinfo);
+			assert(phys);
+			MainShipVelocity = phys.Velocity;
 			auto beam = cast(CBeamCannon)MainShip.GetComponent(CBeamCannon.classinfo);
 			GameMode.BeamSelection = beam.Selection();
 		}
@@ -396,14 +401,14 @@ class CTacticalScreen : CScreen, ITacticalScreen
 	}
 	
 	override
-	void FireBullet(SVector2D origin)
+	void FireBullet(SVector2D origin, SVector2D target)
 	{
 		if(ActiveBullets.length == AllBullets.length)
 		{
 			AllBullets.length = AllBullets.length + 1;
 		}
 		
-		AllBullets[ActiveBullets.length].Launch(origin, (MainShipPosition - origin).Normalize);
+		AllBullets[ActiveBullets.length].Launch(origin, (target - origin).Normalize);
 		ActiveBullets = AllBullets[0..ActiveBullets.length + 1];
 	}
 	
@@ -414,6 +419,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 	}
 	
 	mixin(Prop!("SVector2D", "MainShipPosition", "override", ""));
+	mixin(Prop!("SVector2D", "MainShipVelocity", "override", ""));
 protected:
 	bool Firing = false;
 	bool SystemWasAlive = false;
@@ -425,6 +431,7 @@ protected:
 	
 	bool DrawMap = false;
 	SVector2D MainShipPositionVal;
+	SVector2D MainShipVelocityVal;
 	CGameObject[] Objects;
 	
 	CGameObject BossShip;
