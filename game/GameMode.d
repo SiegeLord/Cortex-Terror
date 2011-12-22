@@ -387,6 +387,6 @@ protected:
 	Stack!(CScreen) ScreenStack;
 	bool WantPop = false;
 	CStarSystem CurrentStarSystemVal;
-	float GalaxyZoomVal = 1;
+	float GalaxyZoomVal = 5;
 	Random Rand;
 }

@@ -136,7 +136,7 @@ class CGalaxyScreen : CScreen
 	}
 protected:
 	CStarField StarField;
-	float CurrentZoom = 1;
-	float TargetZoom = 1;
+	float CurrentZoom = 1.5;
+	float TargetZoom = 2;
 	CStarSystem DestinationSystem;
 }
