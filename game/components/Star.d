@@ -11,6 +11,7 @@ import engine.Config;
 import engine.MathTypes;
 import engine.Util;
 import engine.Gfx;
+import engine.Bitmap;
 
 import allegro5.allegro;
 import allegro5.allegro_primitives;
@@ -19,12 +20,27 @@ import allegro5.allegro_font;
 import tango.stdc.stringz;
 import tango.io.Stdout;
 import tango.text.convert.Format;
+import tango.math.random.Random;
+import tango.math.Math;
 
 class CStar : CDrawable
 {
 	this(CConfig config)
 	{
 		super(config);
+		foreach(ref spot; SunSpots)
+		{
+			float x = 0;
+			float y = 0;
+			do
+			{
+				x = rand.uniformR2(-1.0f, 1.0f);
+				y = rand.uniformR2(-1.0f, 1.0f);
+			} while(x * x + y * y > 1);
+			
+			spot.X = atan2(y, x);
+			spot.Y = sqrt(x*x + y*y);
+		}
 	}
 	
 	override
@@ -40,7 +56,24 @@ class CStar : CDrawable
 		{
 			DrawCircleGradient(Position.Position.X, Position.Position.Y, 50, StarSystem.StarRadius * 10, StarSystem.Color, al_map_rgba_f(0, 0, 0, 0));
 			al_draw_filled_circle(Position.Position.X, Position.Position.Y, StarSystem.StarRadius, al_map_rgb_f(1,1,1));
+			
+			auto w = SunSpotBitmap.Width;
+			auto h = SunSpotBitmap.Height;
+			
+			foreach(spot; SunSpots)
+			{
+				auto x = StarSystem.StarRadius * spot.Y * cos(spot.X);
+				auto y = StarSystem.StarRadius * spot.Y * sin(spot.X);
+				auto scale = cos(PI / 2 * spot.Y);
+				
+				al_draw_scaled_rotated_bitmap(SunSpotBitmap.Get, w / 2, h / 2, x, y, 1, scale, spot.X + PI / 2, 0);
+			}
 		}
+	}
+	
+	void LoadBitmaps(IGameMode game_mode)
+	{
+		SunSpotBitmap = game_mode.BitmapManager.Load("data/bitmaps/sun_spot.png");
 	}
 	
 	bool Collide(SVector2D pos)
@@ -82,5 +115,8 @@ class CStar : CDrawable
 	CStarSystem StarSystem;
 	ITacticalScreen Screen;
 protected:
+	CBitmap SunSpotBitmap;
+	/* theta, radius */
+	SVector2D[10] SunSpots;
 	CPosition Position;	
 }

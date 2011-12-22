@@ -44,6 +44,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 			throw new Exception("'star.cfg' object needs a 'star' component");
 		star.StarSystem = game_mode.CurrentStarSystem;
 		star.Screen = this;
+		star.LoadBitmaps(GameMode);
 		
 		SystemWasAlive = game_mode.CurrentStarSystem.HaveLifeforms;
 		
