@@ -43,6 +43,9 @@ class CShieldRotator : CUpdatable
 				Damageable.ShieldColor.TurnOn(EColor.Blue);
 			if(rand.uniformR(1.0f) < 0.5)
 				Damageable.ShieldColor.TurnOn(EColor.Green);
+			
+			if(Damageable.ShieldColor.ColorFlag == 0)
+				Damageable.ShieldColor = SColor(1);
 		}
 	}
 	
