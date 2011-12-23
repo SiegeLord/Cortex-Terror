@@ -405,6 +405,7 @@ class CGameMode : CMode, IGameMode
 	
 	mixin(Prop!("CGalaxy", "Galaxy", "override", "protected"));
 	mixin(Prop!("SVector2D", "GalaxyLocation", "override", "protected"));
+	mixin(Prop!("bool", "DisplayFinalMessage", "override", "override"));
 	mixin(Prop!("bool", "Arrived", "override", "protected"));
 	mixin(Prop!("float", "WarpSpeed", "override", "override"));
 	mixin(Prop!("CFont", "UIFont", "override", "protected"));
@@ -419,6 +420,7 @@ protected:
 		
 	CBitmap UIBottomLeft;
 
+	bool DisplayFinalMessageVal = false;
 	bool Dead = false;
 	float HealthVal = 100;
 	float BaseHealth = 100;

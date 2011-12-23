@@ -29,6 +29,13 @@ class CGalaxyScreen : CScreen
 		CurrentZoom += dt * (TargetZoom - CurrentZoom) / 0.25;
 		GameMode.GalaxyZoom = CurrentZoom;
 		StarField.Update(GameMode.GalaxyLocation);
+		
+		if(GameMode.DisplayFinalMessage)
+		{
+			GameMode.AddMessage("Such insolence! They presumed too much. The galaxy may now be empty of such fools, but the universe still teems with imperfection.", false);
+			GameMode.AddMessage("This chapter is now complete... but the story has only just began.");
+			GameMode.DisplayFinalMessage = false;
+		}
 	}
 	
 	override

@@ -46,6 +46,9 @@ interface IGameMode
 	float Energy(float new_energy);
 	float MaxEnergy();
 	
+	bool DisplayFinalMessage();
+	bool DisplayFinalMessage(bool val);
+	
 	int RacesLeft();
 	int RacesLeft(int new_sys);
 	

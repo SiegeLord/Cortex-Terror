@@ -215,6 +215,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 			if(dmg !is null && dmg.Mortal && dmg.Hitpoints <= 0)
 			{
 				BossShip = null;
+				GameMode.DisplayFinalMessage = true;
 			}
 		}
 		
@@ -447,7 +448,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 						DrawMap = !DrawMap;
 						break;
 					case ALLEGRO_KEY_ESCAPE:
-						if(MainShip is null || GameMode.Health == GameMode.MaxHealth)
+						if(MainShip is null || (GameMode.Health == GameMode.MaxHealth && BossShip is null))
 							GameMode.PopScreen;
 						break;
 					default:
