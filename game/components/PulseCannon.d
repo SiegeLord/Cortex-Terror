@@ -52,7 +52,7 @@ class CPulseCannon : CCannon
 			if(any_on && Heat < 0)
 			{
 				Heat = Cooldown;
-				FireSound.Play(world_location);
+				FireSound.Play(Position.Position);
 				
 				foreach(cannon; Cannons)
 				{
