@@ -249,7 +249,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 				CGameObject add_ship(const(char)[] type, float theta)
 				{
 					auto ship = AddObject(type);
-					auto offset = SVector2D(500, 0);
+					auto offset = SVector2D(1500, 0);
 					offset.Rotate(theta);
 					ship.Select!(CPosition).Set(MainShipPosition.X + offset.X, MainShipPosition.Y + offset.Y);
 					auto controller = cast(CAIController)ship.GetComponent(CAIController.classinfo);
