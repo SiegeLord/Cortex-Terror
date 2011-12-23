@@ -9,6 +9,7 @@ import engine.Font;
 import engine.MathTypes;
 import engine.BitmapManager;
 import engine.ConfigManager;
+import engine.SoundManager;
 
 const SideBarWidth = 200;
 
@@ -69,6 +70,7 @@ interface IGameMode
 	CFont UIFont();
 	CBitmapManager BitmapManager();
 	CConfigManager ConfigManager();
+	CSoundManager SoundManager();
 	void DrawLeftSideBar(float physics_alpha);
 	
 	void ClearMessages();

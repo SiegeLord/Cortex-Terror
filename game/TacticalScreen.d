@@ -13,6 +13,7 @@ import game.components.Sprite;
 import game.components.Position;
 import game.components.Orientation;
 import game.components.AIController;
+import game.components.PulseCannon;
 import game.components.Controller;
 import game.components.Planet;
 import game.components.BeamCannon;
@@ -146,6 +147,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 	{
 		auto ret = new CGameObject(GameMode, name);
 		ret.Select!(CSprite).LoadBitmaps(GameMode);
+		ret.Select!(CPulseCannon).LoadSounds(GameMode);
 		ret.Select!(CCannon).Screen(this);
 		Objects ~= ret;
 		return ret;
@@ -154,6 +156,8 @@ class CTacticalScreen : CScreen, ITacticalScreen
 	override
 	void Update(float dt)
 	{
+		GameMode.SoundManager.Update(dt, MainShipPosition);
+		
 		foreach(object; Objects)
 			object.Update(dt);
 			

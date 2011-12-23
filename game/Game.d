@@ -2,6 +2,7 @@ module game.Game;
 
 import engine.BitmapManager;
 import engine.Gfx;
+import engine.Sfx;
 import engine.Disposable;
 import engine.Config;
 import engine.Util;
@@ -33,6 +34,8 @@ class CGame : CDisposable, IGame
 		Options = new CConfig("game.cfg");
 		Gfx = new CGfx(Options);
 		
+		Sfx = new CSfx();
+		
 		Queue = al_create_event_queue();
 		al_register_event_source(Queue, al_get_keyboard_event_source());
 		al_register_event_source(Queue, al_get_mouse_event_source());
@@ -48,6 +51,7 @@ class CGame : CDisposable, IGame
 		
 		al_destroy_event_queue(Queue);
 		
+		Sfx.Dispose;
 		Gfx.Dispose;
 		Options.Dispose;
 	}
@@ -95,6 +99,7 @@ exit:{}
 
 	mixin(Prop!("float", "Time", "override", "protected"));
 	mixin(Prop!("CGfx", "Gfx", "override", "protected"));
+	mixin(Prop!("CSfx", "Sfx", "override", "protected"));
 protected:
 	void GameLoop(CMode mode)
 	{
@@ -154,4 +159,5 @@ protected:
 	
 	CConfig Options;
 	CGfx GfxVal;
+	CSfx SfxVal;
 }

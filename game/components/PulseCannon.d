@@ -8,10 +8,12 @@ import game.ITacticalScreen;
 import game.IGameMode;
 import game.Color;
 
+import engine.Sound;
 import engine.IComponentHolder;
 import engine.MathTypes;
 import engine.Config;
 import engine.Util;
+import game.IGameMode;
 
 import tango.io.Stdout;
 
@@ -23,6 +25,14 @@ class CPulseCannon : CCannon
 	{
 		super(config);
 		Cooldown = config.Get!(float)(Name, "cooldown", 0.25);
+		FireSoundName = config.Get!(const(char)[])(Name, "fire_sound", "");
+		if(FireSoundName == "")
+			throw new Exception("'" ~ Name.idup ~ "' component requires a 'fire_sound' entry in the '" ~ Name.idup ~ "' section of the configuration file.");
+	}
+	
+	void LoadSounds(IGameMode game_mode)
+	{
+		FireSound = game_mode.SoundManager.Load(FireSoundName);
 	}
 	
 	override
@@ -42,10 +52,12 @@ class CPulseCannon : CCannon
 			if(any_on && Heat < 0)
 			{
 				Heat = Cooldown;
+				FireSound.Play(world_location);
 				
 				foreach(cannon; Cannons)
 				{
-					Screen.FireBullet(cannon.GetWorldLocation(Position.Position, Orientation.Theta), cannon.Target);
+					auto world_location = cannon.GetWorldLocation(Position.Position, Orientation.Theta);
+					Screen.FireBullet(world_location, cannon.Target);
 				}
 			}
 		}
@@ -59,6 +71,8 @@ class CPulseCannon : CCannon
 	
 	SVector2D TargetVelocity;
 protected:
+	const(char)[] FireSoundName;
+	CSound FireSound;
 	float Cooldown;
 	float Heat = 0;
 }

@@ -8,6 +8,7 @@ import engine.Font;
 import engine.FontManager;
 import engine.Bitmap;
 import engine.BitmapManager;
+import engine.SoundManager;
 
 import game.Mode;
 import game.Color;
@@ -43,6 +44,7 @@ class CGameMode : CMode, IGameMode
 	this(IGame game)
 	{
 		super(game);
+		SoundManager = new CSoundManager;
 		ConfigManager = new CConfigManager;
 		FontManager = new CFontManager;
 		UIFont = FontManager.Load("data/fonts/Energon.ttf", 24);
@@ -170,6 +172,7 @@ class CGameMode : CMode, IGameMode
 		ConfigManager.Dispose;
 		FontManager.Dispose;
 		BitmapManager.Dispose;
+		SoundManager.Dispose;
 		
 		while(ScreenStack.size > 0)
 		{
@@ -405,6 +408,7 @@ class CGameMode : CMode, IGameMode
 	}
 	
 	mixin(Prop!("CGalaxy", "Galaxy", "override", "protected"));
+	mixin(Prop!("CSoundManager", "SoundManager", "override", "protected"));
 	mixin(Prop!("SVector2D", "GalaxyLocation", "override", "protected"));
 	mixin(Prop!("bool", "DisplayFinalMessage", "override", "override"));
 	mixin(Prop!("bool", "Arrived", "override", "protected"));
@@ -435,6 +439,7 @@ protected:
 	
 	CBitmapManager BitmapManagerVal;
 	CConfigManager ConfigManagerVal;
+	CSoundManager SoundManagerVal;
 
 	float WarpSpeedVal = 50;
 	
