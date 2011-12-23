@@ -457,7 +457,17 @@ class CTacticalScreen : CScreen, ITacticalScreen
 						break;
 					case ALLEGRO_KEY_ESCAPE:
 						if(MainShip is null || (GameMode.Health == GameMode.MaxHealth && BossShip is null))
+						{
 							GameMode.PopScreen;
+						}
+						else if(GameMode.Health != GameMode.MaxHealth)
+						{
+							GameMode.AddMessage("Cannot enter hyperspace while I am damaged.");
+						}
+						else if(BossShip !is null)
+						{
+							GameMode.AddMessage("That large ship is causing interference with my hyperspace drive.");
+						}
 						break;
 					default:
 				}

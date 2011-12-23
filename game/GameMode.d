@@ -398,6 +398,8 @@ class CGameMode : CMode, IGameMode
 	override
 	void AddMessage(const(char)[] str, bool fade_out = true, float duration = 10, bool main = true)
 	{
+		if(Messages.length && Messages[$-1].Message == str)
+			return;
 		Messages ~= new CMessage(this, main ? al_map_rgb_f(0, 1, 0) : al_map_rgb_f(1, 0, 0), 
 		    main ? "data/bitmaps/face.png" : "data/bitmaps/elephant.png", str, fade_out, duration);
 	}

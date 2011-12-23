@@ -4,6 +4,7 @@ import game.IGameMode;
 
 import engine.Bitmap;
 import engine.Gfx;
+import engine.Util;
 
 import tango.text.Util;
 import tango.io.Stdout;
@@ -58,6 +59,8 @@ class CMessage
 	{
 		return CurTime >= Timeout;
 	}
+	
+	mixin(Prop!("const(char)[]", "Message", "", "protected"));
 protected:
 	void DrawMultilineText(const(char)[] text, ALLEGRO_COLOR color, float left, float right, float top, float progress)
 	{
@@ -127,5 +130,5 @@ protected:
 	IGameMode GameMode;
 	float CurTime;
 	float Timeout;
-	const(char)[] Message;
+	const(char)[] MessageVal;
 }
