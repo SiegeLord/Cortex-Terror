@@ -260,21 +260,22 @@ class CGameMode : CMode, IGameMode
 	{
 		auto screen_size = Game.Gfx.ScreenSize;
 		
+		al_draw_bitmap(UIBottomLeft.Get, 0, screen_size.Y - UIBottomLeft.Height, 0);
+		
 		auto lh = 5 + UIFont.Height;
 		auto x = 10;
 		auto y = screen_size.Y - SideBarWidth - 4 * lh;
 		
-		al_draw_text(UIFont.Get, al_map_rgb_f(0.5, 0.5, 1), x, y, 0, Format("H: {}\0", HealthBonusCount).ptr);
-		al_draw_text(UIFont.Get, al_map_rgb_f(0.5, 0.5, 1), x, y + lh, 0, Format("E: {}\0", EnergyBonusCount).ptr);
+		al_draw_text(UIFont.Get, al_map_rgb_f(0.5, 0.5, 1), x + 25, y, 0, Format("{}\0", HealthBonusCount).ptr);
+		al_draw_text(UIFont.Get, al_map_rgb_f(0.5, 0.5, 1), x + 25, y + lh, 0, Format("{}\0", EnergyBonusCount).ptr);
 		
 		const space = 15;
 		
 		auto health_arc = 3 * PI / 2 * Health / MaxHealth;
 		auto energy_arc = 3 * PI / 2 * Energy / MaxEnergy;
 		
-		al_draw_arc(SideBarWidth / 2, screen_size.Y - SideBarWidth / 2, 65 - space, PI / 2, energy_arc, al_map_rgb_f(1, 1, 0), space * 2);
-		al_draw_arc(SideBarWidth / 2, screen_size.Y - SideBarWidth / 2, 65 + space, PI / 2, health_arc, al_map_rgb_f(0, 0, 1), space * 2);
-		al_draw_bitmap(UIBottomLeft.Get, 0, screen_size.Y - UIBottomLeft.Height, 0);
+		al_draw_arc(SideBarWidth / 2, screen_size.Y - SideBarWidth / 2, 65 - space, PI / 2, energy_arc, al_map_rgb_f(1, 1, 0), space);
+		al_draw_arc(SideBarWidth / 2, screen_size.Y - SideBarWidth / 2, 65 + space, PI / 2, health_arc, al_map_rgb_f(0, 0, 1), space);
 		
 		y = screen_size.Y - SideBarWidth - 6 * lh;
 		

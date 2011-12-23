@@ -70,15 +70,13 @@ class CGalaxyScreen : CScreen
 		
 		auto screen_size = GameMode.Game.Gfx.ScreenSize;
 		
-		al_draw_filled_rectangle(screen_size.X - SideBarWidth, 0, screen_size.X, screen_size.Y, al_map_rgb_f(0, 0, 0));
+		al_draw_filled_rounded_rectangle(screen_size.X - SideBarWidth, 0, screen_size.X, 650, 15, 15, al_map_rgba_f(0, 0, 0, 0.5));
 		
 		auto sys = GameMode.CurrentStarSystem;
 		if(DestinationSystem !is null)
 			sys = DestinationSystem;
 
 		sys.DrawPreview(physics_alpha);
-		
-		al_draw_rectangle(screen_size.X - SideBarWidth + 1, 1, screen_size.X - 1, screen_size.Y - 1, al_map_rgb_f(0.5, 1, 0.5), 2);
 		
 		GameMode.DrawLeftSideBar(physics_alpha);
 	}

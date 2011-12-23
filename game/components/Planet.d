@@ -63,6 +63,8 @@ class CPlanet : CUpdatable
 		auto lh = 5 + font.Height;
 		auto y = start_pos.Y + 10;
 		
+		al_draw_filled_rounded_rectangle(start_pos.X, 0, Screen.GameMode.Game.Gfx.ScreenWidth, 550, 15, 15, al_map_rgba_f(0, 0, 0, 0.5));
+		
 		void draw_line(const(char)[] text, ALLEGRO_COLOR color, bool right = false)
 		{
 			al_draw_text(font.Get, color, right ? Screen.GameMode.Game.Gfx.ScreenSize.X - 10 : start_pos.X + 10, 
