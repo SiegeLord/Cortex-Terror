@@ -24,6 +24,7 @@ import game.components.Physics;
 
 import engine.MathTypes;
 import engine.Util;
+import engine.Sound;
 
 import allegro5.allegro;
 import allegro5.allegro_primitives;
@@ -40,6 +41,8 @@ class CTacticalScreen : CScreen, ITacticalScreen
 	this(IGameMode game_mode)
 	{
 		super(game_mode);
+		
+		HitSound = GameMode.SoundManager.Load("data/sounds/hit.ogg");
 		
 		auto star_obj = AddObject("star");
 		auto star = cast(CStar)star_obj.GetComponent(CStar.classinfo);
@@ -172,6 +175,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 				{
 					GameMode.Health = GameMode.Health - 5;
 					bullet.Life = -1;
+					HitSound.Play(MainShipPosition);
 				}
 			}
 		}
@@ -241,7 +245,6 @@ class CTacticalScreen : CScreen, ITacticalScreen
 		if(SystemWasAlive && !GameMode.CurrentStarSystem.HaveLifeforms)
 		{
 			GameMode.RacesLeft = GameMode.RacesLeft - 1;
-			Stdout(GameMode.RacesLeft).nl;
 			SystemWasAlive = false;
 			
 			if(GameMode.RacesLeft == 39 && MainShip !is null)
@@ -535,6 +538,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 	mixin(Prop!("SVector2D", "MainShipPosition", "override", ""));
 	mixin(Prop!("SVector2D", "MainShipVelocity", "override", ""));
 protected:
+	CSound HitSound;
 
 	bool Firing = false;
 	bool SystemWasAlive = false;
