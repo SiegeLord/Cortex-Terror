@@ -1,0 +1,24 @@
+DC               := dmd
+GAME_NAME        := main
+GAME_FILES       := $(wildcard game/*.d) $(wildcard game/components/*.d)
+ALLEGRO_LD_FLAGS := dallegro5.lib allegro.lib
+TANGO_LD_FLAGS   := tango.lib
+ENGINE_FILES     := $(wildcard engine/*.d)
+ALL_FILES        := $(GAME_FILES) $(ENGINE_FILES)
+
+LD_FLAGS         := $(ALLEGRO_LD_FLAGS) $(TANGO_LD_FLAGS)
+
+D_FLAGS          := -g -unittest -version=DebugDisposable main.def
+
+# Compiles a D program
+# $1 - program name
+# $2 - program files
+define d_build
+    @$(DC) -of$1 -od".objs_$1" $(D_FLAGS) $(LD_FLAGS) $2
+endef
+
+.PHONY : all
+all : $(GAME_NAME).exe
+
+$(GAME_NAME).exe : $(ALL_FILES)
+	$(call d_build,$(GAME_NAME),$(ALL_FILES))
