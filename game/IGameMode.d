@@ -67,4 +67,7 @@ interface IGameMode
 	CBitmapManager BitmapManager();
 	CConfigManager ConfigManager();
 	void DrawLeftSideBar(float physics_alpha);
+	
+	void ClearMessages();
+	void AddMessage(const(char)[] str, bool fade_out = true, float duration = 15, bool main = true);
 }

@@ -15,3 +15,4 @@ const(char)[] Prop(const(char)[] type, const(char)[] name, const(char)[] get_att
 		return " ~ name ~ "Val = val;
 	}";
 }
+

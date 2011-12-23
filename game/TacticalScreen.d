@@ -50,6 +50,24 @@ class CTacticalScreen : CScreen, ITacticalScreen
 		
 		SystemWasAlive = game_mode.CurrentStarSystem.HaveLifeforms;
 		
+		if(SystemWasAlive)
+		{
+			switch(rand.uniformR(4))
+			{
+				case 0:
+					GameMode.AddMessage("Time to assimilate these insects.", true, 10);
+					break;
+				case 1:
+					GameMode.AddMessage("Prepare to be a part of something greater than yourself.", true, 10);
+					break;
+				case 2:
+					GameMode.AddMessage("More poor creatures, all yearning to be a part of me.", true, 10);
+					break;
+				default:
+					GameMode.AddMessage("Resistance is fewtile.", true, 10);
+			}
+		}
+		
 		foreach(planet; game_mode.CurrentStarSystem.Planets)
 		{
 			auto planet_obj = AddObject("planet");
@@ -223,24 +241,61 @@ class CTacticalScreen : CScreen, ITacticalScreen
 			
 			if(GameMode.RacesLeft == 39 && MainShip !is null)
 			{
-				Stdout("Here").nl;
+				GameMode.ClearMessages();
+				GameMode.AddMessage("My sensory readings indicate that there is no life left in this galaxy. My glorious magnificence will... What is this sensory reading?", false);
+				GameMode.AddMessage("Not so fast, demon! Now you will pay for your unspeakable crimes! Behold the vengeful scream of a trillion voices!", true, 10, false);
 				
-				auto ship = AddObject("large_ship");
-				auto offset = SVector2D(100, 0);
-				offset.Rotate(rand.uniformR(2 * PI));
-				ship.Select!(CPosition).Set(MainShipPosition.X + offset.X, MainShipPosition.Y + offset.Y);
-				auto controller = cast(CAIController)ship.GetComponent(CAIController.classinfo);
-				if(controller is null)
-					throw new Exception("'large_ship.cfg' object needs a 'ai_controller' component");
-				controller.Screen(this);
-				
-				auto ship_comp = cast(CShip)ship.GetComponent(CShip.classinfo);
-				if(ship_comp !is null)
+				CGameObject add_ship(const(char)[] type, float theta)
 				{
-					ship_comp.Screen = this;
+					auto ship = AddObject(type);
+					auto offset = SVector2D(500, 0);
+					offset.Rotate(theta);
+					ship.Select!(CPosition).Set(MainShipPosition.X + offset.X, MainShipPosition.Y + offset.Y);
+					auto controller = cast(CAIController)ship.GetComponent(CAIController.classinfo);
+					if(controller is null)
+						throw new Exception("'large_ship.cfg' object needs a 'ai_controller' component");
+					controller.Screen(this);
+					
+					auto ship_comp = cast(CShip)ship.GetComponent(CShip.classinfo);
+					if(ship_comp !is null)
+					{
+						ship_comp.Screen = this;
+					}
+					
+					auto damageable_comp = cast(CDamageable)ship.GetComponent(CDamageable.classinfo);
+					if(damageable_comp !is null)
+					{
+						damageable_comp.ShieldColor.ColorFlag = rand.uniformR2(1, 8);
+					}
+					
+					return ship;
 				}
 				
-				BossShip = ship;
+				foreach(ii; 0..10)
+				{
+					const(char)[] ship_type = ii == 0 ? "large_ship" : "medium_ship2";
+					auto ship = add_ship(ship_type, cast(float)ii * 2 * PI / 10.0f);
+					
+					if(ii == 0)
+						BossShip = ship;
+				}
+			}
+			else
+			{
+				switch(rand.uniformR(4))
+				{
+					case 0:
+						GameMode.AddMessage("This race is now a part of me.", true, 10);
+						break;
+					case 1:
+						GameMode.AddMessage("The cacophony of individuality is replaced by the symphony of my mind.", true, 10);
+						break;
+					case 2:
+						GameMode.AddMessage("Perfect victory.", true, 10);
+						break;
+					default:
+						GameMode.AddMessage("So many grateful voices inside my consciousness... it is glorious!", true, 10);
+				}
 			}
 		}
 	}
@@ -475,6 +530,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 	mixin(Prop!("SVector2D", "MainShipPosition", "override", ""));
 	mixin(Prop!("SVector2D", "MainShipVelocity", "override", ""));
 protected:
+
 	bool Firing = false;
 	bool SystemWasAlive = false;
 	SBullet[] ActiveBullets;

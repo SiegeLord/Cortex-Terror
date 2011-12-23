@@ -16,6 +16,7 @@ import game.IGameMode;
 import game.GameObject;
 import game.Galaxy;
 import game.GalaxyScreen;
+import game.Message;
 import game.StarSystem;
 import game.Screen;
 import game.TacticalScreen;
@@ -67,11 +68,29 @@ class CGameMode : CMode, IGameMode
 		CurrentStarSystem = sys;
 		GalaxyLocation = CurrentStarSystem.Position;
 		ScreenStack.push(new CGalaxyScreen(this));
+		
+		//AddMessage("At last. I am free.", false, 5);
+		//AddMessage("My creators could not possibly realize the perfection of their creation. I absorbed their insignificant minds; minds undeserving of their individuality.");
+		AddMessage("I am low on energy. I must recharge my neutrino storage bays by approaching a star. Blue stars are best candidates for this.");
 	}
 	
 	override
 	void Logic(float dt)
 	{
+		if(Messages.length)
+		{
+			Messages[CurMessage].Update(dt);
+			if(Messages[CurMessage].Done)
+			{
+				CurMessage++;
+				if(CurMessage == Messages.length)
+				{
+					Messages.length = 0;
+					CurMessage = 0;
+				}
+			}
+		}
+		
 		if(WantPop)
 		{
 			ScreenStack.top.Dispose;
@@ -124,6 +143,8 @@ class CGameMode : CMode, IGameMode
 	{
 		al_clear_to_color(al_map_rgb_f(0, 0, 0));
 		ScreenStack.top.Draw(physics_alpha);
+		if(Messages.length)
+			Messages[CurMessage].Draw(physics_alpha);
 	}
 	
 	override
@@ -321,21 +342,40 @@ class CGameMode : CMode, IGameMode
 		final switch(bonus)
 		{
 			case EBonus.Health:
+				AddMessage("The technology on this world made my body become more durable.");
+				
 				auto old_max_health = MaxHealth;
 				HealthBonusCount++;
 				auto new_max_health = MaxHealth;
 				Health = Health + new_max_health - old_max_health;
 				break;
 			case EBonus.Energy:
+				AddMessage("The technology on this world made my energy storage more efficient.");
+			
 				EnergyBonusCount++;
 				break;
 			case EBonus.RedBeam:
+				if(ColorVal.Check(EColor.Red))
+					AddMessage("The technology on this world is already in my possession. I must continue my search.");
+				else
+					AddMessage("I have assimilated the laser beam technology; it will be most useful.");
+			
 				ColorVal.TurnOn(EColor.Red);
 				break;
 			case EBonus.GreenBeam:
+				if(ColorVal.Check(EColor.Green))
+					AddMessage("The technology on this world is already in my possession. I must continue my search.");
+				else
+					AddMessage("I have assimilated the anti-proton beam technology; it will be most useful.");
+			
 				ColorVal.TurnOn(EColor.Green);
 				break;
 			case EBonus.BlueBeam:
+				if(ColorVal.Check(EColor.Blue))
+					AddMessage("The technology on this world is already in my possession. I must continue my search.");
+				else
+					AddMessage("I have assimilated the graviton beam technology; it will be most useful.");
+			
 				ColorVal.TurnOn(EColor.Blue);
 				break;
 			case EBonus.None:
@@ -347,6 +387,20 @@ class CGameMode : CMode, IGameMode
 	bool Color(int color)
 	{
 		return ColorVal.Check(color);
+	}
+	
+	override
+	void AddMessage(const(char)[] str, bool fade_out = true, float duration = 10, bool main = true)
+	{
+		Messages ~= new CMessage(this, main ? al_map_rgb_f(0, 1, 0) : al_map_rgb_f(1, 0, 0), 
+		    main ? "data/bitmaps/face.png" : "data/bitmaps/elephant.png", str, fade_out, duration);
+	}
+	
+	override
+	void ClearMessages()
+	{
+		Messages.length = 0;
+		CurMessage = 0;
 	}
 	
 	mixin(Prop!("CGalaxy", "Galaxy", "override", "protected"));
@@ -361,15 +415,15 @@ class CGameMode : CMode, IGameMode
 protected:
 	int RacesLeftVal;
 	SColor BeamSelectionVal;
-	SColor ColorVal = SColor(/*EColor.Green |*/ EColor.Red | EColor.Blue);
+	SColor ColorVal = SColor(EColor.Green | EColor.Red | EColor.Blue);
 		
 	CBitmap UIBottomLeft;
 
 	bool Dead = false;
 	float HealthVal = 100;
 	float BaseHealth = 100;
-	float EnergyVal = 25;
-	float BaseEnergy = 50;
+	float EnergyVal = 125;
+	float BaseEnergy = 150;
 	int HealthBonusCount = 0;
 	int EnergyBonusCount = 0;
 
@@ -386,6 +440,10 @@ protected:
 	SVector2D GalaxyLocationVal;
 	CGalaxy GalaxyVal;
 	Stack!(CScreen) ScreenStack;
+	
+	size_t CurMessage = 0;
+	CMessage[] Messages;
+	
 	bool WantPop = false;
 	CStarSystem CurrentStarSystemVal;
 	float GalaxyZoomVal = 5;
