@@ -453,6 +453,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 				{
 					case ALLEGRO_KEY_TAB:
 						DrawMap = !DrawMap;
+						GameMode.UISound.Play(MainShipPosition);
 						break;
 					case ALLEGRO_KEY_ESCAPE:
 						if(MainShip is null || (GameMode.Health == GameMode.MaxHealth && BossShip is null))

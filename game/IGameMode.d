@@ -10,6 +10,7 @@ import engine.MathTypes;
 import engine.BitmapManager;
 import engine.ConfigManager;
 import engine.SoundManager;
+import engine.Sound;
 
 const SideBarWidth = 200;
 
@@ -68,6 +69,7 @@ interface IGameMode
 	CStarSystem CurrentStarSystem();
 	CStarSystem CurrentStarSystem(CStarSystem new_star_system);
 	CFont UIFont();
+	CSound UISound();
 	CBitmapManager BitmapManager();
 	CConfigManager ConfigManager();
 	CSoundManager SoundManager();

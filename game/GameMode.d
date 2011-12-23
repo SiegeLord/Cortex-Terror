@@ -9,6 +9,7 @@ import engine.FontManager;
 import engine.Bitmap;
 import engine.BitmapManager;
 import engine.SoundManager;
+import engine.Sound;
 
 import game.Mode;
 import game.Color;
@@ -45,6 +46,7 @@ class CGameMode : CMode, IGameMode
 	{
 		super(game);
 		SoundManager = new CSoundManager;
+		UISound = SoundManager.Load("data/sounds/gui.ogg");
 		ConfigManager = new CConfigManager;
 		FontManager = new CFontManager;
 		UIFont = FontManager.Load("data/fonts/Energon.ttf", 24);
@@ -414,6 +416,7 @@ class CGameMode : CMode, IGameMode
 	mixin(Prop!("bool", "Arrived", "override", "protected"));
 	mixin(Prop!("float", "WarpSpeed", "override", "override"));
 	mixin(Prop!("CFont", "UIFont", "override", "protected"));
+	mixin(Prop!("CSound", "UISound", "override", "protected"));
 	mixin(Prop!("CBitmapManager", "BitmapManager", "override", "protected"));
 	mixin(Prop!("CConfigManager", "ConfigManager", "override", "protected"));
 	mixin(Prop!("SColor", "BeamSelection", "override", "override"));
@@ -439,6 +442,8 @@ protected:
 	
 	CBitmapManager BitmapManagerVal;
 	CConfigManager ConfigManagerVal;
+	
+	CSound UISoundVal;
 	CSoundManager SoundManagerVal;
 
 	float WarpSpeedVal = 50;

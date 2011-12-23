@@ -36,6 +36,11 @@ class CController : CComponent
 		{
 			case ALLEGRO_EVENT_KEY_DOWN:
 			{
+				void play_sound()
+				{
+					Screen.GameMode.UISound.Play(Position.Position);
+				}
+
 				switch(event.keyboard.keycode)
 				{
 					case ALLEGRO_KEY_W:
@@ -49,31 +54,52 @@ class CController : CComponent
 						break;
 					case ALLEGRO_KEY_1:
 						if(Screen.GameMode.Color(EColor.Red))
+						{
 							BeamCannon.SetColor = EColor.Red;
+							play_sound;
+						}
 						break;
 					case ALLEGRO_KEY_2:
 						if(Screen.GameMode.Color(EColor.Green))
+						{
 							BeamCannon.SetColor = EColor.Green;
+							play_sound;
+						}
 						break;
 					case ALLEGRO_KEY_3:
 						if(Screen.GameMode.Color(EColor.Blue))
+						{
 							BeamCannon.SetColor = EColor.Blue;
+							play_sound;
+						}
 						break;
 					case ALLEGRO_KEY_4:
 						if(Screen.GameMode.Color(EColor.Red) && Screen.GameMode.Color(EColor.Green))
+						{
 							BeamCannon.SetColor = EColor.Red | EColor.Green;
+							play_sound;
+						}
 						break;
 					case ALLEGRO_KEY_5:
 						if(Screen.GameMode.Color(EColor.Red) && Screen.GameMode.Color(EColor.Blue))
+						{
 							BeamCannon.SetColor = EColor.Red | EColor.Blue;
+							play_sound;
+						}
 						break;
 					case ALLEGRO_KEY_6:
 						if(Screen.GameMode.Color(EColor.Green) && Screen.GameMode.Color(EColor.Blue))
+						{
 							BeamCannon.SetColor = EColor.Green | EColor.Blue;
+							play_sound;
+						}
 						break;
 					case ALLEGRO_KEY_7:
 						if(Screen.GameMode.Color(EColor.Red) && Screen.GameMode.Color(EColor.Green) && Screen.GameMode.Color(EColor.Blue))
+						{
 							BeamCannon.SetColor = EColor.Red | EColor.Green | EColor.Blue;
+							play_sound;
+						}
 						break;
 					default:
 				}
