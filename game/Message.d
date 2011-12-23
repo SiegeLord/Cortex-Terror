@@ -5,6 +5,7 @@ import game.IGameMode;
 import engine.Bitmap;
 import engine.Gfx;
 import engine.Util;
+import engine.Sound;
 
 import tango.text.Util;
 import tango.io.Stdout;
@@ -19,8 +20,9 @@ const LinesPerSecond = 5.0f;
 
 class CMessage
 {
-	this(IGameMode game_mode, ALLEGRO_COLOR color, const(char)[] image, const(char)[] message, bool fadeout = true, float timeout = MessageTimeout)
+	this(IGameMode game_mode, ALLEGRO_COLOR color, CSound sound, const(char)[] image, const(char)[] message, bool fadeout = true, float timeout = MessageTimeout)
 	{
+		Sound = sound;
 		Color = color;
 		Fadeout = fadeout;
 		GameMode = game_mode;
@@ -48,6 +50,11 @@ class CMessage
 		
 		auto color = Blend(al_map_rgba_f(0, 0, 0, 0), Color, frac);
 		DrawMultilineText(Message, color, SideBarWidth + extra_w + 5, GameMode.Game.Gfx.ScreenWidth - 5 - SideBarWidth, 5, CurTime * LinesPerSecond);
+	}
+	
+	void StartSound()
+	{
+		Sound.Play;
 	}
 	
 	void Update(float dt)
@@ -124,6 +131,7 @@ protected:
 		}
 	}
 	
+	CSound Sound;
 	ALLEGRO_COLOR Color;
 	bool Fadeout;
 	CBitmap Image;

@@ -47,6 +47,8 @@ class CGameMode : CMode, IGameMode
 		super(game);
 		SoundManager = new CSoundManager;
 		UISound = SoundManager.Load("data/sounds/gui.ogg");
+		Message1 = SoundManager.Load("data/sounds/message1.ogg");
+		Message2 = SoundManager.Load("data/sounds/message2.ogg");
 		ConfigManager = new CConfigManager;
 		FontManager = new CFontManager;
 		UIFont = FontManager.Load("data/fonts/Energon.ttf", 24);
@@ -75,12 +77,20 @@ class CGameMode : CMode, IGameMode
 		
 		//AddMessage("At last. I am free.", false, 5);
 		//AddMessage("My creators could not possibly realize the perfection of their creation. I absorbed their insignificant minds; minds undeserving of their individuality.");
-		AddMessage("I am low on energy. I must recharge my neutrino storage bays by approaching a star. Blue stars are best candidates for this.");
+		FirstMessageTimeout = 2;
 	}
 	
 	override
 	void Logic(float dt)
 	{
+		FirstMessageTimeout -= dt;
+		
+		if(FirstMessageTimeout < 0 && !FirstMessagePlayed)
+		{
+			AddMessage("I am low on energy. I must recharge my neutrino storage bays by approaching a star. Blue stars are best candidates for this.");
+			FirstMessagePlayed = true;
+		}
+			
 		if(Messages.length)
 		{
 			Messages[CurMessage].Update(dt);
@@ -91,6 +101,10 @@ class CGameMode : CMode, IGameMode
 				{
 					Messages.length = 0;
 					CurMessage = 0;
+				}
+				else
+				{
+					Messages[CurMessage].StartSound;
 				}
 			}
 		}
@@ -400,8 +414,13 @@ class CGameMode : CMode, IGameMode
 	{
 		if(Messages.length && Messages[$-1].Message == str)
 			return;
-		Messages ~= new CMessage(this, main ? al_map_rgb_f(0, 1, 0) : al_map_rgb_f(1, 0, 0), 
+		
+		Messages ~= new CMessage(this, main ? al_map_rgb_f(0, 1, 0) : al_map_rgb_f(1, 0, 0),
+		    main ? Message1 : Message2,
 		    main ? "data/bitmaps/face.png" : "data/bitmaps/elephant.png", str, fade_out, duration);
+		
+		if(Messages.length == 1)
+			Messages[0].StartSound;
 	}
 	
 	override
@@ -446,6 +465,8 @@ protected:
 	CConfigManager ConfigManagerVal;
 	
 	CSound UISoundVal;
+	CSound Message1;
+	CSound Message2;
 	CSoundManager SoundManagerVal;
 
 	float WarpSpeedVal = 50;
@@ -463,4 +484,7 @@ protected:
 	CStarSystem CurrentStarSystemVal;
 	float GalaxyZoomVal = 5;
 	Random Rand;
+	
+	float FirstMessageTimeout;
+	bool FirstMessagePlayed;
 }

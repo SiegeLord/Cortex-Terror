@@ -52,6 +52,24 @@ class CSound : CHolder!(ALLEGRO_SAMPLE*, al_destroy_sample)
 		return ret;
 	}
 	
+	CSampleInstance Play(bool loop = false)
+	{
+		CSampleInstance ret;
+		foreach(inst; Instances)
+		{
+			if(!inst.Playing && !inst.Busy)
+			{
+				inst.Playing = true;
+				inst.Loop = loop;
+				inst.NoPosition = true;
+				
+				ret = inst;
+				break;
+			}
+		}
+		return ret;
+	}
+	
 	void Update(float dt, SVector2D center)
 	{
 		foreach(inst; Instances)
@@ -85,7 +103,7 @@ class CSampleInstance : CHolder!(ALLEGRO_SAMPLE_INSTANCE*, al_destroy_sample_ins
 	
 	void Update(float dt, SVector2D center)
 	{
-		if(!Playing)
+		if(!Playing || NoPosition)
 			return;
 
 		auto dir = Position - center;
@@ -116,6 +134,7 @@ class CSampleInstance : CHolder!(ALLEGRO_SAMPLE_INSTANCE*, al_destroy_sample_ins
 		al_set_sample_instance_gain(Get, gain);
 	}
 	
+	bool NoPosition = false;
 	bool Busy = false;
 	SVector2D Position;
 }
