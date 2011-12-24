@@ -4,6 +4,7 @@ import game.IGame;
 import game.Galaxy;
 import game.StarSystem;
 import game.Color;
+import game.Music;
 
 import engine.Font;
 import engine.MathTypes;
@@ -16,6 +17,7 @@ const SideBarWidth = 200;
 
 enum EScreen
 {
+	Intro,
 	Galaxy,
 	Tactical
 }
@@ -35,6 +37,8 @@ interface IGameMode
 	SVector2D GalaxyLocation();
 	SVector2D ToGalaxyView(SVector2D galaxy_pos);
 	SVector2D FromGalaxyView(SVector2D galaxy_view);
+	
+	CMusic Music();
 	
 	float GalaxyZoom();
 	float GalaxyZoom(float new_zoom);
@@ -77,4 +81,7 @@ interface IGameMode
 	
 	void ClearMessages();
 	void AddMessage(const(char)[] str, bool fade_out = true, float duration = 15, bool main = true);
+	
+	bool FirstMessagePlayed();
+	bool FirstMessagePlayed(bool val);
 }

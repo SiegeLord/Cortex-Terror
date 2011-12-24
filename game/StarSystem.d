@@ -52,6 +52,9 @@ class CPlanet
 		MinorAxis = MaxRadius * Orbit / MaxPlanets + MinRadius;
 		MajorAxis = MinorAxis * random.uniformR2(1.0f, 1.002f);
 		PeriodOffset = random.uniformR2(0.0f, 1.0f);
+		
+		LoadPlanetIcon;
+		
 		auto r = random.uniformR2(0, 120);
 		switch(r)
 		{
@@ -101,13 +104,24 @@ class CPlanet
 		al_use_transform(&current_transform);
 		
 		auto pos = Position();
-		al_draw_filled_circle(pos.X, pos.Y, 10, al_map_rgba_f(0.5, 0.25, 0.25, 0.5));
+		//al_draw_filled_circle(pos.X, pos.Y, 10, al_map_rgba_f(0.5, 0.25, 0.25, 0.5));
+		
+		auto x_scale = 20.0f / PlanetIcon.Width;
+		auto y_scale = 20.0f / PlanetIcon.Height;
+		
+		al_draw_tinted_scaled_rotated_bitmap(PlanetIcon.Get, al_map_rgba_f(0.5, 0.5, 0.5, 0.5), PlanetIcon.Width / 2, PlanetIcon.Height / 2,
+		    pos.X, pos.Y, x_scale, y_scale, PI + atan2(pos.Y, pos.X), 0);
 	}
 	
 	void DrawPreview(float physics_alpha, float cx, float cy)
 	{
 		al_draw_circle(cx, cy, MinorAxis, al_map_rgb_f(1, 1, 1), 1);
-		al_draw_filled_circle(cx, cy + MinorAxis, 10, al_map_rgb_f(1, 0.5, 0.5));
+		//al_draw_filled_circle(cx, cy + MinorAxis, 10, al_map_rgb_f(1, 0.5, 0.5));
+		
+		auto x_scale = 20.0f / PlanetIcon.Width;
+		auto y_scale = 20.0f / PlanetIcon.Height;
+		
+		al_draw_scaled_rotated_bitmap(PlanetIcon.Get, PlanetIcon.Width / 2, PlanetIcon.Height / 2, cx, cy + MinorAxis, x_scale, y_scale, -PI / 2, 0);
 	}
 	
 	float Population()
@@ -123,11 +137,18 @@ class CPlanet
 		return PopulationVal = new_pop;
 	}
 	
+	void LoadPlanetIcon()
+	{
+		const(char)[] image = Class == "M" ? "data/bitmaps/planet2.png" : "data/bitmaps/planet1.png";
+		PlanetIcon = GameMode.BitmapManager.Load(image);
+	}
+	
 	const(char)[] Name;
-	const(char)[] Class = "M";
+	const(char)[] Class = "G";
 	EBonus Bonus = EBonus.None;
 	SColor ShieldColor;
 protected:
+	CBitmap PlanetIcon;
 	size_t Orbit;
 	IGameMode GameMode;
 	float PeriastronTheta = 0;
@@ -201,6 +222,8 @@ class CStarSystem : CDisposable
 			if(random.uniformR2(0.0f, 1.0f) < prob)
 			{
 				planet.Population = 1 + random.exp!(float)() * MeanPlanetPopulation;
+				planet.Class = "M";
+				planet.LoadPlanetIcon;
 				planet.ShieldColor = color;
 				ShieldColor = color;
 				if(!bonus_given && bonus != EBonus.None)
@@ -208,6 +231,10 @@ class CStarSystem : CDisposable
 					planet.Bonus = bonus;
 					bonus_given = true;
 				}
+			}
+			else
+			{
+				planet.Class = "G";
 			}
 		}
 		

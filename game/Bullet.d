@@ -1,6 +1,7 @@
 module game.Bullet;
 
 import engine.MathTypes;
+import engine.Gfx;
 
 import allegro5.allegro;
 import allegro5.allegro_primitives;
@@ -25,6 +26,7 @@ struct SBullet
 	
 	void Draw(float physics_alpha)
 	{
+		DrawCircleGradient(Position.X, Position.Y, 0, 10, al_map_rgb_f(0,0,1), al_map_rgba_f(0, 0, 0, 0));
 		al_draw_filled_circle(Position.X, Position.Y, 5, al_map_rgb_f(1,1,1));
 	}
 	

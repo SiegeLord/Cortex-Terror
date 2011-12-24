@@ -33,7 +33,6 @@ class CGame : CDisposable, IGame
 		
 		Options = new CConfig("game.cfg");
 		Gfx = new CGfx(Options);
-		
 		Sfx = new CSfx();
 		
 		Queue = al_create_event_queue();
@@ -41,7 +40,7 @@ class CGame : CDisposable, IGame
 		al_register_event_source(Queue, al_get_mouse_event_source());
 		al_register_event_source(Queue, al_get_display_event_source(Gfx.Display));
 		
-		NextMode = EMode.Game;
+		NextMode = EMode.MainMenu;
 	}
 	
 	override
@@ -100,6 +99,7 @@ exit:{}
 	mixin(Prop!("float", "Time", "override", "protected"));
 	mixin(Prop!("CGfx", "Gfx", "override", "protected"));
 	mixin(Prop!("CSfx", "Sfx", "override", "protected"));
+	mixin(Prop!("CConfig", "Options", "override", "protected"));
 protected:
 	void GameLoop(CMode mode)
 	{
@@ -154,10 +154,9 @@ protected:
 	bool WantModeSwitch = false;
 
 	ALLEGRO_EVENT_QUEUE* Queue;
-	enum FixedDt = 1.0f/60.0f;
 	float TimeVal = 0.0f;
 	
-	CConfig Options;
+	CConfig OptionsVal;
 	CGfx GfxVal;
 	CSfx SfxVal;
 }

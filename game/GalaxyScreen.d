@@ -4,6 +4,7 @@ import game.Screen;
 import game.IGameMode;
 import game.StarSystem;
 import game.StarField;
+import game.Music;
 
 import engine.MathTypes;
 
@@ -12,6 +13,7 @@ import allegro5.allegro_primitives;
 import allegro5.allegro_font;
 
 import tango.stdc.stringz;
+import tango.io.Stdout;
 
 const CircleRadius = 13;
 
@@ -21,6 +23,8 @@ class CGalaxyScreen : CScreen
 	{
 		super(game_mode);
 		StarField = new CStarField(game_mode, GameMode.GalaxyLocation, 0.5, 100);
+
+		GameMode.Music.Play(EMusic.Peace);
 	}
 	
 	override

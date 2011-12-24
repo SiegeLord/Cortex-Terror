@@ -13,11 +13,13 @@ import engine.Sound;
 
 import game.Mode;
 import game.Color;
+import game.Music;
 import game.IGame;
 import game.IGameMode;
 import game.GameObject;
 import game.Galaxy;
 import game.GalaxyScreen;
+import game.IntroScreen;
 import game.Message;
 import game.StarSystem;
 import game.Screen;
@@ -55,6 +57,9 @@ class CGameMode : CMode, IGameMode
 		BitmapManager = new CBitmapManager;
 		UIBottomLeft = BitmapManager.Load("data/bitmaps/ui_bottom_left.png");
 		Rand = new Random;
+		
+		Music = new CMusic(!Game.Options.Get!(bool)("sfx", "music", true));
+		
 		Rand.seed({ return cast(int)(al_get_time() * 1000); });
 		
 		Galaxy = new CGalaxy(this, Rand, NumStars, GalaxyRadius);
@@ -73,24 +78,14 @@ class CGameMode : CMode, IGameMode
 		
 		CurrentStarSystem = sys;
 		GalaxyLocation = CurrentStarSystem.Position;
-		ScreenStack.push(new CGalaxyScreen(this));
-		
-		//AddMessage("At last. I am free.", false, 5);
-		//AddMessage("My creators could not possibly realize the perfection of their creation. I absorbed their insignificant minds; minds undeserving of their individuality.");
-		FirstMessageTimeout = 2;
+		PushScreen(EScreen.Galaxy);
+		PushScreen(EScreen.Tactical);
+		PushScreen(EScreen.Intro);
 	}
 	
 	override
 	void Logic(float dt)
-	{
-		FirstMessageTimeout -= dt;
-		
-		if(FirstMessageTimeout < 0 && !FirstMessagePlayed)
-		{
-			AddMessage("I am low on energy. I must recharge my neutrino storage bays by approaching a star. Blue stars are best candidates for this.");
-			FirstMessagePlayed = true;
-		}
-			
+	{			
 		if(Messages.length)
 		{
 			Messages[CurMessage].Update(dt);
@@ -116,7 +111,7 @@ class CGameMode : CMode, IGameMode
 			WantPop = false;
 			if(ScreenStack.size == 0 || Dead)
 			{
-				Game.NextMode = EMode.Exit;
+				Game.NextMode = EMode.MainMenu;
 				return;
 			}
 		}
@@ -171,11 +166,15 @@ class CGameMode : CMode, IGameMode
 		ScreenStack.top.Input(event);
 		switch(event.type)
 		{
+			case ALLEGRO_EVENT_KEY_DOWN:
+				if(event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
+				{
+					Game.NextMode = EMode.MainMenu;
+				}
+				break;
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
-			{
 				Game.NextMode = EMode.Exit;
 				break;
-			}
 			default:
 		}
 	}
@@ -189,6 +188,7 @@ class CGameMode : CMode, IGameMode
 		FontManager.Dispose;
 		BitmapManager.Dispose;
 		SoundManager.Dispose;
+		Music.Dispose;
 		
 		while(ScreenStack.size > 0)
 		{
@@ -254,6 +254,11 @@ class CGameMode : CMode, IGameMode
 		CScreen new_screen;
 		final switch(screen)
 		{
+			case EScreen.Intro:
+			{
+				new_screen = new CIntroScreen(this);
+				break;
+			}
 			case EScreen.Galaxy:
 			{
 				new_screen = new CGalaxyScreen(this);
@@ -442,10 +447,12 @@ class CGameMode : CMode, IGameMode
 	mixin(Prop!("CConfigManager", "ConfigManager", "override", "protected"));
 	mixin(Prop!("SColor", "BeamSelection", "override", "override"));
 	mixin(Prop!("int", "RacesLeft", "override", "override"));
+	mixin(Prop!("CMusic", "Music", "override", "protected"));
+	mixin(Prop!("bool", "FirstMessagePlayed", "override", "override"));
 protected:
 	int RacesLeftVal;
 	SColor BeamSelectionVal;
-	SColor ColorVal = SColor(EColor.Green | EColor.Red | EColor.Blue);
+	SColor ColorVal;// = SColor(EColor.Green | EColor.Red | EColor.Blue);
 		
 	CBitmap UIBottomLeft;
 
@@ -453,8 +460,8 @@ protected:
 	bool Dead = false;
 	float HealthVal = 100;
 	float BaseHealth = 100;
-	float EnergyVal = 125;
-	float BaseEnergy = 150;
+	float EnergyVal = 25;
+	float BaseEnergy = 50;
 	int HealthBonusCount = 0;
 	int EnergyBonusCount = 0;
 
@@ -480,11 +487,12 @@ protected:
 	size_t CurMessage = 0;
 	CMessage[] Messages;
 	
+	CMusic MusicVal;
+	
 	bool WantPop = false;
 	CStarSystem CurrentStarSystemVal;
 	float GalaxyZoomVal = 5;
 	Random Rand;
 	
-	float FirstMessageTimeout;
-	bool FirstMessagePlayed;
+	bool FirstMessagePlayedVal;
 }

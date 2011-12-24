@@ -55,7 +55,7 @@ class CDamageable : CUpdatable
 	
 	bool Collide(SVector2D pos)
 	{
-		return (Position.Position - pos).LengthSq < (32 * 32);
+		return (Position.Position - pos).LengthSq < (CollideRadius * CollideRadius);
 	}
 	
 	float Health()

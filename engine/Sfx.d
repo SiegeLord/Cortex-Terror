@@ -6,6 +6,8 @@ import allegro5.allegro;
 import allegro5.allegro_audio;
 import allegro5.allegro_acodec;
 
+import tango.io.Stdout;
+
 class CSfx : CDisposable
 {
 	this()

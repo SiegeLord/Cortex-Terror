@@ -12,6 +12,7 @@ import engine.IComponentHolder;
 import engine.MathTypes;
 import engine.Config;
 import engine.Util;
+import engine.Sound;
 
 import tango.math.IEEE;
 import tango.math.Math;
@@ -27,6 +28,15 @@ class CBeamCannon : CCannon
 	this(CConfig config)
 	{
 		super(config);
+		
+		FireSoundName = config.Get!(const(char)[])(Name, "fire_sound", "");
+		if(FireSoundName == "")
+			throw new Exception("'" ~ Name.idup ~ "' component requires a 'fire_sound' entry in the '" ~ Name.idup ~ "' section of the configuration file.");
+	}
+	
+	void LoadSounds(IGameMode game_mode)
+	{
+		FireSound = game_mode.SoundManager.Load(FireSoundName);
 	}
 	
 	override
@@ -62,7 +72,34 @@ class CBeamCannon : CCannon
 			if(n > 0)
 			{
 				Screen.Damage(Target, n, ColorVal);
+				
+				if(Instance is null)
+				{
+					Instance = FireSound.Play(Position.Position, true);
+					Instance.Busy = true;
+				}
 			}
+			else if(Instance !is null)
+			{
+				StopSound;
+			}
+		}
+		else
+		{
+			StopSound;
+		}
+		
+		if(Instance !is null)
+			Instance.Position = Position.Position;
+	}
+	
+	void StopSound()
+	{
+		if(Instance !is null)
+		{
+			Instance.Busy = false;
+			Instance.Playing = false;
+			Instance = null;
 		}
 	}
 	
@@ -131,6 +168,10 @@ class CBeamCannon : CCannon
 		return "beam_cannon";
 	}
 protected:
+	const(char)[] FireSoundName;
+	CSound FireSound;
+	CSampleInstance Instance;
+	
 	SColor ColorVal;
 	
 	SVector2D ScreenTargetVal;

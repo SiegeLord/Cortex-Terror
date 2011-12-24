@@ -1,11 +1,13 @@
 module game.TacticalScreen;
 
 import game.Screen;
+import game.Music;
 import game.Bullet;
 import game.Color;
 import game.IGameMode;
 import game.ITacticalScreen;
 import game.GameObject;
+import game.Explosion;
 import game.StarField;
 import ss = game.StarSystem;
 import game.components.Star;
@@ -43,6 +45,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 		super(game_mode);
 		
 		HitSound = GameMode.SoundManager.Load("data/sounds/hit.ogg");
+		ExplosionSound = GameMode.SoundManager.Load("data/sounds/explosion.ogg");
 		
 		auto star_obj = AddObject("star");
 		auto star = cast(CStar)star_obj.GetComponent(CStar.classinfo);
@@ -56,6 +59,8 @@ class CTacticalScreen : CScreen, ITacticalScreen
 		
 		if(SystemWasAlive)
 		{
+			GameMode.Music.Play(EMusic.Medium);
+			
 			switch(rand.uniformR(4))
 			{
 				case 0:
@@ -74,10 +79,11 @@ class CTacticalScreen : CScreen, ITacticalScreen
 		
 		foreach(planet; game_mode.CurrentStarSystem.Planets)
 		{
-			auto planet_obj = AddObject("planet");
+			const(char)[] str = planet.Class == "M" ? "planet2" : "planet1";
+			auto planet_obj = AddObject(str);
 			auto planet_comp = cast(CPlanet)planet_obj.GetComponent(CPlanet.classinfo);
 			if(planet_comp is null)
-				throw new Exception("'planet.cfg' object needs a 'planet' component");
+				throw new Exception("'" ~ str.idup ~ "' object needs a 'planet' component");
 			planet_comp.Planet = planet;
 			planet_comp.Screen = this;
 			
@@ -143,7 +149,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 		MainShipPosition = start_pos;
 		
 		StarFields[0] = new CStarField(GameMode, MainShipPosition, 1, 50);
-		StarFields[1] = new CStarField(GameMode, MainShipPosition, 0.5, 100);
+		StarFields[1] = new CStarField(GameMode, MainShipPosition, 0.25, 100);
 	}
 	
 	CGameObject AddObject(const(char)[] name)
@@ -151,6 +157,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 		auto ret = new CGameObject(GameMode, name);
 		ret.Select!(CSprite).LoadBitmaps(GameMode);
 		ret.Select!(CPulseCannon).LoadSounds(GameMode);
+		ret.Select!(CBeamCannon).LoadSounds(GameMode);
 		ret.Select!(CCannon).Screen(this);
 		Objects ~= ret;
 		return ret;
@@ -159,6 +166,12 @@ class CTacticalScreen : CScreen, ITacticalScreen
 	override
 	void Update(float dt)
 	{
+		if(!GameMode.FirstMessagePlayed)
+		{
+			GameMode.AddMessage("I am low on energy. I must recharge my neutrino storage bays by approaching a star. Blue stars are best candidates for this.", true, 10);
+			GameMode.FirstMessagePlayed = true;
+		}
+		
 		GameMode.SoundManager.Update(dt, MainShipPosition);
 		
 		foreach(object; Objects)
@@ -167,13 +180,16 @@ class CTacticalScreen : CScreen, ITacticalScreen
 		foreach(ref bullet; ActiveBullets)
 			bullet.Update(dt);
 			
+		foreach(ref expl; ActiveExplosions)
+			expl.Update(dt);
+			
 		if(MainShipDamageable !is null)
 		{
 			foreach(ref bullet; ActiveBullets)
 			{
 				if(MainShipDamageable.Collide(bullet.Position))
 				{
-					GameMode.Health = GameMode.Health - 5;
+					GameMode.Health = GameMode.Health - 3;
 					bullet.Life = -1;
 					HitSound.Play(MainShipPosition);
 				}
@@ -183,10 +199,13 @@ class CTacticalScreen : CScreen, ITacticalScreen
 		if(GameMode.Health == 0 && MainShip !is null)
 		{
 			Objects.length = ar.remove(Objects, MainShip);
+			MainShip.Select!(CBeamCannon).StopSound;
 			MainShip.Dispose;
 			MainShip = null;
 			MainShipController = null;
 			MainShipDamageable = null;
+			GameMode.ClearMessages;
+			Explosion(MainShipPosition, 100);
 		}
 			
 		if(MainShip !is null)
@@ -234,6 +253,16 @@ class CTacticalScreen : CScreen, ITacticalScreen
 				TargetObject = null;
 				TargetDrawer = null;
 			}
+			auto pos = cast(CPosition)obj.GetComponent(CPosition.classinfo);
+			if(pos !is null)
+			{
+				auto scale = 20.0f;
+				auto phys = cast(CPhysics)obj.GetComponent(CPhysics.classinfo);
+				if(phys)
+					scale *= phys.Mass;
+				
+				Explosion(pos.Position, scale);
+			}
 			obj.Dispose();
 		}
 		
@@ -242,21 +271,26 @@ class CTacticalScreen : CScreen, ITacticalScreen
 		new_len = ar.removeIf(ActiveBullets, (SBullet bullet) { return bullet.Life < 0; });
 		ActiveBullets = AllBullets[0..new_len];
 		
+		new_len = ar.removeIf(ActiveExplosions, (SExplosion expl) { return expl.Life < 0; });
+		ActiveExplosions = AllExplosions[0..new_len];
+		
 		if(SystemWasAlive && !GameMode.CurrentStarSystem.HaveLifeforms)
 		{
 			GameMode.RacesLeft = GameMode.RacesLeft - 1;
 			SystemWasAlive = false;
 			
-			if(GameMode.RacesLeft == 39 && MainShip !is null)
+			if(GameMode.RacesLeft == 0 && MainShip !is null)
 			{
 				GameMode.ClearMessages();
-				GameMode.AddMessage("My sensory readings indicate that there is no life left in this galaxy. My glorious magnificence will... What is this sensory reading?", false);
+				GameMode.AddMessage("My sensory readings indicate that there is no life left in this galaxy. My glorious magnificence will... what is this sensory reading?", false);
 				GameMode.AddMessage("Not so fast, demon! Now you will pay for your unspeakable crimes! Behold the vengeful scream of a trillion voices!", true, 10, false);
+				
+				GameMode.Music.Play(EMusic.War);
 				
 				CGameObject add_ship(const(char)[] type, float theta)
 				{
 					auto ship = AddObject(type);
-					auto offset = SVector2D(1500, 0);
+					auto offset = SVector2D(2500, 0);
 					offset.Rotate(theta);
 					ship.Select!(CPosition).Set(MainShipPosition.X + offset.X, MainShipPosition.Y + offset.Y);
 					auto controller = cast(CAIController)ship.GetComponent(CAIController.classinfo);
@@ -331,6 +365,9 @@ class CTacticalScreen : CScreen, ITacticalScreen
 			
 		foreach(bullet; ActiveBullets)
 			bullet.Draw(physics_alpha);
+			
+		foreach(expl; ActiveExplosions)
+			expl.Draw(physics_alpha);
 		
 		GameMode.Game.Gfx.ResetTransform;
 		
@@ -452,21 +489,31 @@ class CTacticalScreen : CScreen, ITacticalScreen
 				switch(event.keyboard.keycode)
 				{
 					case ALLEGRO_KEY_TAB:
-						DrawMap = !DrawMap;
-						GameMode.UISound.Play(MainShipPosition);
+						if(MainShip !is null)
+						{
+							DrawMap = !DrawMap;
+							GameMode.UISound.Play(MainShipPosition);
+						}
 						break;
-					case ALLEGRO_KEY_ESCAPE:
-						if(MainShip is null || (GameMode.Health == GameMode.MaxHealth && BossShip is null))
+					case ALLEGRO_KEY_ENTER:
+						if(MainShip !is null)
 						{
-							GameMode.PopScreen;
-						}
-						else if(GameMode.Health != GameMode.MaxHealth)
-						{
-							GameMode.AddMessage("Cannot enter hyperspace while I am damaged.");
-						}
-						else if(BossShip !is null)
-						{
-							GameMode.AddMessage("That large ship is causing interference with my hyperspace drive.");
+							if(GameMode.Health != GameMode.MaxHealth)
+							{
+								GameMode.AddMessage("Cannot enter hyperspace while I am damaged.");
+							}
+							else if(BossShip !is null)
+							{
+								GameMode.AddMessage("That large ship is causing interference with my hyperspace drive.");
+							}
+							else
+							{
+								MainShip.Select!(CBeamCannon).StopSound;
+								
+								GameMode.Music.Play(EMusic.Peace);
+								
+								GameMode.PopScreen;
+							}
 						}
 						break;
 					default:
@@ -528,6 +575,19 @@ class CTacticalScreen : CScreen, ITacticalScreen
 		}
 	}
 	
+	void Explosion(SVector2D position, float scale)
+	{
+		ExplosionSound.Play(position);
+		
+		if(ActiveExplosions.length == AllExplosions.length)
+		{
+			AllExplosions.length = AllExplosions.length + 1;
+		}
+		
+		AllExplosions[ActiveExplosions.length].Reset(position, scale);
+		ActiveExplosions = AllExplosions[0..ActiveExplosions.length + 1];
+	}
+	
 	override
 	void FireBullet(SVector2D origin, SVector2D target)
 	{
@@ -550,11 +610,15 @@ class CTacticalScreen : CScreen, ITacticalScreen
 	mixin(Prop!("SVector2D", "MainShipVelocity", "override", ""));
 protected:
 	CSound HitSound;
+	CSound ExplosionSound;
 
 	bool Firing = false;
 	bool SystemWasAlive = false;
 	SBullet[] ActiveBullets;
 	SBullet[] AllBullets;
+	
+	SExplosion[] ActiveExplosions;
+	SExplosion[] AllExplosions;
 	
 	CGameObject TargetObject;
 	void delegate(float) TargetDrawer;
