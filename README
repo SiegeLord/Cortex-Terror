@@ -1,6 +1,87 @@
-http://www.pdsounds.org
-Zilly Mike from http://modarchive.org
+%%%%%%%%%%%%%%%%%%%%%
+
+    Cortex Terror
+    
+         by
+    
+      SiegeLord
+      
+         for
+         
+     SantaHack 2011
+
+%%%%%%%%%%%%%%%%%%%%%
+
+0. Table of Contents
+====================
+
+1. Goal of the game
+2. Controls
+3. Building on Windows
+4. Building on Linux
+5. Resource attributions
+
+1. Goal of the game
+===================
+
+Your goal is to absorb all the races in the galaxy by firing at populated planets. A secondary goal is to collect artifacts by firing at planets in star systems that have artifacts in them.
+
+2. Controls
+===========
+
+Main Menu:
+	Up/Down .. Change selection
+	Enter .... Choose selection
+	Esc ...... Exit the game
+
+Tactical (in system) screen:
+	W ................... Move forward
+	A ................... Turn left
+	D ................... Turn right
+	Tab ................. Turn on/off the system map
+	Enter ............... Enter hyperspace (exit system)
+	Left Mouse Button ... Fire beams/select target
+	Right Mouse Button .. Clear target
+	Esc ..................Exit the game
+
+Galaxy screen:
+	Left Mouse Button ... Scan/select star system
+	Right Mouse BUtton .. Clear star system selection
+	Space ............... Activate hyperspace travel
+	Enter ............... Exit hyperspace (enter system)
+	
+3. Building on Windows
+======================
+
+Requirements:
+	dmd 2.057 compiler .. Can be found at http://ftp.digitalmars.com/dinstaller.exe (select only dmd2 when choosing components)
+	Tango-D2 ............ You can grab a copy at https://github.com/SiegeLord/Tango-D2
+	DAllegro5 ........... You can grab a copy at https://github.com/SiegeLord/DAllegro5
+	Allegro 5.0.5 ....... Grab a pre-built binary copy at http://www.allegro.cc/files/ . Get the MinGW version.
+
+Steps:
+	1. Compile Tango-D2 and DAllegro5 by following the directions in their respective readmes.
+	2. Use the create_import_libs.bat to create the import library for allegro from allegro-5.0.5-monolith-mt.dll
+	3. Copy tango.lib (step 1), dallegro5.lib (step 1), allegro.lib (step 2) into the base folder of this game
+	4. Copy the folder tango and dallegro5 from TangoD2 and DAllegro5 sources into the base folder of the game (do NOT just copy the contents of those folders!)
+	5. Run the makefile using this command: mingw32-make -f Makefile.win
+
+4. Building on Linux
+====================
+
+TODO. Same idea as a above, but you'll need LDC2 for 64 bit builds, and there's no need for step 2.
+
+5. Resource attributions
+========================
+
+Most sounds were from http://www.pdsounds.org .
+
+Music is by Zilly Mike from http://modarchive.org . The following shows the mapping between the original filenames and the new filename.
 
 money.xm -> peace.xm
 forestofcalm.xm -> medium.xm
 mega_destruction.xm -> war.xm
+
+Energon font was found at http://www.dafont.com/energon.font .
+
+The rest was created by yours truly.
