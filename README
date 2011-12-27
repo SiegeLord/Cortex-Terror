@@ -38,6 +38,7 @@ Tactical (in system) screen:
 	W ................... Move forward
 	A ................... Turn left
 	D ................... Turn right
+	1-7 ................. Select beam 1-7
 	Tab ................. Turn on/off the system map
 	Enter ............... Enter hyperspace (exit system)
 	Left Mouse Button ... Fire beams/select target
@@ -47,6 +48,7 @@ Tactical (in system) screen:
 Galaxy screen:
 	Left Mouse Button ... Scan/select star system
 	Right Mouse BUtton .. Clear star system selection
+	Mouse Wheel ......... Zoom in/out
 	Space ............... Activate hyperspace travel
 	Enter ............... Exit hyperspace (enter system)
 	
