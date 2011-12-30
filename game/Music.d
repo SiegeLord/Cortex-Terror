@@ -53,7 +53,6 @@ class CMusic : CDisposable
 		if(Stream !is null)
 		{
 			al_attach_audio_stream_to_mixer(Stream, al_get_default_mixer());
-			al_set_audio_stream_gain(Stream, 0.25);
 			al_set_audio_stream_playmode(Stream, ALLEGRO_PLAYMODE.ALLEGRO_PLAYMODE_LOOP);
 		}
 	}
