@@ -1,6 +1,7 @@
 lib*
 tango
 allegro5
-main
+cortex_terror
+save.cfg
 .deps*
 .objs*
