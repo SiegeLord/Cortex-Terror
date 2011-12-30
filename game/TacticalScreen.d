@@ -279,7 +279,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 			GameMode.RacesLeft = GameMode.RacesLeft - 1;
 			SystemWasAlive = false;
 			
-			if(GameMode.RacesLeft == 0 && MainShip !is null)
+			if((GameMode.FastEndGame || GameMode.RacesLeft == 0) && MainShip !is null)
 			{
 				GameMode.ClearMessages();
 				GameMode.AddMessage("My sensory readings indicate that there is no life left in this galaxy. My glorious magnificence will... what is this sensory reading?", false);

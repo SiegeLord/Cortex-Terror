@@ -84,4 +84,6 @@ interface IGameMode
 	
 	bool FirstMessagePlayed();
 	bool FirstMessagePlayed(bool val);
+	
+	bool FastEndGame();
 }

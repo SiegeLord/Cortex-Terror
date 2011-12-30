@@ -60,6 +60,17 @@ class CGameMode : CMode, IGameMode
 		
 		Music = new CMusic(!Game.Options.Get!(bool)("sfx", "music", true));
 		
+		FastEndGame = Game.Options.Get!(bool)("game", "fast_end_game", false);
+		
+		if(FastEndGame)
+		{
+			ColorVal = SColor(EColor.Green | EColor.Red | EColor.Blue);
+			HealthBonusCount = 3;
+			EnergyBonusCount = 3;
+			Health = MaxHealth;
+			Energy = MaxEnergy / 2;
+		}
+		
 		Rand.seed({ return cast(int)(al_get_time() * 1000); });
 		
 		Galaxy = new CGalaxy(this, Rand, NumStars, GalaxyRadius);
@@ -449,10 +460,11 @@ class CGameMode : CMode, IGameMode
 	mixin(Prop!("int", "RacesLeft", "override", "override"));
 	mixin(Prop!("CMusic", "Music", "override", "protected"));
 	mixin(Prop!("bool", "FirstMessagePlayed", "override", "override"));
+	mixin(Prop!("bool", "FastEndGame", "override", "protected"));
 protected:
 	int RacesLeftVal;
 	SColor BeamSelectionVal;
-	SColor ColorVal;// = SColor(EColor.Green | EColor.Red | EColor.Blue);
+	SColor ColorVal;
 		
 	CBitmap UIBottomLeft;
 
@@ -495,4 +507,6 @@ protected:
 	Random Rand;
 	
 	bool FirstMessagePlayedVal;
+	
+	bool FastEndGameVal = false;
 }
