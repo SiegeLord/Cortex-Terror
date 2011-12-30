@@ -1,6 +1,7 @@
 module engine.Config;
 
 import engine.Holder;
+import engine.Util;
 
 import allegro5.allegro;
 
@@ -28,6 +29,8 @@ class CConfig : CHolder!(ALLEGRO_CONFIG*, al_destroy_config)
 		auto config = al_load_config_file(toStringz(filename, buf));
 		if(config is null)
 			config = al_create_config();
+		
+		Filename = filename;
 		
 		this(config);
 	}
@@ -86,4 +89,22 @@ class CConfig : CHolder!(ALLEGRO_CONFIG*, al_destroy_config)
 		}
 		al_set_config_value(Payload, toStringz(section, buf1), toStringz(key, buf2), toStringz(str, buf3));
 	}
+	
+	void Save(const(char)[] filename = null)
+	{
+		char[256] buf1;
+		
+		if(filename !is null)
+		{
+			Filename = filename;
+		}
+		else if(Filename.length == 0)
+		{
+			throw new Exception("Can't save to an empty filename");
+		}
+		
+		al_save_config_file(toStringz(Filename, buf1), Payload);
+	}
+	
+	const(char)[] Filename;
 }

@@ -35,6 +35,7 @@ import tango.text.convert.Format;
 import tango.util.container.more.Stack;
 import tango.math.random.Random;
 import tango.math.Math;
+import tango.time.Clock;
 
 const GalaxyRadius = 500;
 const NumStars = 256;
@@ -44,7 +45,7 @@ const HealthConversionFactor = 0.5f;
 
 class CGameMode : CMode, IGameMode
 {
-	this(IGame game)
+	this(IGame game, bool load)
 	{
 		super(game);
 		SoundManager = new CSoundManager;
@@ -60,7 +61,25 @@ class CGameMode : CMode, IGameMode
 		
 		Music = new CMusic(!Game.Options.Get!(bool)("sfx", "music", true));
 		
-		FastEndGame = Game.Options.Get!(bool)("game", "fast_end_game", false);
+		auto config = new CConfig("save.cfg");
+		scope(exit) config.Dispose;
+		
+		if(load)
+		{		
+			bool is_def;
+			Seed = config.Get!(int)("", "seed", 0, &is_def);
+			if(is_def)
+				load = false;
+		}
+		else
+		{
+			Seed = cast(int)Clock.now.ticks;
+		}
+		
+		if(load)
+			FastEndGame = config.Get!(bool)("", "fast_end_game", false);
+		else
+			FastEndGame = Game.Options.Get!(bool)("game", "fast_end_game", false);
 		
 		if(FastEndGame)
 		{
@@ -71,27 +90,71 @@ class CGameMode : CMode, IGameMode
 			Energy = MaxEnergy / 2;
 		}
 		
-		Rand.seed({ return cast(int)(al_get_time() * 1000); });
+		Rand.seed({ return Seed; });
 		
 		Galaxy = new CGalaxy(this, Rand, NumStars, GalaxyRadius);
 		
-		CStarSystem sys;
-		while(true)
+		if(load)
 		{
-			auto vec = SVector2D(Rand.uniformR2(0, GalaxyRadius / 3), 0);
-			vec.Rotate(Rand.uniformR2(0.0f, cast(float)(2.0f * PI)));
-			GalaxyLocation = vec;
-			
-			sys = Galaxy.GetStarSystemAt(GalaxyLocation);
-			if(!sys.HaveLifeforms)
-				break;
+			CurrentStarSystem = Galaxy.GetStarSystem(config.Get!(size_t)("", "star_system_idx", 0));
+			RacesLeft = config.Get!(int)("", "races_left", 0);
+			BeamSelection = SColor(config.Get!(int)("", "beam_selection", EColor.Red));
+			ColorVal.ColorFlag = config.Get!(int)("", "color", EColor.Red);
+			Energy = config.Get!(float)("", "energy", 0);
+			HealthBonusCount = config.Get!(int)("", "health_bonus", 0);
+			EnergyBonusCount = config.Get!(int)("", "energy_bonus", 0);
+			GalaxyZoom = config.Get!(float)("", "galaxy_zoom", 1);
+
+			Galaxy.Load(config);
+
+			FirstMessagePlayed = true;
+		}
+		else
+		{
+			CStarSystem sys;
+			while(true)
+			{
+				auto vec = SVector2D(Rand.uniformR2(0, GalaxyRadius / 3), 0);
+				vec.Rotate(Rand.uniformR2(0.0f, cast(float)(2.0f * PI)));
+				GalaxyLocation = vec;
+				
+				sys = Galaxy.GetStarSystemAt(GalaxyLocation);
+				if(!sys.HaveLifeforms)
+					break;
+			}
+			CurrentStarSystem = sys;
 		}
 		
-		CurrentStarSystem = sys;
 		GalaxyLocation = CurrentStarSystem.Position;
 		PushScreen(EScreen.Galaxy);
-		PushScreen(EScreen.Tactical);
-		PushScreen(EScreen.Intro);
+		if(!load)
+		{
+			PushScreen(EScreen.Tactical);
+			PushScreen(EScreen.Intro);
+		}
+		
+		Save;
+	}
+	
+	void Save()
+	{
+		auto config = new CConfig;
+		scope(exit) config.Dispose;
+		
+		config.Set("", "seed", Seed);
+		config.Set("", "star_system_idx", CurrentStarSystem.Index);
+		config.Set("", "races_left", RacesLeft);
+		config.Set("", "beam_selection", BeamSelection.ColorFlag);
+		config.Set("", "color", ColorVal.ColorFlag);
+		config.Set("", "energy", Energy);
+		config.Set("", "health_bonus", HealthBonusCount);
+		config.Set("", "energy_bonus", EnergyBonusCount);
+		config.Set("", "galaxy_zoom", GalaxyZoom);
+		config.Set("", "fast_end_game", FastEndGame);
+		
+		Galaxy.Save(config);
+		
+		config.Save("save.cfg");
 	}
 	
 	override
@@ -123,6 +186,8 @@ class CGameMode : CMode, IGameMode
 			if(ScreenStack.size == 0 || Dead)
 			{
 				Game.NextMode = EMode.MainMenu;
+				if(!Dead)
+					Save;
 				return;
 			}
 		}
@@ -136,6 +201,8 @@ class CGameMode : CMode, IGameMode
 				GalaxyLocation = CurrentStarSystem.Position;
 				CurrentStarSystem.Visited = true;
 				Arrived = true;
+				if(!Dead)
+					Save;
 			}
 			else
 			{
@@ -181,10 +248,14 @@ class CGameMode : CMode, IGameMode
 				if(event.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
 				{
 					Game.NextMode = EMode.MainMenu;
+					if(!Dead && ScreenStack.size == 1)
+						Save;
 				}
 				break;
 			case ALLEGRO_EVENT_DISPLAY_CLOSE:
 				Game.NextMode = EMode.Exit;
+				if(!Dead && ScreenStack.size == 1)
+					Save;
 				break;
 			default:
 		}
@@ -503,10 +574,11 @@ protected:
 	
 	bool WantPop = false;
 	CStarSystem CurrentStarSystemVal;
-	float GalaxyZoomVal = 5;
+	float GalaxyZoomVal = 1.5;
 	Random Rand;
+	int Seed;
 	
-	bool FirstMessagePlayedVal;
+	bool FirstMessagePlayedVal = false;
 	
 	bool FastEndGameVal = false;
 }

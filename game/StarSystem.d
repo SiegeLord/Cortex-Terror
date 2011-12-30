@@ -9,6 +9,7 @@ import engine.MathTypes;
 import engine.Util;
 import engine.Bitmap;
 import engine.Gfx;
+import engine.Config;
 
 import allegro5.allegro;
 import allegro5.allegro_primitives;
@@ -168,8 +169,10 @@ const MeanPlanetPopulation = 10000;
 
 class CStarSystem : CDisposable
 {
-	this(IGameMode game_mode, Random random, SVector2D position)
+	this(IGameMode game_mode, Random random, SVector2D position, size_t index)
 	{
+		Index = index;
+		
 		SmallStarSprite = game_mode.BitmapManager.Load("data/bitmaps/star_small.png");
 		SmallStarHaloSprite = game_mode.BitmapManager.Load("data/bitmaps/star_halo_small.png");
 
@@ -364,12 +367,40 @@ class CStarSystem : CDisposable
 	mixin(Prop!("ALLEGRO_COLOR", "Color", "", "protected"));
 	mixin(Prop!("const(char)[]", "Class", "", "protected"));
 	mixin(Prop!("float", "StarRadius", "", "protected"));
+	mixin(Prop!("size_t", "Index", "", "protected"));
+	
+	void Save(CConfig config)
+	{
+		auto section_name = Format("{}", Index);
+		config.Set(section_name, "visited", Visited);
+		config.Set(section_name, "scanned", Scanned);
+		
+		foreach(ii, planet; Planets)
+		{
+			config.Set(section_name, Format("population_{}", ii), planet.Population);
+			config.Set(section_name, Format("bonus_{}", ii), planet.Bonus);
+		}
+	}
+	
+	void Load(CConfig config)
+	{
+		auto section_name = Format("{}", Index);
+		Visited = config.Get!(bool)(section_name, "visited", false);
+		Scanned = config.Get!(bool)(section_name, "scanned", false);
+		
+		foreach(ii, planet; Planets)
+		{
+			planet.Population = config.Get!(float)(section_name, Format("population_{}", ii), 0);
+			planet.Bonus = cast(EBonus)config.Get!(int)(section_name, Format("bonus_{}", ii), EBonus.None);
+		}
+	}
 
 	SVector2D Position;
 	bool Scanned = false;
 	bool Visited = false;
 	CPlanet[] Planets;
 protected:
+	size_t IndexVal;
 	float StarRadiusVal;
 	SColor ShieldColor;
 	float ClassFraction;

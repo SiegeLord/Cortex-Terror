@@ -23,6 +23,9 @@ class CGalaxyScreen : CScreen
 	{
 		super(game_mode);
 		StarField = new CStarField(game_mode, GameMode.GalaxyLocation, 0.5, 100);
+		
+		CurrentZoom = GameMode.GalaxyZoom * 1.5;
+		TargetZoom = GameMode.GalaxyZoom;
 
 		GameMode.Music.Play(EMusic.Peace);
 	}

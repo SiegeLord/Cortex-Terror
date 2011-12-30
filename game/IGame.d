@@ -15,6 +15,7 @@ enum FixedDt = 1.0f/60.0f;
 
 interface IGame
 {
+	bool Load(bool load);
 	void NextMode(EMode mode);
 	float Time();
 	CGfx Gfx();

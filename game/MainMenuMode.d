@@ -104,13 +104,14 @@ class CMainMenuMode : CMode
 		
 		auto mid = Game.Gfx.ScreenSize / 2 + SVector2D(0, 50);
 		
-		auto title_mid = Game.Gfx.ScreenSize / 2 - SVector2D(0, 50);
+		auto title_mid = Game.Gfx.ScreenSize / 2 - SVector2D(0, 70);
 		
 		auto select_color = al_map_rgb_f(1, 1, 1);
 		auto normal_color = al_map_rgb_f(0.5, 1, 0.5);
 		
-		al_draw_text(Font.Get, CurChoice == 0 ? select_color : normal_color, mid.X, mid.Y - 25, ALLEGRO_ALIGN_CENTRE, "New Game");
-		al_draw_text(Font.Get, CurChoice == 1 ? select_color : normal_color, mid.X, mid.Y + 25, ALLEGRO_ALIGN_CENTRE, "Quit");
+		al_draw_text(Font.Get, CurChoice == 0 ? select_color : normal_color, mid.X, mid.Y - 45, ALLEGRO_ALIGN_CENTRE, "Continue Game");
+		al_draw_text(Font.Get, CurChoice == 1 ? select_color : normal_color, mid.X, mid.Y, ALLEGRO_ALIGN_CENTRE, "New Game");
+		al_draw_text(Font.Get, CurChoice == 2 ? select_color : normal_color, mid.X, mid.Y + 45, ALLEGRO_ALIGN_CENTRE, "Quit");
 		
 		al_draw_text(TitleFont.Get, al_map_rgb_f(0.5, 0.5, 1), title_mid.X, title_mid.Y, ALLEGRO_ALIGN_CENTRE, "Cortex Terror");
 	}
@@ -134,22 +135,32 @@ class CMainMenuMode : CMode
 						break;
 					case ALLEGRO_KEY_ENTER:
 						if(CurChoice == 0)
+						{
+							Game.Load = true;
 							Game.NextMode = EMode.Game;
+						}
+						else if(CurChoice == 1)
+						{
+							Game.Load = false;
+							Game.NextMode = EMode.Game;
+						}
 						else
+						{
 							Game.NextMode = EMode.Exit;
+						}
 						break;
 					case ALLEGRO_KEY_UP:
 						CurChoice--;
 						UISound.Play;
 						
 						if(CurChoice < 0)
-							CurChoice = 1;
+							CurChoice = 2;
 						break;
 					case ALLEGRO_KEY_DOWN:
 						CurChoice++;
 						UISound.Play;
 						
-						if(CurChoice > 1)
+						if(CurChoice > 2)
 							CurChoice = 0;
 						break;
 					default:

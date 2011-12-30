@@ -69,7 +69,7 @@ class CGame : CDisposable, IGame
 				}
 				case EMode.Game:
 				{
-					Mode = new CGameMode(this);
+					Mode = new CGameMode(this, Load);
 					break;
 				}
 				case EMode.Exit:
@@ -100,6 +100,7 @@ exit:{}
 	mixin(Prop!("CGfx", "Gfx", "override", "protected"));
 	mixin(Prop!("CSfx", "Sfx", "override", "protected"));
 	mixin(Prop!("CConfig", "Options", "override", "protected"));
+	mixin(Prop!("bool", "Load", "", "override"));
 protected:
 	void GameLoop(CMode mode)
 	{
@@ -159,4 +160,5 @@ protected:
 	CConfig OptionsVal;
 	CGfx GfxVal;
 	CSfx SfxVal;
+	bool LoadVal = false;
 }

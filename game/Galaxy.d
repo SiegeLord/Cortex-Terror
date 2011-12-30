@@ -2,6 +2,7 @@ module game.Galaxy;
 
 import engine.Disposable;
 import engine.MathTypes;
+import engine.Config;
 
 import game.StarSystem;
 import game.IGameMode;
@@ -39,7 +40,7 @@ class CGalaxy : CDisposable
 			{
 				pos = SVector2D(random.normalSigma(radius / 5), random.normalSigma(radius / 5));
 			} while(abs(pos.X) > radius || abs(pos.Y) > radius);
-			system = new CStarSystem(game_mode, random, pos);
+			system = new CStarSystem(game_mode, random, pos, ii);
 		}
 		
 		size_t extra_green = 0;
@@ -95,6 +96,18 @@ class CGalaxy : CDisposable
 		}
 	}
 	
+	void Save(CConfig config)
+	{
+		foreach(system; Systems)
+			system.Save(config);
+	}
+	
+	void Load(CConfig config)
+	{
+		foreach(system; Systems)
+			system.Load(config);
+	}
+	
 	override
 	void Dispose()
 	{
@@ -133,6 +146,11 @@ class CGalaxy : CDisposable
 		}
 		
 		return ret;
+	}
+	
+	CStarSystem GetStarSystem(size_t idx)
+	{
+		return Systems[idx];
 	}
 protected:
 	CStarSystem[] Systems;
