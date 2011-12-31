@@ -137,12 +137,12 @@ class CTacticalScreen : CScreen, ITacticalScreen
 					}
 				}
 				
-				foreach(ii; 0..threat * 2)
+				foreach(ii; 0..threat * 3)
 				{
 					add_ship("small_ship");
 				}
 				
-				foreach(ii; 0..(threat - 1))
+				foreach(ii; 0..threat * 2))
 				{
 					add_ship("medium_ship");
 				}
@@ -207,7 +207,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 			{
 				if(MainShipDamageable.Collide(bullet.Position))
 				{
-					GameMode.Health = GameMode.Health - 3;
+					GameMode.Health = GameMode.Health - 4;
 					bullet.Life = -1;
 					HitSound.Play(MainShipPosition);
 				}

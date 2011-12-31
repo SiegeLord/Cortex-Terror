@@ -183,7 +183,7 @@ const MaxPlanets = 5;
 const ConversionFactor = 40; // Ratio of tactical units to star system units
 const UniAge = 0.5;
 const BaseLifeProbability = 0.25;
-const MeanPlanetPopulation = 10000;
+const MeanPlanetPopulation = 15000;
 
 class CStarSystem : CDisposable
 {
@@ -242,7 +242,7 @@ class CStarSystem : CDisposable
 			auto prob = BaseLifeProbability / (abs(planet.Orbit - habitable_orbit) + 1);
 			if(random.uniformR2(0.0f, 1.0f) < prob)
 			{
-				planet.Population = 1 + random.exp!(float)() * MeanPlanetPopulation;
+				planet.Population = MeanPlanetPopulation + random.exp!(float)() * MeanPlanetPopulation;
 				planet.Class = "M";
 				planet.LoadPlanetIcon;
 				planet.ShieldColor = color;

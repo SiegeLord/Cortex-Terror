@@ -33,7 +33,7 @@ import tango.io.Stdout;
 import allegro5.allegro;
 
 /* Needs to be greater than 6 */
-const NumRaces = 40;
+const NumRaces = 20;
 
 const ProbRed = 0.5;
 const ProbGreen = 0.4;
