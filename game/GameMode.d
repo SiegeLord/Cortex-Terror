@@ -122,6 +122,7 @@ class CGameMode : CMode, IGameMode
 			HealthBonusCount = config.Get!(int)("", "health_bonus", 0);
 			EnergyBonusCount = config.Get!(int)("", "energy_bonus", 0);
 			GalaxyZoom = config.Get!(float)("", "galaxy_zoom", 1);
+			Health = MaxHealth;
 
 			Galaxy.Load(config);
 
