@@ -142,7 +142,7 @@ class CTacticalScreen : CScreen, ITacticalScreen
 					add_ship("small_ship");
 				}
 				
-				foreach(ii; 0..threat * 2))
+				foreach(ii; 0..threat * 2)
 				{
 					add_ship("medium_ship");
 				}
