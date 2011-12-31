@@ -407,6 +407,11 @@ class CTacticalScreen : CScreen, ITacticalScreen
 				
 				GameMode.Game.Gfx.ResetTransform;
 				
+				al_draw_line(mid.X - 15, mid.Y - 15, mid.X - 5, mid.Y - 5, al_map_rgba_f(0.25, 0.5, 0.25, 0.5), 2);
+				al_draw_line(mid.X + 15, mid.Y + 15, mid.X + 5, mid.Y + 5, al_map_rgba_f(0.25, 0.5, 0.25, 0.5), 2);
+				al_draw_line(mid.X + 15, mid.Y - 15, mid.X + 5, mid.Y - 5, al_map_rgba_f(0.25, 0.5, 0.25, 0.5), 2);
+				al_draw_line(mid.X - 15, mid.Y + 15, mid.X - 5, mid.Y + 5, al_map_rgba_f(0.25, 0.5, 0.25, 0.5), 2);
+				
 				al_draw_text(GameMode.UIFont.Get, al_map_rgb_f(0.5, 1, 0.5), mid.X, 2 * mid.Y - GameMode.UIFont.Height - 10, ALLEGRO_ALIGN_CENTRE, toStringz(cur_sys.Name));
 			}
 			else if(TargetObject !is null)
